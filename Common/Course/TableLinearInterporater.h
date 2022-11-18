@@ -24,7 +24,7 @@ public:
 
 	void GetCourse(std::vector<std::vector<double>> course)
 	{
-		c_data.resize(5);
+		c_data.resize(7);
 		for (size_t i = 0; i < c_data.size(); i++)
 		{
 			c_data[i].resize(course[0].size());
@@ -37,6 +37,8 @@ public:
 			c_data[2][i] = course[4][i]; //v_min
 			c_data[3][i] = course[3][i]; //v
 			c_data[4][i] = course[10][i]; //rho
+			c_data[5][i] = course[0][i]; //x
+			c_data[6][i] = course[1][i]; //y
 		}
 		i_prev_index = 0;
 		i_prev_index_pp = 0;
@@ -107,7 +109,8 @@ public:
 
 	void GetTarget(double ret[], int x_index, int y_index, double x, double y, double Lf)
 	{
-		for (int k = 0; k < 2; k++) {
+		for (int k = 0; k < 2; k++)
+		{
 			ret[k] = 0.0;
 		}
 
@@ -120,10 +123,11 @@ public:
 
 		int i = 0;
 		// search x index，ここでtargetpointのx座標取得
-		for (i = i_prev_index_pp; i < rows; i++) {
+		for (i = i_prev_index_pp; i < rows; i++)
+		{
 			double nearest_point_distance = calc_distance(x, y, c_data[x_index][i], c_data[y_index][i]);
 			double next_point_distance = calc_distance(x, y, c_data[x_index][i + 1], c_data[y_index][i + 1]);
-			if (0 < (next_point_distance - nearest_point_distance) && nearest_point_distance < 4.0) //ポイントが徐々に近くなり、2m以下
+			if (0 < (next_point_distance - nearest_point_distance) && nearest_point_distance < 2.0) //ポイントが徐々に近くなり、2m以下
 			{
 				break;
 			}
@@ -138,16 +142,17 @@ public:
 			ret[0] = c_data[x_index][rows - 1];
 			ret[1] = c_data[y_index][rows - 1];
 		}
-		else {
+		else 
+		{
 			// middle
-
 			int j = i;
-			i_prev_index = i; //今回のインデックスを保存
+			i_prev_index_pp = i; //今回のインデックスを保存
 
 			while (calc_distance(x, y, c_data[x_index][j], c_data[y_index][j]) < Lf)
 			{
 				if (rows <= (j + 1))
 				{
+					std::cout << "not find steer input" << std::endl;
 					break;
 				}
 				j++;
@@ -169,23 +174,28 @@ public:
 		return ret;
 	}
 
-	double calc_distance(double x, double y, double path_x, double path_y) {
+	double calc_distance(double x, double y, double path_x, double path_y)
+	{
 		double dx = x - path_x;
 		double dy = y - path_y;
 		double distance = sqrt(dx * dx + dy * dy);
 		return distance;
 	}
 
-	double calc_targetpoint_x(double x_current, double y_current, Points_search P, double L) {
-		if (P.c_current_x == P.c_next_x) {
+	double calc_targetpoint_x(double x_current, double y_current, Points_search P, double L)
+	{
+		if (P.c_current_x == P.c_next_x)
+		{
 			return P.c_current_x;
 		}
-		else {
+		else
+		{
 			double a = (P.c_next_y - P.c_current_y) / (P.c_next_x - P.c_current_x);
 			double b = -a * P.c_current_x + P.c_current_y - y_current;
 			double temp_x_minus = (-(a * b - x_current) - sqrt((a * b - x_current) * (a * b - x_current) - (1 + a * a) * (x_current * x_current + b * b - L * L))) / (1 + a * a);
 			double temp_x_plus = (-(a * b - x_current) + sqrt((a * b - x_current) * (a * b - x_current) - (1 + a * a) * (x_current * x_current + b * b - L * L))) / (1 + a * a);
-			if (P.c_current_x <= temp_x_plus && temp_x_plus <= P.c_next_x) {
+			if (P.c_current_x <= temp_x_plus && temp_x_plus <= P.c_next_x)
+			{
 				return temp_x_plus;
 			}
 			else
@@ -195,11 +205,14 @@ public:
 		}
 	}
 
-	double calc_targetpoint_y(double x_current, double y_current, Points_search P, double L, double target_x) {
-		if (P.c_current_x == P.c_next_x) {
+	double calc_targetpoint_y(double x_current, double y_current, Points_search P, double L, double target_x)
+	{
+		if (P.c_current_x == P.c_next_x)
+		{
 			double temp_y_minus = y_current - sqrt(L * L - (P.c_current_x - x_current) * (P.c_current_x - x_current));
 			double temp_y_plus = y_current + sqrt(L * L - (P.c_current_x - x_current) * (P.c_current_x - x_current));
-			if (P.c_current_y <= temp_y_plus && temp_y_plus <= P.c_next_y) {
+			if (P.c_current_y <= temp_y_plus && temp_y_plus <= P.c_next_y)
+			{
 				return temp_y_plus;
 			}
 			else
@@ -207,7 +220,8 @@ public:
 				return temp_y_minus;
 			}
 		}
-		else {
+		else
+		{
 			double a = (P.c_next_y - P.c_current_y) / (P.c_next_x - P.c_current_x);
 			return a * (target_x - P.c_current_x) + P.c_current_y;
 		}

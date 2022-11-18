@@ -23,7 +23,7 @@ private:
 	int Pred_step = 25;
 
 	//Dynamic Window—p
-	double limit_vel = 1, limit_min_angvel = -0.4, limit_max_angvel = 0.4;
+	double limit_vel = 1, limit_min_angvel = -0.3, limit_max_angvel = 0.3;
 	//double tire_angle_min, tire_angle_max, temp_tire_angle_max = 0.8, delta_tire_angle = 0.01;
 	//double tire_angle_min, tire_angle_max, temp_tire_angle_max = 0.1, delta_tire_angle = 0.002; //áŠQ•¨‰ñ”ğ
 	//double angvel_min, angvel_max, angvel_range = 1.6, delta_delta = 0.02;
@@ -32,7 +32,7 @@ private:
 	//double angvel_min, angvel_max, angvel_range = 1, delta_delta = 0.001; //3000ƒTƒ“ƒvƒ‹
 	double max_acc = 1, max_angacc = 4; // val * 2 * T_delta / delta
 	double min_angvel, max_angvel, range_angvel, delta_angvel, SampNum_angvel = 20; //200ƒTƒ“ƒvƒ‹ r‚¢‚Ì‚Í0.01
-	double min_vel, max_vel, range_vel, delta_vel, SampNum_vel = 10;
+	double min_vel, max_vel, range_vel, delta_vel, SampNum_vel = 5;
 
 	//—\‘ªó‘Ô‚ğŠi”[
 	std::vector<std::vector<double>> u, v, theta, tire_ang, v_error;

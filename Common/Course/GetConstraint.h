@@ -11,6 +11,7 @@ public:
 	void set_vector(LinearInterporater table, vector<double>& vec_x, vector<double>& vec_const, int row);
 	void GetConstraint(vector<double> u_future, vector<double> u_front_l, vector<double> u_front_r, vector<double> u_center_l, vector<double> u_center_r, vector<double> u_rear_l, vector<double> u_rear_r);
 	void get_min_max(double u, double& v_min, double& v_max);
+	void get_rho(double u, double& rho);
 
 private:
 	LinearInterporater table;
@@ -39,6 +40,11 @@ inline void getconstraint::get_min_max(double u, double& v_max, double& v_min)
 {
 	v_max = table.GetLinearInterporation(0, u, 1);
 	v_min = table.GetLinearInterporation(0, u, 2);
+}
+
+inline void getconstraint::get_rho(double u, double& rho)
+{
+	rho = table.GetLinearInterporation(0, u, 4);
 }
 
 inline void getconstraint::set_vector(LinearInterporater table, vector<double>& vec_x, vector<double>& vec_const, int row)

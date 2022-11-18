@@ -60,7 +60,7 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, double vel_ref)
 		logdata.lateral_G[i] = B_y_2dot;
 		logdata.acc[i] = (B_vel - B_pre_vel) / prm.T_delta;
 	}
-	for (int i = 0; i < prm.SimStep - 1; i++)
+	for (int i = 1; i < prm.SimStep - 1; i++)
 	{
 		logdata.lateral_jerk[i] = (logdata.lateral_G[i + 1] - logdata.lateral_G[i - 1]) / (2 * prm.T_delta);
 		logdata.longitudinal_jerk[i] = (logdata.acc[i + 1] - logdata.acc[i - 1]) / (2 * prm.T_delta);
@@ -128,7 +128,7 @@ void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata)
 		logdata.lateral_G[i] = B_y_2dot;
 		logdata.acc[i] = (B_vel - B_pre_vel) / prm.T_delta;
 	}
-	for (size_t i = 0; i < prm.SimStep - 1; i++)
+	for (int i = 1; i < prm.SimStep - 1; i++)
 	{
 		logdata.lateral_jerk[i] = (logdata.lateral_G[i + 1] - logdata.lateral_G[i - 1]) / (2 * prm.T_delta);
 		logdata.longitudinal_jerk[i] = (logdata.acc[i + 1] - logdata.acc[i - 1]) / (2 * prm.T_delta);
@@ -188,33 +188,33 @@ bool Vehicle_Sim::Check(std::vector<double> x, std::vector<double> y, std::vecto
 				}
 				Ret = SideCheck("right", side);
 
-				//if (collision == 0)
+				//if (Ret)
 				//{
 				//	//ç∂å„
 				//	for (int i = 0; i < prm.SimStep; i++)
 				//	{
-				//		side[i].u = u[i] + prm.dist_rear * cos(yaw[i] + M_PI - prm.theta_rear);
+				//		side[i].x = x[i] + prm.dist_rear * cos(yaw[i] + M_PI - prm.theta_rear);
 				//		side[i].y = y[i] + prm.dist_rear * sin(yaw[i] + M_PI - prm.theta_rear);
 				//		side[i].yaw = yaw[i];
 				//	}
-				//	collision = side_point_check();
+				//	Ret = SideCheck("left", side);
 
-				//	if (collision == 0)
+				//	if (Ret)
 				//	{
 				//		//âEå„
 				//		for (int i = 0; i < prm.SimStep; i++)
 				//		{
-				//			side[i].u = u[i] + prm.dist_rear * cos(yaw[i] + M_PI + prm.theta_rear);
+				//			side[i].x = x[i] + prm.dist_rear * cos(yaw[i] + M_PI + prm.theta_rear);
 				//			side[i].y = y[i] + prm.dist_rear * sin(yaw[i] + M_PI + prm.theta_rear);
 				//			side[i].yaw = yaw[i];
 				//		}
-				//		collision = side_point_check();
+				//		Ret = SideCheck("right", side);
 				//	}
 				//}
 			}
 		}
 	}
-	return Ret;
+	return Ret; //collision -> ret = 0, notcollision -> ret = 1
 }
 
 bool Vehicle_Sim::SideCheck(std::string Side, std::vector<SidePoint> sidepoint)

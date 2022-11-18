@@ -57,6 +57,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 		//v‚Ìã‰ºŒÀæ“¾
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
 		constraint.get_min_max(logdata.u + prm.dist_front, prm.v_max_front, prm.v_min_front);
+		constraint.get_rho(logdata.u, logdata.rho);
 
 		//v‚Ìƒ‹[ƒv
 		for (logdata.v = max(prm.v_min, prm.v_min_front) + prm.width / 1.7; logdata.v <= min(prm.v_max, prm.v_max_front) - prm.width / 1.7; logdata.v = logdata.v + prm.delta_v)
@@ -91,10 +92,10 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 									//noise‚ğ“ü‚ê‚½ê‡‚Ì”½•œ‰ñ”
 									for (size_t i = 0; i < prm.NoiseNum; i++)
 									{
-										////PP
-										//sim.Sim_PP_Basecoordinate(pp, logdata, logdata.vel);
-										//logdata.collision = sim.Check(logdata.x_pp, logdata.y_pp, logdata.yaw_pp);
-										//logger_PP.PrintData();
+										//PP
+										sim.Sim_PP_Basecoordinate(pp, logdata, logdata.vel);
+										logdata.collision = sim.Check(logdata.x_pp, logdata.y_pp, logdata.yaw_pp);
+										logger_PP.PrintData();
 
 										//DWA
 										sim.Sim_DWA_Basecoordinate(dwa, logdata);

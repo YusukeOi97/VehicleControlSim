@@ -119,7 +119,7 @@ void DWA::DWA_control(double init_x, double init_y, double init_yaw, double init
 	for (int i = 0; i < Pred_step; i++) { Opt_v[i] = v[OptIdx][i]; }
 	ret[0] = vel[OptIdx];
 	ret[1] = init_tire_ang + angvel[OptIdx] * prm.T_delta;
-	ret[2] = (double)(end.QuadPart - start.QuadPart) * 1000 / freq.QuadPart;
+	ret[2] = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart;
 }
 
 void DWA::SetDW(double init_vel, double vel_ref)
