@@ -3,25 +3,23 @@
 #include <vector>
 #include <fstream>
 
-using namespace std;
-
 class DataLogger {
 private:
 	class DataInterface {
 	public:
-		virtual void PrintHeader(ofstream &ofs, const bool isFirst) = 0;
-		virtual void PrintData(ofstream &ofs, const bool isFirst) = 0;
+		virtual void PrintHeader(std::ofstream &ofs, const bool isFirst) = 0;
+		virtual void PrintData(std::ofstream &ofs, const bool isFirst) = 0;
 	};
 
 	template <typename T>class Data : public DataInterface {
 	public:
-		string header;
+		std::string header;
 		T* data;
-		Data(string header, T &data) {
+		Data(std::string header, T &data) {
 			this->header = header;
 			this->data = &data;
 		}
-		void PrintHeader(ofstream &ofs, const bool isFirst) {
+		void PrintHeader(std::ofstream &ofs, const bool isFirst) {
 			if (isFirst) {
 				ofs << header;
 			}
@@ -29,7 +27,7 @@ private:
 				ofs << "," << header;
 			}
 		}
-		void PrintData(ofstream &ofs, const bool isFirst) {
+		void PrintData(std::ofstream &ofs, const bool isFirst) {
 			if (isFirst) {
 				ofs << *data;
 			}
@@ -39,13 +37,13 @@ private:
 		}
 	};
 	
-	vector<shared_ptr<DataInterface>> dataList;
-	ofstream ofs;
+	std::vector<std::shared_ptr<DataInterface>> dataList;
+	std::ofstream ofs;
 public:
-	template<class T> void push_back(string str, T &data) {
-		dataList.push_back(shared_ptr<DataInterface>(new Data<T>(str,data)));
+	template<class T> void push_back(std::string str, T &data) {
+		dataList.push_back(std::shared_ptr<DataInterface>(new Data<T>(str,data)));
 	}
-	void Open(string fileName) {
+	void Open(std::string fileName) {
 		ofs.open(fileName);
 	}
 	~DataLogger() {
@@ -61,7 +59,7 @@ public:
 		{
 			dataList[i]->PrintHeader(ofs, false);
 		}
-		ofs << endl;
+		ofs << std::endl;
 	}
 
 	void PrintData() {
@@ -72,6 +70,6 @@ public:
 		{
 			dataList[i]->PrintData(ofs, false);
 		}
-		ofs << endl;
+		ofs << std::endl;
 	}
 };

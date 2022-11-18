@@ -65,7 +65,7 @@ bool ReadSharedMemory(DWORD size)
 	return TRUE;
 }
 
-void InitSetting(vector<vector<double>> course, Prm prm)
+void InitSetting(std::vector<std::vector<double>> course, Prm prm)
 {
 	for (int i = 0; i < cprm_num; i++)
 	{
@@ -124,21 +124,21 @@ void InitState(double init_u, double init_v, double init_theta, double init_vel,
 	shareddata->success = 0;
 }
 
-void Launch(vector<vector<double>> course, CourseSetting setting, Frenet frenet, double U_start, double U_end, int CourseNum)
+void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Frenet frenet, double U_start, double U_end, int CourseNum)
 {
 	if (!CreateSharedMemory(SHARED_MEMORY_NAME, SHARED_MEMORY_SIZE))
 	{
-		cout << "共有メモリの作成に失敗しました。\n";
+		std::cout << "共有メモリの作成に失敗しました。\n";
 	}
 
 	if (!InitializeSharedMemory())
 	{
-		cout << "共有メモリの初期化に失敗しました。\n";
+		std::cout << "共有メモリの初期化に失敗しました。\n";
 	}
 
 	if (!ReadSharedMemory(SHARED_MEMORY_SIZE))
 	{
-		cout << "共有メモリの読み取りに失敗しました。\n";
+		std::cout << "共有メモリの読み取りに失敗しました。\n";
 	}
 
 	//csv読み込み
@@ -260,7 +260,7 @@ void Launch(vector<vector<double>> course, CourseSetting setting, Frenet frenet,
 
 								//カウントインクリメント
 								logdata.sample_count++;
-								cout << "SampleNumber = " << logdata.sample_count << "\n" << endl;
+								std::cout << "SampleNumber = " << logdata.sample_count << "\n" << std::endl;
 							}
 						}
 					}
@@ -273,7 +273,7 @@ void Launch(vector<vector<double>> course, CourseSetting setting, Frenet frenet,
 	UnInitializeSharedMemory();
 }
 
-void SetFrenet(vector<vector<double>>& course, CourseSetting setting, Frenet& frenet)
+void SetFrenet(std::vector<std::vector<double>>& course, CourseSetting setting, Frenet& frenet)
 {
 	frenet.frenetlib.LoadPath(course[0], course[1], false);
 	frenet.frenetlib.OutputRho(course);
@@ -299,7 +299,7 @@ int main()
 {
 	CourseSetting setting;
 	GenCourse gencourse;
-	vector<vector<double>> course;
+	std::vector<std::vector<double>> course;
 	Frenet frenet;
 
 	int skip = 2; //何個目のコースからシミュレーションするか、0でオッケー

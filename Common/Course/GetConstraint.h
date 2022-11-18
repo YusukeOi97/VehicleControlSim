@@ -8,8 +8,8 @@ public:
 
 	getconstraint(int vsize);
 	void Init_Course(LinearInterporater& table);
-	void set_vector(LinearInterporater table, vector<double>& vec_x, vector<double>& vec_const, int row);
-	void GetConstraint(vector<double> u_future, vector<double> u_front_l, vector<double> u_front_r, vector<double> u_center_l, vector<double> u_center_r, vector<double> u_rear_l, vector<double> u_rear_r);
+	void set_vector(LinearInterporater table, std::vector<double>& vec_x, std::vector<double>& vec_const, int row);
+	void GetConstraint(std::vector<double> u_future, std::vector<double> u_front_l, std::vector<double> u_front_r, std::vector<double> u_center_l, std::vector<double> u_center_r, std::vector<double> u_rear_l, std::vector<double> u_rear_r);
 	void get_min_max(double u, double& v_min, double& v_max);
 	void get_rho(double u, double& rho);
 
@@ -47,14 +47,14 @@ inline void getconstraint::get_rho(double u, double& rho)
 	rho = table.GetLinearInterporation(0, u, 4);
 }
 
-inline void getconstraint::set_vector(LinearInterporater table, vector<double>& vec_x, vector<double>& vec_const, int row)
+inline void getconstraint::set_vector(LinearInterporater table, std::vector<double>& vec_x, std::vector<double>& vec_const, int row)
 {
 	for (int i = 0; i < vec_x.size(); ++i) {
 		vec_const.at(i) = table.GetLinearInterporation(0, vec_x.at(i), row);
 	}
 }
 
-inline void getconstraint::GetConstraint(vector<double> u_future, vector<double> u_front_l, vector<double> u_front_r, vector<double> u_center_l, vector<double> u_center_r, vector<double> u_rear_l, vector<double> u_rear_r)
+inline void getconstraint::GetConstraint(std::vector<double> u_future, std::vector<double> u_front_l, std::vector<double> u_front_r, std::vector<double> u_center_l, std::vector<double> u_center_r, std::vector<double> u_rear_l, std::vector<double> u_rear_r)
 {
 	set_vector(table, u_center_l, v_max, 1);
 	set_vector(table, u_center_r, v_min, 2);

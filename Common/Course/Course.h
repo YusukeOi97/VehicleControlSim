@@ -1,5 +1,4 @@
 #pragma once
-#define _HAS_STD_BYTE 0
 #define _USE_MATH_DEFINES
 #include <string>
 #include <vector>

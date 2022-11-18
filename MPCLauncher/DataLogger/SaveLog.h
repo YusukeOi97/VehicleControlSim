@@ -23,14 +23,14 @@ std::string CreateLogFileName(std::string str, std::string method, CourseSetting
 	std::string temp_filename = dire_path; 
 	
 #ifdef OA
-	string a = std::format("{}", setting.a);
-	string w = std::format("{}", setting.width_1);
-	string d = std::format("{}", setting.dist);
+	std::string a = std::format("{}", setting.a);
+	std::string w = std::format("{}", setting.width_1);
+	std::string d = std::format("{}", setting.dist);
 	std::string foldername = time + "a" + a + "w" + w + "d" + d + "p1" + setting.pos1 + "p2" + setting.pos2;
 #endif // OA
 #ifdef SINE
-	string cycle = std::format("{}", setting.cycle);
-	string ampl = std::format("{}", setting.ampl);
+	std::string cycle = std::format("{}", setting.cycle);
+	std::string ampl = std::format("{}", setting.ampl);
 	std::string foldername = time + "cycle" + cycle + "ampl" + ampl;
 #endif // SINE
 
