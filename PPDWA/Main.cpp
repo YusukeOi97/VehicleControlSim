@@ -58,9 +58,12 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
 		constraint.get_min_max(logdata.u + prm.dist_front, prm.v_max_front, prm.v_min_front);
 		constraint.get_rho(logdata.u, logdata.rho);
+		double v_min = max(prm.v_min, prm.v_min_front) + prm.width / 1.7;
+		double v_max = min(prm.v_max, prm.v_max_front) - prm.width / 1.7;
+		double delta_v = (v_max - v_min) / 4;
 
 		//vのループ
-		for (logdata.v = max(prm.v_min, prm.v_min_front) + prm.width / 1.7; logdata.v <= min(prm.v_max, prm.v_max_front) - prm.width / 1.7; logdata.v = logdata.v + prm.delta_v)
+		for (logdata.v = v_min; logdata.v <= v_max; logdata.v = logdata.v + delta_v)
 		{
 
 			//thetaのループ
