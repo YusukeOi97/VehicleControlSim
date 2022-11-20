@@ -58,14 +58,14 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
 		constraint.get_min_max(logdata.u + prm.dist_front, prm.v_max_front, prm.v_min_front);
 		constraint.get_rho(logdata.u, logdata.rho);
-		double v_min = max(prm.v_min, prm.v_min_front) + prm.width / 1.7;
-		double v_max = min(prm.v_max, prm.v_max_front) - prm.width / 1.7;
-		double delta_v = (v_max - v_min) / 4;
+		double v_min = max(prm.v_min, prm.v_min_front) + prm.width / 1.5;
+		double v_max = min(prm.v_max, prm.v_max_front) - prm.width / 1.5;
+		double delta_v = (v_max - v_min) / 3;
 
 		//vのループ
-		for (logdata.v = v_min; logdata.v <= v_max; logdata.v = logdata.v + delta_v)
+		for (int v = 0; v <= 3; v = v + 1)
 		{
-
+			logdata.v = v_min + v * delta_v;
 			//thetaのループ
 			for (logdata.theta = prm.theta_min; logdata.theta <= prm.theta_max; logdata.theta = logdata.theta + prm.delta_theta)
 			{
@@ -90,7 +90,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 							//tire_angleのループ
 							for (logdata.delta = prm.delta_min; logdata.delta <= prm.delta_max; logdata.delta = logdata.delta + prm.delta_delta)
 							{
-								if (logdata.x > 10)
+								if (logdata.x > 40)
 								{
 									//noiseを入れた場合の反復回数
 									for (size_t i = 0; i < prm.NoiseNum; i++)

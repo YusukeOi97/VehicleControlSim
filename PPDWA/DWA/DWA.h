@@ -20,10 +20,10 @@ public:
 	DWA(Frenet frenet, LinearInterporater table, Prm prm);
 
 private:
-	int Pred_step = 25;
+	int Pred_step = 40;
 
 	//Dynamic Window—p
-	double limit_vel = 1, limit_min_angvel = -0.3, limit_max_angvel = 0.3;
+	double limit_vel = 1, limit_min_angvel = -1.5, limit_max_angvel = 1.5;
 	//double tire_angle_min, tire_angle_max, temp_tire_angle_max = 0.8, delta_tire_angle = 0.01;
 	//double tire_angle_min, tire_angle_max, temp_tire_angle_max = 0.1, delta_tire_angle = 0.002; //áŠQ•¨‰ñ”ğ
 	//double angvel_min, angvel_max, angvel_range = 1.6, delta_delta = 0.02;
@@ -31,8 +31,8 @@ private:
 	//double angvel_min, angvel_max, angvel_range = 3.0, delta_delta = 0.06; //50ƒTƒ“ƒvƒ‹
 	//double angvel_min, angvel_max, angvel_range = 1, delta_delta = 0.001; //3000ƒTƒ“ƒvƒ‹
 	double max_acc = 1, max_angacc = 4; // val * 2 * T_delta / delta
-	double min_angvel, max_angvel, range_angvel, delta_angvel, SampNum_angvel = 20; //200ƒTƒ“ƒvƒ‹ r‚¢‚Ì‚Í0.01
-	double min_vel, max_vel, range_vel, delta_vel, SampNum_vel = 5;
+	double min_angvel, max_angvel, range_angvel, delta_angvel, SampNum_angvel = 15; //200ƒTƒ“ƒvƒ‹ r‚¢‚Ì‚Í0.01
+	double min_vel, max_vel, range_vel, delta_vel, SampNum_vel = 15;
 
 	//—\‘ªó‘Ô‚ğŠi”[
 	std::vector<std::vector<double>> u, v, theta, tire_ang, v_error;
@@ -45,7 +45,7 @@ private:
 	int SampleNum, SampleCount, SkipCount = 4;
 	std::vector<double> score_v, score_vel, score_theta, score_angvel, score_total, WOCollision;
 	double Max_score_v, Max_score_vel, Max_score_theta, Max_score_angvel; //For normalization
-	double K_v = 1, K_vel = 0.2, K_theta = 0.1, K_angvel = 0, AllCollision, Val, OptIdx;
+	double K_v = 1, K_vel = 0.4, K_theta = 0.1, K_angvel = 0, AllCollision, Val, OptIdx;
 
 	//To measure calculation time
 	LARGE_INTEGER freq, start, end;
