@@ -32,7 +32,7 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, double vel_ref)
 		noise.Make();
 		//ŽÔ—¼‚Ö‚Ì“ü—Í‚ðŒvŽZ
 		input_vel = pp.PID_vel_control(B_vel, vel_ref, prm.T_delta);
-		input_delta = pp.PP_steer_control(logdata.x_pp[i - 1] + noise.noise_x, logdata.y_pp[i - 1] + noise.noise_y, logdata.yaw_pp[i - 1] + noise.noise_yaw, B_vel, prm.Wheelbase, calc_time);
+		input_delta = pp.PP_steer_control(logdata.x_pp[i - 1] + noise.noise_u, logdata.y_pp[i - 1] + noise.noise_v, logdata.yaw_pp[i - 1] + noise.noise_theta, B_vel, prm.Wheelbase, calc_time);
 
 		//ŽÔ—¼‹““®‚ðŒvŽZ(DBM)
 		B_pre_vel = B_vel;
@@ -98,7 +98,7 @@ void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata)
 		noise.Make();
 		double u, v, theta;
 
-		dwa.DWA_control(logdata.x_dwa[i - 1] + noise.noise_x, logdata.y_dwa[i - 1] + noise.noise_y, logdata.yaw_dwa[i - 1] + noise.noise_yaw, B_vel, B_delta, vel_ref, ret, i);
+		dwa.DWA_control(logdata.x_dwa[i - 1] + noise.noise_u, logdata.y_dwa[i - 1] + noise.noise_v, logdata.yaw_dwa[i - 1] + noise.noise_theta, B_vel, B_delta, vel_ref, ret, i);
 		frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_dwa[i - 1], logdata.y_dwa[i - 1], logdata.yaw_dwa[i - 1], u, v, theta, frenet.Cache_f);
 
 		//ŽÔ—¼‹““®‚ðŒvŽZ(DBM)

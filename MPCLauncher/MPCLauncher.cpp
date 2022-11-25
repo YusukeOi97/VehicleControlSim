@@ -4,6 +4,7 @@
 #include <DataLogger/CopyParam.h>
 #include <DataLogger/SaveLog.h>
 #include <PrmLoader/MyParameters.h>
+#include <Course/GetConstraint.h>
 
 //Setting of shared memory
 constexpr auto SHARED_MEMORY_NAME = L"MySharedMemory";
@@ -122,6 +123,7 @@ void InitState(double init_u, double init_v, double init_theta, double init_vel,
 	shareddata->init_vel = init_vel;
 	shareddata->init_delta = init_delta;
 	shareddata->success = 0;
+	shareddata->first_access = false;
 }
 
 void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Frenet frenet, double U_start, double U_end, int CourseNum)
@@ -142,16 +144,16 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	}
 
 	//csv読み込み
-	RTCLib::CSVLoader CSV_prm("C:\\VehicleControlSim\\Commoc\\Prm_Setting\\parameter.csv", 1);
+	RTCLib::CSVLoader CSV_prm("C:\\MPCLauncher\\MPCLauncher\\Parameter_setting\\parameter.csv", 1);
 	Prm prm;
 	prm.Load_Prm(CSV_prm, 0);
 
 	LogData logdata;
-	getconstraint constraint(vsize);
+	getconstraint constraint(prm.MPCPreStep);
 
 	//線形補間用
 	LinearInterporater table;
-	table.GetCourse(course);
+	table.GetCourse_vector(course);
 	constraint.Init_Course(table);
 
 	//結果を出力するcsv
@@ -159,9 +161,9 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	DataLogger logger_Course;
 	//パラメータファイルコピー
 	SaveParam saveparam;
-	logger_MPC.Open(CreateLogFileName("data", "mpc_", setting));
-	logger_Course.Open(CreateLogFileName("data", "course_", setting));
-	saveparam.save_prm(CreateLogFileName("data", "prm_", setting));
+	logger_MPC.Open(CreateLogFileName("data", "mpc_", setting, prm.Method));
+	logger_Course.Open(CreateLogFileName("data", "course_", setting, prm.Method));
+	saveparam.save_prm(CreateLogFileName("data", "prm_", setting, prm.Method));
 	//ログの保存
 	SetData_MPC(logger_MPC, logdata, shareddata);
 	OutData_Course(logger_Course, course);
@@ -190,11 +192,14 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 		//vの上下限取得
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
 		constraint.get_min_max(logdata.u + prm.dist_front, prm.v_max_front, prm.v_min_front);
+		double v_min = max(prm.v_min, prm.v_min_front) + prm.width / 1.4;
+		double v_max = min(prm.v_max, prm.v_max_front) - prm.width / 1.4;
+		double delta_v = (v_max - v_min) / 3;
 
 		//vのループ
-		for (logdata.v = max(prm.v_min, prm.v_min_front) + prm.width / 1.5; logdata.v <= min(prm.v_max, prm.v_max_front) - prm.width / 1.5; logdata.v = logdata.v + prm.delta_v)
+		for (int v = 0; v <= 3; v = v + 1)
 		{
-
+			logdata.v = v_min + v * delta_v;
 			//thetaのループ
 			for (logdata.theta = prm.theta_min; logdata.theta <= prm.theta_max; logdata.theta = logdata.theta + prm.delta_theta)
 			{
@@ -216,21 +221,22 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 							//tire_angleのループ
 							for (logdata.delta = prm.delta_min; logdata.delta <= prm.delta_max; logdata.delta = logdata.delta + prm.delta_delta)
 							{
-								std::cout << "u = " << logdata.u << "\n" << std::endl;
-								std::cout << "x = " << logdata.x << "\n" << std::endl;
 
 								//コースの途中からデータ取得
 								if (CourseNum == 0)
 								{
-									if (logdata.x > 42)
+									if (logdata.x > 0)
 									{
 										//noiseを入れた場合の反復
 										for (int i = 0; i < prm.NoiseNum; i++)
 										{
 											shareddata->noise_count = i;
 											InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, logdata.delta);
- 											system(path);
-
+											while (shareddata->success == 0 && shareddata->first_access == false)
+											{
+												system(path);
+											}
+ 											
 											if (!ReadSharedMemory(SHARED_MEMORY_SIZE))
 											{
 												std::cout << "共有メモリの読み取りに失敗しました。\n";
@@ -260,7 +266,6 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 
 								//カウントインクリメント
 								logdata.sample_count++;
-								std::cout << "SampleNumber = " << logdata.sample_count << "\n" << std::endl;
 							}
 						}
 					}
@@ -275,12 +280,12 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 
 void SetFrenet(std::vector<std::vector<double>>& course, CourseSetting setting, Frenet& frenet)
 {
-	frenet.frenetlib.LoadPath(course[0], course[1], false);
+	frenet.frenetlib.LoadPath_vector(course[0], course[1], true);
 	frenet.frenetlib.OutputRho(course);
 
 #ifdef OA
 	Frenet frenet_oa;
-	frenet_oa.frenetlib.LoadPath(course[2], course[3], false);
+	frenet_oa.frenetlib.LoadPath_vector(course[2], course[3], true);
 	frenet_oa.frenetlib.OutputRho(course);
 #endif // OA
 
@@ -302,7 +307,7 @@ int main()
 	std::vector<std::vector<double>> course;
 	Frenet frenet;
 
-	int skip = 2; //何個目のコースからシミュレーションするか、0でオッケー
+	int skip = 0; //何個目のコースからシミュレーションするか、0でオッケーです
 	int count = 0;
 
 #ifdef OA
@@ -311,8 +316,8 @@ int main()
 	//double dist[1] = { 13 }; // 13 16 19
 	//int pos1[2] = { 1, 0 };
 
-	double a[2] = { 1.3, 2.5 };
-	double width[2] = { 0.6, 0.9 }; //0.5 0.7 0.9
+	double a[2] = { 1.3 };
+	double width[1] = { 1.05 }; //0.5 0.7 0.9
 	double dist[2] = { 13, 19 }; // 13 16 19
 	double U_start = 25;
 	double U_end = 80;

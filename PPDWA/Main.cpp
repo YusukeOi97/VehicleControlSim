@@ -14,7 +14,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 
 	//üŒ`•âŠÔ—p
 	LinearInterporater table;
-	table.GetCourse(course);
+	table.GetCourse_vector(course);
 
 	PP pp(table);
 	DWA dwa(frenet, table, prm);
@@ -126,12 +126,12 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 
 void SetFrenet(std::vector<std::vector<double>>& course, CourseSetting setting, Frenet& frenet)
 {
-	frenet.frenetlib.LoadPath(course[0], course[1], false);
+	frenet.frenetlib.LoadPath_vector(course[0], course[1], false);
 	frenet.frenetlib.OutputRho(course);
 
 #ifdef OA
 	Frenet frenet_oa;
-	frenet_oa.frenetlib.LoadPath(course[2], course[3], true);
+	frenet_oa.frenetlib.LoadPath_vector(course[2], course[3], true);
 	frenet_oa.frenetlib.OutputRho(course);
 #endif // OA
 

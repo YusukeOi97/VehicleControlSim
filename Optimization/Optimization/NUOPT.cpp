@@ -8,7 +8,7 @@
 #include "SystemInterface.h"
 #include "nuopt_exception.h"
 #include "throw_exception.h"
-#include <header_oi/Data.h>
+#include <header/Data.h>
 
 extern void solout();
 extern void clearSolout();
@@ -259,10 +259,10 @@ System_NUOPT::System_NUOPT()
 			smp_line(__LINE__, __FILE__); v_rear_r[k + 1] == v[k + 1] + dist_rear * sin(theta[k + 1] + M_PI + theta_rear);
 		}
 
-		smp_line(__LINE__, __FILE__); acc[Idx] >= -3, Idx;
-		smp_line(__LINE__, __FILE__); acc[Idx] <= 3.3, Idx;
-		smp_line(__LINE__, __FILE__); vel[Idx] >= 0, Idx;
-		smp_line(__LINE__, __FILE__); vel[Idx] <= vel_max[Idx], Idx;
+		//smp_line(__LINE__, __FILE__); acc[Idx] >= -3, Idx;
+		//smp_line(__LINE__, __FILE__); acc[Idx] <= 3.3, Idx;
+		//smp_line(__LINE__, __FILE__); vel[Idx] >= 0, Idx;
+		//smp_line(__LINE__, __FILE__); vel[Idx] <= vel_max[Idx], Idx;
 		smp_line(__LINE__, __FILE__); v_front_r[Idx] >= v_front_min[Idx], Idx;
 		smp_line(__LINE__, __FILE__); v_front_l[Idx] <= v_front_max[Idx], Idx;
 		smp_line(__LINE__, __FILE__); v_center_r[Idx] >= v_min[Idx], Idx;
@@ -270,12 +270,12 @@ System_NUOPT::System_NUOPT()
 		//smp_line(__LINE__, __FILE__); v_rear_r[Idx] >= v_rear_min[Idx], Idx;
 		//smp_line(__LINE__, __FILE__); v_rear_l[Idx] <= v_rear_max[Idx], Idx;
 
-		smp_line(__LINE__, __FILE__); delta[Idx] <= 1.0472, Idx;
-		smp_line(__LINE__, __FILE__); delta[Idx] >= -1.0472, Idx;
+		//smp_line(__LINE__, __FILE__); delta[Idx] <= 1.0472, Idx;
+		//smp_line(__LINE__, __FILE__); delta[Idx] >= -1.0472, Idx;
 		//smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 0.5, Idx;
 		//smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -0.5, Idx;
-		smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 0.15, Idx;
-		smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -0.15, Idx;
+		smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 30, Idx;
+		smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -30, Idx;
 
 
 		smp_line(__LINE__, __FILE__); Objective obj(type = minimize, name = "obj"); this->obj.setEntity(obj); obj.entryOutput();

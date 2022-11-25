@@ -8,7 +8,7 @@ class Noise
 public:
 	// ノイズ作成
 	void Make();
-	double noise_x, noise_y, noise_yaw;
+	double noise_u, noise_v, noise_theta;
 
 private:
 	//obseravation noise
@@ -34,11 +34,11 @@ inline void Noise::Make()
 	}
 
 	// ボックスミュラー法
-	noise_x = observationVariance_x * sqrt(-2.0 * log(num1)) * cos(2 * std::_Pi * num2);
-	noise_y = observationVariance_y * sqrt(-2.0 * log(num2)) * cos(2 * std::_Pi * num3);
-	noise_yaw = observationVariance_yaw * sqrt(-2.0 * log(num3)) * sin(2 * std::_Pi * num1);
+	noise_u = observationVariance_x * sqrt(-2.0 * log(num1)) * cos(2 * std::_Pi * num2);
+	noise_v = observationVariance_y * sqrt(-2.0 * log(num2)) * cos(2 * std::_Pi * num3);
+	noise_theta = observationVariance_yaw * sqrt(-2.0 * log(num3)) * sin(2 * std::_Pi * num1);
 
-	if (std::isnan(noise_x) || std::isnan(noise_y) || std::isnan(noise_yaw))
+	if (std::isnan(noise_u) || std::isnan(noise_v) || std::isnan(noise_theta))
 	{
 		std::cout << "nan" << std::endl;
 	}
