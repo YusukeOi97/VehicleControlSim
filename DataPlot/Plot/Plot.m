@@ -10,7 +10,7 @@ number = 1;
 Data_path = "C:\Data\IPM\Dataset\";
 
 %%%%IPM or SQP or DWA or PP
-Method = "IPM";
+Method = "PP";
 
 if Method == "IPM" || Method == "SQP"
     Idx_x = 2;
@@ -37,7 +37,7 @@ else
     Idx_lonjerk = 13;
     Idx_Pre = 13;
     Step = 70;
-    Skipcount = 10;
+    Skipcount = 50;
 end
 
 FolderInfo = dir(Data_path);

@@ -120,7 +120,7 @@ inline void GenCourse::sigmoid_obstacle()
 	for (size_t i = 0; i < course[0].size(); i++)
 	{
 		//First obstacle
-		if (course[0][i] >= 46 && course[0][i] <= 60)
+		if (course[0][i] >= 44 && course[0][i] <= 62)
 		{
 			if (csetting.pos1 == "lower") //Lower side
 			{
@@ -158,7 +158,7 @@ inline void GenCourse::sigmoid_obstacle()
 #ifdef twoobstacle
 	for (size_t i = 0; i < course[0].size(); i++)
 	{
-		if (course[0][i] >= 46 + csetting.dist && course[0][i] <= 60 + csetting.dist)
+		if (course[0][i] >= 44 + csetting.dist && course[0][i] <= 62 + csetting.dist)
 		{
 			if (csetting.pos2 == "lower")
 			{

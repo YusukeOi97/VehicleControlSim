@@ -23,16 +23,16 @@ private:
 	int Pred_step = 25;
 
 	//Dynamic Window用
-	double limit_vel = 1, limit_min_angvel = -0.3, limit_max_angvel = 0.3;
+	double limit_vel = 1, limit_min_angvel = -0.8, limit_max_angvel = 0.8;
 	//double tire_angle_min, tire_angle_max, temp_tire_angle_max = 0.8, delta_tire_angle = 0.01;
 	//double tire_angle_min, tire_angle_max, temp_tire_angle_max = 0.1, delta_tire_angle = 0.002; //障害物回避
 	//double angvel_min, angvel_max, angvel_range = 1.6, delta_delta = 0.02;
 	//double angvel_min, angvel_max, angvel_range = 3.0, delta_delta = 0.006; //500サンプル
 	//double angvel_min, angvel_max, angvel_range = 3.0, delta_delta = 0.06; //50サンプル
 	//double angvel_min, angvel_max, angvel_range = 1, delta_delta = 0.001; //3000サンプル
-	double max_acc = 1, max_angacc = 4; // val * 2 * T_delta / delta
-	double min_angvel, max_angvel, range_angvel, delta_angvel, SampNum_angvel = 20; //200サンプル 荒いのは0.01
-	double min_vel, max_vel, range_vel, delta_vel, SampNum_vel = 5;
+	double max_acc = 20, max_angacc = 8; // val * 2 * T_delta / delta
+	double min_angvel, max_angvel, range_angvel, delta_angvel, SampNum_angvel = 9; //200サンプル 荒いのは0.01
+	double min_vel, max_vel, range_vel, delta_vel, SampNum_vel = 9;
 
 	//予測状態を格納
 	std::vector<std::vector<double>> u, v, theta, tire_ang, v_error;
@@ -42,10 +42,10 @@ private:
 	double init_u, init_v, init_theta, init_vel, beta, u_dot, v_dot, theta_dot, Opt_angvel;
 
 	//Evaluation function
-	int SampleNum, SampleCount, SkipCount = 4;
+	int SampleNum, SampleCount, SkipCount = 1;
 	std::vector<double> score_v, score_vel, score_theta, score_angvel, score_total, WOCollision;
 	double Max_score_v, Max_score_vel, Max_score_theta, Max_score_angvel; //For normalization
-	double K_v = 1, K_vel = 0.2, K_theta = 0.1, K_angvel = 0, AllCollision, Val, OptIdx;
+	double K_v = 1, K_vel = 0.5, K_theta = 0, K_angvel = 0, AllCollision, Val, OptIdx;
 
 	//To measure calculation time
 	LARGE_INTEGER freq, start, end;

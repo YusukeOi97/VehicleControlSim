@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <stdexcept>
-#include <header_oi/Data.h>
+#include <header/Data.h>
 
 //目標点を探索するために使用
 struct Points_search

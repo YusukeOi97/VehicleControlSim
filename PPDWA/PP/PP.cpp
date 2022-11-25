@@ -22,7 +22,7 @@ double PP::PID_vel_control(double current, double target, double T_delta)
 	return (current + input_acc * T_delta);
 }
 
-double PP::PP_steer_control(double x, double y, double yaw, double vel, double Wheelbase, double& total_time)
+double PP::PP_steer_control(double x, double y, double yaw, double vel, double Wheelbase, double& calc_time)
 {
 	Lf = k * vel + Lfc; //calculate look ahead distance
 	rear_x = x - (Wheelbase / 2) * cos(yaw);
@@ -42,7 +42,7 @@ double PP::PP_steer_control(double x, double y, double yaw, double vel, double W
 	input_delta = atan2(2.0 * Wheelbase * sin(alpha) / Lf, 1.0);
 
 	QueryPerformanceCounter(&end);
-	total_time += (double)(end.QuadPart - start.QuadPart) / freq.QuadPart;
+	calc_time = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart;
 
 	return input_delta;
 }

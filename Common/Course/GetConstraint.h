@@ -2,7 +2,8 @@
 #include <vector>
 #include <Course/TableLinearInterporater.h>
 
-class getconstraint {
+class getconstraint
+{
 public:
 	std::vector<double> v_max, v_ref, v_min, vel_max, vel_ref, rho, v_front_min, v_front_max, v_rear_max, v_rear_min; //u, v -> frenet coordinateAvel -> velocity
 

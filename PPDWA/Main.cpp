@@ -14,7 +14,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 
 	//線形補間用
 	LinearInterporater table;
-	table.GetCourse(course);
+	table.GetCourse_vector(course);
 
 	PP pp(table);
 	DWA dwa(frenet, table, prm);
@@ -58,14 +58,14 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
 		constraint.get_min_max(logdata.u + prm.dist_front, prm.v_max_front, prm.v_min_front);
 		constraint.get_rho(logdata.u, logdata.rho);
-		double v_min = max(prm.v_min, prm.v_min_front) + prm.width / 1.7;
-		double v_max = min(prm.v_max, prm.v_max_front) - prm.width / 1.7;
-		double delta_v = (v_max - v_min) / 4;
+		double v_min = max(prm.v_min, prm.v_min_front) + prm.width / 1.4;
+		double v_max = min(prm.v_max, prm.v_max_front) - prm.width / 1.4;
+		double delta_v = (v_max - v_min) / 3;
 
 		//vのループ
-		for (logdata.v = v_min; logdata.v <= v_max; logdata.v = logdata.v + delta_v)
+		for (int v = 0; v <= 3; v = v + 1)
 		{
-
+			logdata.v = v_min + v * delta_v;
 			//thetaのループ
 			for (logdata.theta = prm.theta_min; logdata.theta <= prm.theta_max; logdata.theta = logdata.theta + prm.delta_theta)
 			{
@@ -90,7 +90,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 							//tire_angleのループ
 							for (logdata.delta = prm.delta_min; logdata.delta <= prm.delta_max; logdata.delta = logdata.delta + prm.delta_delta)
 							{
-								if (logdata.x > 10)
+								if (logdata.x > 0)
 								{
 									//noiseを入れた場合の反復回数
 									for (size_t i = 0; i < prm.NoiseNum; i++)
@@ -126,12 +126,12 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 
 void SetFrenet(std::vector<std::vector<double>>& course, CourseSetting setting, Frenet& frenet)
 {
-	frenet.frenetlib.LoadPath(course[0], course[1], false);
+	frenet.frenetlib.LoadPath_vector(course[0], course[1], false);
 	frenet.frenetlib.OutputRho(course);
 
 #ifdef OA
 	Frenet frenet_oa;
-	frenet_oa.frenetlib.LoadPath(course[2], course[3], true);
+	frenet_oa.frenetlib.LoadPath_vector(course[2], course[3], true);
 	frenet_oa.frenetlib.OutputRho(course);
 #endif // OA
 
@@ -158,7 +158,7 @@ int main()
 
 #ifdef OA
 	double a[2] = { 1.3, 2.5 };
-	double width[2] = { 0.6, 0.9 }; //0.5 0.7 0.9 0.6 0.8 1.0
+	double width[3] = { 0.45, 0.75, 1.05 }; //0.5 0.7 0.9 0.6 0.8 1.0
 	double dist[2] = { 13, 19 }; // 13 16 19
 
 	//double a[2] = { 1.3, 2.5 };

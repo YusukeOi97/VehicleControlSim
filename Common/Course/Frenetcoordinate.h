@@ -154,13 +154,20 @@ public:
 	double length;
 	size_t size;
 
-	void LoadPath(std::vector<double> ref_x, std::vector<double> ref_y, bool bLoop)
+	void LoadPath_vector(std::vector<double> ref_x, std::vector<double> ref_y, bool bLoop)
 	{
 		isLooping = bLoop;
-		setXY(ref_x, ref_y);
+		setXY_vector(ref_x, ref_y);
 		compute_aux();
 		WritePath(std::ofstream("Path/resampled_path.csv"));
 		OutputLaneForDebug("Path/detailed_path.csv");
+	}
+
+	void LoadPath(double *ref_x, double *ref_y, int csize, bool bLoop)
+	{
+		isLooping = bLoop;
+		setXY(ref_x, ref_y, csize);
+		compute_aux();
 	}
 
 	// ---------------------------------  coordinate conversion
@@ -318,12 +325,23 @@ public:
 
 
 private:
-	inline void setXY(std::vector<double> ref_x, std::vector<double> ref_y)
+	inline void setXY_vector(std::vector<double> ref_x, std::vector<double> ref_y)
 	{
 		points.resize(ref_x.size());
 		for (size_t i = 0; i < ref_x.size(); i++)
 		{
 
+			points[i].pos.x() = ref_x[i];
+			points[i].pos.y() = ref_y[i];
+		}
+		size = points.size();
+	}
+
+	inline void setXY(double ref_x[], double ref_y[], int csize)
+	{
+		points.resize(csize);
+		for (size_t i = 0; i < csize; i++)
+		{
 			points[i].pos.x() = ref_x[i];
 			points[i].pos.y() = ref_y[i];
 		}
