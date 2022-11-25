@@ -12,7 +12,7 @@ constexpr auto SHARED_MEMORY_SIZE = 8 * 6500;
 static HANDLE hSharedMemory = NULL;
 SharedData* shareddata;
 
-char path[] = "\"C:\\MPCOptimization\\x64\\Release\\MPCOptimization.exe\"";
+char path[] = "\"C:\\VehicleControlSim\\Optimization\\Outputfiles\\x64\\Release\\exe\\Optimization.exe\"";
 
 bool CreateSharedMemory(const wchar_t* sharedMemoryName, DWORD size)
 {
@@ -144,7 +144,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	}
 
 	//csvì«Ç›çûÇ›
-	RTCLib::CSVLoader CSV_prm("C:\\MPCLauncher\\MPCLauncher\\Parameter_setting\\parameter.csv", 1);
+	RTCLib::CSVLoader CSV_prm("C:\\VehicleControlSim\\Common\\Prm_Setting\\parameter.csv", 1);
 	Prm prm;
 	prm.Load_Prm(CSV_prm, 0);
 
