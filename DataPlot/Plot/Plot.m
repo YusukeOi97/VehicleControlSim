@@ -6,11 +6,11 @@ addpath('lib');
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
 WhichAnalyze = "t";
-number = 12;
-Data_path = "C:\Data\1119\";
+number = 1;
+Data_path = "C:\Data\1125\";
 
 %%%%IPM or SQP or DWA or PP
-Method = "DWA";
+Method = "PP";
 
 if Method == "IPM" || Method == "SQP"
     Idx_x = 2;
@@ -24,7 +24,7 @@ if Method == "IPM" || Method == "SQP"
     Idx_lonjerk = 26;
     Idx_Pre = 26;
     Step = 70;
-    Skipcount = 1;
+    Skipcount = 2;
 else
     Idx_x = 2;
     Idx_y = 3;
@@ -37,7 +37,7 @@ else
     Idx_lonjerk = 13;
     Idx_Pre = 13;
     Step = 70;
-    Skipcount = 1;
+    Skipcount = 50;
 end
 
 FolderInfo = dir(Data_path);

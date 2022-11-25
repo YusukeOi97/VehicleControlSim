@@ -22,7 +22,7 @@ private:
 	//parameters for speed control
 	double Kp = 5.0, Ki = 1.0, Kd = 1.0, e = 0.0, prev_e = 0.0, de = 0.0, ie = 0.0;
 	//parameters for steer control
-	double k = 2; //look forward gain
+	double k = 1.5; //look forward gain
 	double Lfc = 0; //look ahead distance
 	double Lf = 0.0; //look ahead distance
 
