@@ -3,11 +3,10 @@
 #include <time.h>
 #include <direct.h>
 #include <header/Data.h>
-#include <Course/GetConstraint.h>
-#include "setting.h"
+#include <setting.h>
 #include <format>
 
-std::string CreateLogFileName(std::string str, std::string method, CourseSetting setting) 
+std::string CreateLogFileName(std::string str, std::string outdata, CourseSetting setting, int method) 
 {
 	time_t t = time(NULL);
 	struct tm local;
@@ -18,7 +17,15 @@ std::string CreateLogFileName(std::string str, std::string method, CourseSetting
 	strftime(buf2, sizeof(buf2), "%H%M_%S", &local);
 	std::string day = buf1;
 	std::string time = buf2;
-	std::string dire_path = "C:\\Data\\SQP\\" + day; //パス
+	std::string dire_path = "C:\\Data\\";
+	if (method == 0)
+	{
+		dire_path += "SQP\\" + day; //パス
+	}
+	else
+	{
+		dire_path += "IPM\\" + day; //パス
+	}
 	std::string temp_csv = ".csv"; //拡張子
 	std::string temp_filename = dire_path; 
 	
@@ -29,12 +36,12 @@ std::string CreateLogFileName(std::string str, std::string method, CourseSetting
 	std::string foldername = time + "a" + a + "w" + w + "d" + d + "p1" + setting.pos1 + "p2" + setting.pos2;
 #endif // OA
 #ifdef SINE
-	std::string cycle = std::format("{}", setting.cycle);
-	std::string ampl = std::format("{}", setting.ampl);
+	string cycle = std::format("{}", setting.cycle);
+	string ampl = std::format("{}", setting.ampl);
 	std::string foldername = time + "cycle" + cycle + "ampl" + ampl;
 #endif // SINE
 
-	temp_filename += "\\" + foldername + "\\" + method + str;
+	temp_filename += "\\" + foldername + "\\" + outdata + str;
 	temp_filename += ".csv";
 
 	std::string dire_today = dire_path + "\\" + foldername;

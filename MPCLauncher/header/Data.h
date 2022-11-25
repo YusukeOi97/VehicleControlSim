@@ -7,13 +7,14 @@ const int vsize = 70; //状態ベクトルのサイズ
 struct SharedData
 {
 	double course[cprm_num][csize]; //コースデータを保存する配列
-	int error_code, iters, fevals, sim_step, method, success, noise_count; //1,2,3番目->nuoptマニュアル参照、sim_step->MPCを実行するステップ数、method->IPM or SQP、success->プログラム強制終了の場合は0、noise_count->ノイズありで同じ初期状態に対して繰り返す回数
+	int error_code, iters, fevals, sim_step, method, success, noise_count, first_access; //1,2,3番目->nuoptマニュアル参照、sim_step->MPCを実行するステップ数、method->IPM or SQP、success->プログラム強制終了の場合は0、noise_count->ノイズありで同じ初期状態に対して繰り返す回数
 	double T_delta, eps, elapse_time, optValue, tolerance, residual, average_lateral_jerk, average_longitudinal_jerk; //2,3,4,5,6番目->マニュアル参照、average_jerk->乗り心地の指標
 
 	double init_u, init_v, init_x, init_y, init_theta, init_vel, init_delta;
 	double v_ref[vsize], v_max[vsize], v_min[vsize], vel_ref[vsize], vel_max[vsize], rho[vsize], front_v_max[vsize], front_v_min[vsize];
 	double u[vsize], vel[vsize], acc[vsize], v[vsize], v_dot[vsize], v_2dot[vsize], theta[vsize], theta_dot[vsize], theta_2dot[vsize], delta[vsize], delta_dot[vsize], front_u[vsize], lateral_G[vsize], lateral_jerk[vsize], longitudinal_jerk[vsize];
 	double x[vsize], y[vsize], yaw[vsize];
+	double noise_u, noise_v, noise_theta;
 
 	double l_f, l_r, width, dist_front, dist_rear, theta_front, theta_rear; //dist_front->フロントオーバーハングを考慮したときの左右の頂点と重心との距離、theta_front, theta_rear->左右頂点と重心間の線分と軸との角度
 	double a11, a12, a21, a22, b1, b2; //DBMにおける係数
@@ -54,7 +55,7 @@ inline void LogData::SetInit_OneSim()
 {
 	//One simulation
 	u = 35;
-	v = 0.8;
+	v = 0.2;
 	theta = 0.05;
 	v_dot = 0;
 	theta_dot = -0.0;

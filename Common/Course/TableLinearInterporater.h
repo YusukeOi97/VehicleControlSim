@@ -22,7 +22,7 @@ private:
 
 public:
 
-	void GetCourse(std::vector<std::vector<double>> course)
+	void GetCourse_vector(std::vector<std::vector<double>> course)
 	{
 		c_data.resize(7);
 		for (size_t i = 0; i < c_data.size(); i++)
@@ -31,6 +31,28 @@ public:
 		}
 
 		for (size_t i = 0; i < course[0].size(); i++)
+		{
+			c_data[0][i] = course[2][i]; //u
+			c_data[1][i] = course[5][i]; //v_max
+			c_data[2][i] = course[4][i]; //v_min
+			c_data[3][i] = course[3][i]; //v
+			c_data[4][i] = course[10][i]; //rho
+			c_data[5][i] = course[0][i]; //x
+			c_data[6][i] = course[1][i]; //y
+		}
+		i_prev_index = 0;
+		i_prev_index_pp = 0;
+	}
+
+	void GetCourse(double course[][400], int csize)
+	{
+		c_data.resize(7);
+		for (size_t i = 0; i < c_data.size(); i++)
+		{
+			c_data[i].resize(csize);
+		}
+
+		for (size_t i = 0; i < csize; i++)
 		{
 			c_data[0][i] = course[2][i]; //u
 			c_data[1][i] = course[5][i]; //v_max

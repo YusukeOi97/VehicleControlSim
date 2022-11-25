@@ -1,11 +1,9 @@
-#include <iostream>
 #include "MyOptimization.h"
 #include <Optimization/NUOPT.h>
 
 //nuoptがdefineしているので無効化
 #undef Zero
-
-#pragma once
+//#pragma once
 
 ///////////// NUOPT Problem ////////////////
 class VariableDumper
@@ -162,6 +160,9 @@ void MyProblem::InitState(SharedData* shareddata)
 		theta_2dot[i] = 0;
 		delta[i] = 0;
 	}
+
+	noise_count = shareddata->noise_count;
+	sim_step = shareddata->sim_step;
 }
 
 void MyProblem::SetFront_u()
@@ -346,7 +347,6 @@ void MyProblem::Solve(int noise_count, int i, int step)
 	if (method == 0)
 	{
 		options.method = "tsqp";  //信頼領域に基づく逐次二次計画法
-		options.maxtim = 0.1;
 	}
 	else
 	{
@@ -366,7 +366,7 @@ void MyProblem::Solve(int noise_count, int i, int step)
 
 	options.outputMode = "silent"; //on->標準出力抑制
 	options.outfilename = "_NULL_";
-	options.iisDetect = "off";
+	options.iisDetect = "off";	//191112 kanada 実行不可能の原因を探らない
 	//showSystem();
 	if (noise_count == 0 && i == step - 1)
 	{
@@ -380,8 +380,13 @@ void MyProblem::Solve(int noise_count, int i, int step)
 	}
 	catch (...)
 	{
-		cout << "失敗" << endl;
+		printf("失敗");
 	}
+}
+
+void MyProblem::GetOptResult()
+{
+	System_NUOPT* m = ((System_NUOPT*)model.get());
 
 	VariableDumper u(m->u.val);
 	u.SetData();
@@ -457,7 +462,6 @@ void MyProblem::Solve(int noise_count, int i, int step)
 	this->tolerance = result.tolerance;
 	this->residual = result.residual;
 
-
 	//jerk求める用
 	average_lateral_jerk = 0;
 	average_longitudinal_jerk = 0;
@@ -467,12 +471,12 @@ void MyProblem::Solve(int noise_count, int i, int step)
 		B_y_2dot = this->v_2dot[i] - this->vel[i] * this->theta_dot[i] - this->acc[i] * this->theta[i];
 		lateral_G[i] = B_y_2dot;
 	}
-	for (int i = 1; i < rcd_horizon - 1; i++)
+	for (int j = 1; j < rcd_horizon - 1; j++)
 	{
-		lateral_jerk[i] = (lateral_G[i + 1] - lateral_G[i - 1]) / (2 * T_delta);
-		longitudinal_jerk[i] = (this->acc[i + 1] - this->acc[i - 1]) / (2 * T_delta);
-		average_lateral_jerk += abs(lateral_jerk[i]);
-		average_longitudinal_jerk += abs(longitudinal_jerk[i]);
+		lateral_jerk[j] = (lateral_G[j + 1] - lateral_G[j - 1]) / (2 * T_delta);
+		longitudinal_jerk[j] = (this->acc[j + 1] - this->acc[j - 1]) / (2 * T_delta);
+		average_lateral_jerk += abs(lateral_jerk[j]);
+		average_longitudinal_jerk += abs(longitudinal_jerk[j]);
 	}
 
 	average_lateral_jerk = average_lateral_jerk / (rcd_horizon - 2);
