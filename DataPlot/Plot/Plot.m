@@ -5,9 +5,9 @@ addpath('lib');
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
-WhichAnalyze = "t";
+WhichAnalyze = "c";
 number = 1;
-Data_path = "C:\Data\1125\";
+Data_path = "C:\Data\IPM\Dataset\";
 
 %%%%IPM or SQP or DWA or PP
 Method = "PP";
@@ -24,7 +24,7 @@ if Method == "IPM" || Method == "SQP"
     Idx_lonjerk = 26;
     Idx_Pre = 26;
     Step = 70;
-    Skipcount = 2;
+    Skipcount = 5;
 else
     Idx_x = 2;
     Idx_y = 3;
