@@ -225,7 +225,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 								//コースの途中からデータ取得
 								if (CourseNum == 0)
 								{
-									if (logdata.x > 0)
+									if (logdata.x > 30)
 									{
 										//noiseを入れた場合の反復
 										for (int i = 0; i < prm.NoiseNum; i++)
