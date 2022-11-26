@@ -316,7 +316,7 @@ int main()
 	//double dist[1] = { 13 }; // 13 16 19
 	//int pos1[2] = { 1, 0 };
 
-	double a[2] = { 1.3 };
+	double a[1] = { 1.3 };
 	double width[1] = { 1.05 }; //0.5 0.7 0.9
 	double dist[2] = { 13, 19 }; // 13 16 19
 	double U_start = 25;

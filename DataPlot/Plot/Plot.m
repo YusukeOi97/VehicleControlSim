@@ -5,12 +5,12 @@ addpath('lib');
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
-WhichAnalyze = "c";
-number = 1;
-Data_path = "C:\Data\IPM\Dataset\";
+WhichAnalyze = "p";
+number = 2;
+Data_path = "C:\Data\SQP\1126\";
 
 %%%%IPM or SQP or DWA or PP
-Method = "PP";
+Method = "SQP";
 
 if Method == "IPM" || Method == "SQP"
     Idx_x = 2;
