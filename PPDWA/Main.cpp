@@ -10,16 +10,16 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	RTCLib::CSVLoader CSV_prm("C:\\VehicleControlSim\\Common\\Prm_Setting\\parameter.csv", 1);
 	Prm prm;
 	prm.Load_Prm(CSV_prm, 0);
-	LogData logdata(prm.SimStep);
+	LogData logdata(prm.MPCPreStep);
 
 	//線形補間用
 	LinearInterporater table;
 	table.GetCourse_vector(course);
 
-	PP pp(table);
+	PP pp(table, prm);
 	DWA dwa(frenet, table, prm);
 	Vehicle_Sim sim(frenet, table, prm);
-	getconstraint constraint(prm.SimStep);
+	getconstraint constraint(prm.PPDWASimStep);
 	constraint.Init_Course(table);
 
 	//結果を出力するcsv
@@ -33,8 +33,8 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	logger_Course.Open(CreateLogFileName("data", "course_", setting));
 	saveparam.save_prm(CreateLogFileName("data", "prm", setting));
 	//ログの保存
-	SetData_PP(logger_PP, constraint, logdata, prm.SimStep);
-	SetData_DWA(logger_DWA, constraint, logdata, prm.SimStep);
+	SetData_PP(logger_PP, constraint, logdata, prm.PPDWASimStep);
+	SetData_DWA(logger_DWA, constraint, logdata, prm.PPDWASimStep);
 	OutData_Course(logger_Course, course);
 
 #ifdef OneShotTest
