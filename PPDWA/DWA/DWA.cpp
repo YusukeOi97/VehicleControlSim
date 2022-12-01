@@ -25,7 +25,7 @@ DWA::DWA(Frenet frenet, LinearInterporater table, Prm prm)
 	SmpNum_angvel = prm.smp_angvel;
 	delta_vel = 2 * range_vel / SmpNum_vel;
 	delta_angvel = 2 * range_angvel / SmpNum_angvel;
-	SmpNum = (2 * range_vel / delta_vel + 1) * (2 * range_angvel / delta_angvel + 1);
+	SmpNum = (SmpNum_vel + 1) * (SmpNum_angvel + 1);
 	K_v = prm.K_v;
 	K_vel = prm.K_vel;
 	K_theta = prm.K_theta;
@@ -79,6 +79,10 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 				theta_dot = vel[SmpCount] * sin(beta) / l_r - vel[SmpCount] * rho[i - 1] * cos(theta[SmpCount][i - 1] + beta) / (1 - rho[i - 1] * v[SmpCount][i - 1]);
 				theta[SmpCount][i] = theta[SmpCount][i - 1] + theta_dot * T_delta;
 				tire_ang[SmpCount][i] = tire_ang[SmpCount][i - 1] + Angvel * T_delta;
+				if (u[SmpCount][i] > 120)
+				{
+					u[SmpCount][i] = 120;
+				}
 			}
 
 			for (int i = 0; i < DWAPreStep; i++)

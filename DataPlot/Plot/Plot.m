@@ -6,9 +6,9 @@ addpath('lib');
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
 WhichAnalyze = "p";
-number = 17;
+number = 24;
 Data_path = "C:\Data\1130\";
-
+conv
 %%%%IPM or SQP or DWA or PP
 Method = "DWA";
 
@@ -37,7 +37,7 @@ else
     Idx_lonjerk = 13;
     Idx_Pre = 13;
     Step = 70;
-    Skipcount = 15;
+    Skipcount = 5;
 end
 
 FolderInfo = dir(Data_path);

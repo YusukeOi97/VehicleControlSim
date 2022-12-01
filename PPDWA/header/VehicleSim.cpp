@@ -188,29 +188,29 @@ bool Vehicle_Sim::Check(std::vector<double> x, std::vector<double> y, std::vecto
 				}
 				Ret = SideCheck("right", side);
 
-				if (Ret)
-				{
-					//ç∂å„
-					for (int i = 0; i < SimStep; i++)
-					{
-						side[i].x = x[i] + prm.dist_rear * cos(yaw[i] + M_PI - prm.theta_rear);
-						side[i].y = y[i] + prm.dist_rear * sin(yaw[i] + M_PI - prm.theta_rear);
-						side[i].yaw = yaw[i];
-					}
-					Ret = SideCheck("left", side);
+				//if (Ret)
+				//{
+				//	//ç∂å„
+				//	for (int i = 0; i < SimStep; i++)
+				//	{
+				//		side[i].x = x[i] + prm.dist_rear * cos(yaw[i] + M_PI - prm.theta_rear);
+				//		side[i].y = y[i] + prm.dist_rear * sin(yaw[i] + M_PI - prm.theta_rear);
+				//		side[i].yaw = yaw[i];
+				//	}
+				//	Ret = SideCheck("left", side);
 
-					if (Ret)
-					{
-						//âEå„
-						for (int i = 0; i < SimStep; i++)
-						{
-							side[i].x = x[i] + prm.dist_rear * cos(yaw[i] + M_PI + prm.theta_rear);
-							side[i].y = y[i] + prm.dist_rear * sin(yaw[i] + M_PI + prm.theta_rear);
-							side[i].yaw = yaw[i];
-						}
-						Ret = SideCheck("right", side);
-					}
-				}
+				//	if (Ret)
+				//	{
+				//		//âEå„
+				//		for (int i = 0; i < SimStep; i++)
+				//		{
+				//			side[i].x = x[i] + prm.dist_rear * cos(yaw[i] + M_PI + prm.theta_rear);
+				//			side[i].y = y[i] + prm.dist_rear * sin(yaw[i] + M_PI + prm.theta_rear);
+				//			side[i].yaw = yaw[i];
+				//		}
+				//		Ret = SideCheck("right", side);
+				//	}
+				//}
 			}
 		}
 	}

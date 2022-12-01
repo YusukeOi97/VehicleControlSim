@@ -24,8 +24,9 @@ private:
 
 	//Dynamic Window—p
 	double limit_vel, limit_min_angvel, limit_max_angvel;
-	double min_vel, max_vel, range_vel, delta_vel, SmpNum_vel;
-	double min_angvel, max_angvel, range_angvel, delta_angvel, SmpNum_angvel; //200ƒTƒ“ƒvƒ‹ r‚¢‚Ì‚Í0.01
+	double min_vel, max_vel, range_vel, delta_vel;
+	double min_angvel, max_angvel, range_angvel, delta_angvel; //200ƒTƒ“ƒvƒ‹ r‚¢‚Ì‚Í0.01
+	int SmpNum_vel, SmpNum_angvel;
 	
 	//—\‘ªó‘Ô‚ğŠi”[
 	std::vector<std::vector<double>> u, v, theta, tire_ang, v_error;
