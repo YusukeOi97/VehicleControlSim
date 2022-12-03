@@ -243,6 +243,7 @@ System_NUOPT::System_NUOPT()
 		{
 			smp_line(__LINE__, __FILE__); vel[k + 1] == vel[k] + acc[k] * T_delta;
 			smp_line(__LINE__, __FILE__); V_inv[k] == 1 / (vel[k] + log(1 + exp(-2 * vel[k])));
+			//smp_line(__LINE__, __FILE__); V_inv[k] == 1 / (vel[k] + 0.0000001);
 			smp_line(__LINE__, __FILE__); u[k + 1] == u[k] + vel[k] * T_delta;
 			smp_line(__LINE__, __FILE__); v_2dot[k] == -a11 * v_dot[k] * V_inv[k] + (a11 + acc[k]) * theta[k] + a12 * theta_dot[k] * V_inv[k] + b1 * delta[k] + (a12 - vel[k] * vel[k]) * Rho[k];
 			smp_line(__LINE__, __FILE__); v_dot[k + 1] == v_dot[k] + v_2dot[k] * T_delta;

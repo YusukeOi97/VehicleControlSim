@@ -27,12 +27,13 @@ function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, I
             y = data(i + 1, Idx_y);
             yaw = data(i + 1, Idx_yaw);
             vel = data(i + 1, Idx_vel);
-            if yaw < -0.05
+            th_yaw = 0.1;
+            if yaw < -th_yaw
                 y = y - 0.16;
-            elseif yaw > -0.05 && yaw < 0
+            elseif yaw > -th_yaw && yaw < 0
                 y = y - 0.08;
             elseif yaw == 0
-            elseif yaw > 0 && yaw < 0.05
+            elseif yaw > 0 && yaw < th_yaw
                 y = y + 0.08;
             else
                 y = y + 0.16;

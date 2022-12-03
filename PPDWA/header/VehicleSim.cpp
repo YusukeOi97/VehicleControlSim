@@ -32,7 +32,14 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, double vel_ref)
 		//ƒmƒCƒY‚ğì¬
 		noise.Make();
 		//Ô—¼‚Ö‚Ì“ü—Í‚ğŒvZ
-		pp.calc_inp(logdata.x_pp[i - 1] + noise.noise_u, logdata.y_pp[i - 1] + noise.noise_v, logdata.yaw_pp[i - 1] + noise.noise_theta, B_vel, vel_ref, ret);
+		if (i < 4)
+		{
+			pp.calc_inp(logdata.x_pp[i - 1] + noise.noise_u, logdata.y_pp[i - 1] + noise.noise_v, logdata.yaw_pp[i - 1] + noise.noise_theta, B_vel, vel_ref, ret);
+		}
+		else
+		{
+			pp.calc_inp(logdata.x_pp[i - 1], logdata.y_pp[i - 1], logdata.yaw_pp[i - 1], B_vel, vel_ref, ret);
+		}
 
 		//Ô—¼‹““®‚ğŒvZ(DBM)
 		B_pre_vel = B_vel;
@@ -98,7 +105,14 @@ void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata)
 		noise.Make();
 		double u, v, theta;
 
-		dwa.Calc_inp(logdata.x_dwa[i - 1] + noise.noise_u, logdata.y_dwa[i - 1] + noise.noise_v, logdata.yaw_dwa[i - 1] + noise.noise_theta, B_vel, B_delta, vel_ref, ret, i);
+		if (i < 4)
+		{
+			dwa.Calc_inp(logdata.x_dwa[i - 1] + noise.noise_u, logdata.y_dwa[i - 1] + noise.noise_v, logdata.yaw_dwa[i - 1] + noise.noise_theta, B_vel, B_delta, vel_ref, ret, i);
+		}
+		else
+		{
+			dwa.Calc_inp(logdata.x_dwa[i - 1], logdata.y_dwa[i - 1], logdata.yaw_dwa[i - 1], B_vel, B_delta, vel_ref, ret, i);
+		}
 		frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_dwa[i - 1], logdata.y_dwa[i - 1], logdata.yaw_dwa[i - 1], u, v, theta, frenet.Cache_f);
 
 		//Ô—¼‹““®‚ğŒvZ(DBM)

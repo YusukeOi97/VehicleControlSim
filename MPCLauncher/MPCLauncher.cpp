@@ -230,11 +230,24 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 										//noise‚ğ“ü‚ê‚½ê‡‚Ì”½•œ
 										for (int i = 0; i < prm.NoiseNum; i++)
 										{
+											int falsecount = 0;
 											shareddata->noise_count = i;
 											InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, logdata.delta);
+									/*		if (logdata.theta == 0)
+											{
+												while (shareddata->success == 0 && shareddata->first_access == false)
+												{
+													system(path);
+												}
+											}*/
 											while (shareddata->success == 0 && shareddata->first_access == false)
 											{
 												system(path);
+												falsecount++;
+												if (falsecount > 4)
+												{
+													break;
+												}
 											}
  											
 											if (!ReadSharedMemory(SHARED_MEMORY_SIZE))

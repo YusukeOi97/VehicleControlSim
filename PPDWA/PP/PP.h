@@ -20,7 +20,7 @@ private:
 	double R;
 	double targetpoint[2] = { 0, 0 };
 	double rear_x, rear_y; //Œã—Ö’†S‚ÌÀ•W
-	double k = 1.5; //look forward gain
+	double k = 1.3; //look forward gain
 	double Lfc = 0; //look ahead distance
 	double Lf = 0.0; //look ahead distance
 

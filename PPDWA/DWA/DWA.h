@@ -36,10 +36,12 @@ private:
 	double init_u, init_v, init_theta, init_vel, beta, u_dot, v_dot, theta_dot, Opt_angvel;
 
 	//Evaluation function
-	int SmpNum, SmpCount, SkipCount = 1;
-	std::vector<double> score_v, score_vel, score_theta, score_angvel, score_total, WOCollision;
+	int SmpNum, SmpCount, OptIdx, SkipCount = 1;
+	std::vector<double> score_v, score_vel, score_theta, score_angvel, score_total;
+	std::vector<bool> WOCollision;
 	double Max_score_v, Max_score_vel, Max_score_theta, Max_score_angvel; //For normalization
-	double K_v, K_vel, K_theta, K_angvel, AllCollision, Val, OptIdx;
+	double K_v, K_vel, K_theta, K_angvel, Val;
+	bool AllCollision;
 
 	//Other parameter
 	double T_delta;
@@ -55,7 +57,7 @@ private:
 	void SetRho(int SimIdx, double init_u, double init_vel);
 	void InitState(double init_tire_ang, double init_vel, double init_angvel);
 	bool Check();
-	bool AllColCheck(std::vector<double> collision);
+	bool AllColCheck(std::vector<bool> collision);
 	void SetPreState();
 	bool SideCheck(std::string Side, std::vector<SidePoint> sidepoint);
 };

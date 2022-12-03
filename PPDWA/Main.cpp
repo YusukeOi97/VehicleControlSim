@@ -156,9 +156,9 @@ int main()
 	int count = 0;
 
 #ifdef OA
-	double a[1] = { 2.5 };
-	double width[3] = { 0.9, 1.05, 1.3 }; //0.5 0.7 0.9 0.6 0.8 1.0
-	double dist[1] = { 19 }; // 13 16 19
+	double a[2] = { 1.3, 2.5 };
+	double width[3] = { 1.3, 1.05, 0.9 }; //0.5 0.7 0.9 0.6 0.8 1.0
+	double dist[2] = { 13, 19 }; // 13 16 19
 
 	//double a[2] = { 1.3, 2.5 };
 	//double width[3] = { 0.9, 1, 1.1 }; //0.5 0.7 0.9 0.6 0.8 1.0
