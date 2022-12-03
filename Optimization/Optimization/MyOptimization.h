@@ -37,7 +37,7 @@ public:
 
 	// パラメータのセット
 	void SetV(double current_v);
-	void SetAllState(int noise_count);
+	void SetAllState(int noise_count, int SimStep);
 
 	//制約のセット
 	void SetConstraints(std::vector<double> v_max, std::vector<double> v_min, std::vector<double> v_ref, std::vector<double> vel_max, std::vector<double> rho, std::vector<double> v_front_max, std::vector<double> v_front_min, std::vector<double> v_rear_max, std::vector<double> v_rear_min);

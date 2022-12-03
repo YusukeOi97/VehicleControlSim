@@ -14,7 +14,7 @@ private:
 	//obseravation noise
 	double observationVariance_x = 0.2;
 	double observationVariance_y = 0.2;
-	double observationVariance_yaw = 0.05;
+	double observationVariance_yaw = 0.07;
 };
 
 inline void Noise::Make()

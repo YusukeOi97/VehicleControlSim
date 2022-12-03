@@ -182,13 +182,13 @@ int main()
 		constraint.GetConstraint(myProblem.u, myProblem.u_front_l, myProblem.u_front_r, myProblem.u_center_l, myProblem.u_center_r, myProblem.u_rear_l, myProblem.u_rear_r);
 		myProblem.SetConstraints(constraint.v_max, constraint.v_min, constraint.v_ref, constraint.vel_max, constraint.rho, constraint.v_front_max, constraint.v_front_min, constraint.v_rear_max, constraint.v_rear_min);
 		myProblem.SetV(myProblem.vel[0]);
-		myProblem.SetAllState(myProblem.noise_count);
+		myProblem.SetAllState(myProblem.noise_count, i);
 
 		std::promise<bool> prms;
 		std::future<bool> ftr = prms.get_future();
 		std::thread Thread(Opt, std::ref(myProblem), myProblem.noise_count, i, myProblem.sim_step, std::move(prms));
 
-		std::future_status timeresult = ftr.wait_for(std::chrono::seconds(10));
+		std::future_status timeresult = ftr.wait_for(std::chrono::seconds(5));
 		if (timeresult != std::future_status::timeout)
 		{
 			printf("not timeout\n");

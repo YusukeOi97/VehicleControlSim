@@ -225,7 +225,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 								//コースの途中からデータ取得
 								if (CourseNum == 0)
 								{
-									if (logdata.x > 0)
+									if (logdata.x > 40)
 									{
 										//noiseを入れた場合の反復
 										for (int i = 0; i < prm.NoiseNum; i++)
@@ -233,7 +233,14 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 											int falsecount = 0;
 											shareddata->noise_count = i;
 											InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, logdata.delta);
-											while (shareddata->success == 0 && shareddata->first_success == false)
+									/*		if (logdata.theta == 0)
+											{
+												while (shareddata->success == 0 && shareddata->first_access == false)
+												{
+													system(path);
+												}
+											}*/
+											while (shareddata->success == 0 && shareddata->first_access == false)
 											{
 												system(path);
 												falsecount++;
