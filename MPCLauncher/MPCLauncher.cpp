@@ -123,7 +123,7 @@ void InitState(double init_u, double init_v, double init_theta, double init_vel,
 	shareddata->init_vel = init_vel;
 	shareddata->init_delta = init_delta;
 	shareddata->success = 0;
-	shareddata->first_access = false;
+	shareddata->first_success = false;
 }
 
 void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Frenet frenet, double U_start, double U_end, int CourseNum)
@@ -230,11 +230,17 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 										//noiseを入れた場合の反復
 										for (int i = 0; i < prm.NoiseNum; i++)
 										{
+											int falsecount = 0;
 											shareddata->noise_count = i;
 											InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, logdata.delta);
-											while (shareddata->success == 0 && shareddata->first_access == false)
+											while (shareddata->success == 0 && shareddata->first_success == false)
 											{
 												system(path);
+												falsecount++;
+												if (falsecount > 4)
+												{
+													break;
+												}
 											}
  											
 											if (!ReadSharedMemory(SHARED_MEMORY_SIZE))
@@ -307,7 +313,7 @@ int main()
 	std::vector<std::vector<double>> course;
 	Frenet frenet;
 
-	int skip = 0; //何個目のコースからシミュレーションするか、0でオッケーです
+	int skip = 1; //何個目のコースからシミュレーションするか、0でオッケーです
 	int count = 0;
 
 #ifdef OA
@@ -316,9 +322,9 @@ int main()
 	//double dist[1] = { 13 }; // 13 16 19
 	//int pos1[2] = { 1, 0 };
 
-	double a[1] = { 1.3 };
-	double width[1] = { 1.05 }; //0.5 0.7 0.9
-	double dist[2] = { 13, 19 }; // 13 16 19
+	double a[1] = { 2.5 };
+	double width[2] = { 1.3, 1.05 }; //0.5 0.7 0.9
+	double dist[1] = { 13 }; // 13 16 19
 	double U_start = 25;
 	double U_end = 80;
 
