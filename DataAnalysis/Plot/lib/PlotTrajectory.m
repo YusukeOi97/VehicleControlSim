@@ -8,7 +8,7 @@ function PlotTrajectory(data, constdata, Idx_err, Idx_suc, Idx_Pre, Step, Skipco
         plot(constdata(:, 3), constdata(:, 4), '--k'); 
         hold on
         %daspect([10 5 50]);
-        daspect([30 5 450]);
+        %daspect([30 5 450]);
         xlim([25 80]);
         %ylim([-1.5 1.5]);
         xlabel('$x$[m]', 'Interpreter', 'latex');

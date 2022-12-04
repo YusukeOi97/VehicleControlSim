@@ -1,10 +1,10 @@
 clear;
 close all;
-addpath("func\");
+addpath("C:\VehicleControlSim\DataAnalysis\Model Construction\func\");
 
-Kappa_array = 1;
+Kappa_array = 0;
 
-interval = 14; %分割数
+interval = 7; %分割数
 constraint = zeros(2 * interval, 1);
 first = true;
 InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
@@ -16,88 +16,56 @@ Idx_u = 5;
 Idx_v = 6;
 Idx_theta = 7;
 Idx_vel = 8;
-Idx_until_array = 26;
 Idx_c_u = 3;
 Idx_c_ymax = 6;
 Idx_c_ymin = 5;
 Idx_c_kappa = 11;
 
-Idx_err_mpc = 18;
-Idx_suc_mpc = 19;
-Idx_col_dwa = 19;
-Idx_col_pp = 19;
+Idx_col_dwa = 11;
+Idx_col_pp = 11;
 Num_validation = 1500; %検証用のサンプル数
 
 
-Data_path = 'C:\Data\MPC\';
+DataPath = 'C:\Data\Dataset\';
 
-Method = 'SQP';
+Method = 'DWA';
 
-FolderInfo_ipm = dir(append(Data_path, Method, 'cleaned\'));
-Folderlist_ipm = {FolderInfo_ipm.name};
-Folderlist_ipm = Folderlist_ipm(1, 3:end); %. .. を削除
+FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
+Folderlist = {FolderInfo.name};
+Folderlist = Folderlist(1, 3:end); %. .. を削除
 
-for i = 1 : length(Folderlist_ipm(1, :))
+for i = 1 : length(Folderlist(1, :))
     
     %データ読み込み
-    %ipm
-    ipm_dir = strcat(Data_path, Method, 'cleaned\', string(Folderlist_ipm(1, i)), '\mpc_data.csv');
-    data = csvread(ipm_dir, 0, 0);
-    course_dir = strcat(Data_path, Method, 'cleaned\', string(Folderlist_ipm(1, i)), '\course_data.csv');
+    dir = strcat(DataPath, Method, 'cleaned\', string(Folderlist(1, i)), '\dwa_data.csv');
+    data = csvread(dir, 0, 0);
+    course_dir = strcat(DataPath, Method, 'cleaned\', string(Folderlist(1, i)), '\course_data.csv');
     course_data = csvread(course_dir, 0, 0);
     
-%     %sqp
-%     sqp_dir = strcat(Data_path, 'SQPcleaned\', string(Folderlist_ipm(1, i)), '\mpc_data.csv');
-%     sqp_data = csvread(sqp_dir, 0, 0);
-% 
-%     %dwa
-%     dwa_dir = strcat(Data_path, 'DWAPPcleaned\', string(Folderlist_ipm(1, i)), '\dwa_data.csv');
-%     dwa_data = csvread(dwa_dir, 0, 0);
-%     
 %     %pp
 %     pp_dir = strcat(Data_path, 'DWAPPcleaned\', string(Folderlist_ipm(1, i)), '\pp_data.csv');
 %     pp_data = csvread(pp_dir, 0, 0);
-    
-%     %ipmとsqpでデータ数が違うとき
-%     if ipm_data(end, Idx) == sqp_data(end, 2) && ipm_data(end, 3) == sqp_data(end, 3) && ipm_data(end, 4) == sqp_data(end, 4) && ipm_data(end, 5) == sqp_data(end, 5)
-%         DataSize = size(ipm_data, 1);
-%     else
-%         if size(ipm_data, 1) < size(sqp_data, 1)
-%             DataSize = size(ipm_data, 1);
-%             sqp_data(DataSize + 1:end, :) = [];
-%             dwa_data(DataSize + 1:end, :) = [];
-%             pp_data(DataSize + 1:end, :) = [];
-%             
-%         else
-%             DataSize = size(sqp_data, 1);
-%             ipm_data(DataSize + 1:end, :) = [];
-%             dwa_data(DataSize + 1:end, :) = [];
-%             pp_data(DataSize + 1:end, :) = [];
-%             
-%         end
-%     end
+
     DataSize = size(data, 1);
     
 
     %出力
     %collision probabilityの計算
-    out = CalColProb_mpc(data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_err_mpc, Idx_suc_mpc); %col(ipm)
-%     out = [out; CalColProb_mpc(sqp_data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_err_mpc, Idx_suc_mpc)]; %col(sqp)
-%     out = [out; CalColProb(dwa_data, Idx_col_dwa)]; %col(dwa)
+    out = CalColProb(data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_col_dwa); %col(dwa)
 %     out = [out; CalColProb(pp_data, Idx_col_pp)]; %col(pp)
     
 
 
-    %入力%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%正規化
+    %入力
     %曲率を絶対値表現
     for j = 1 : size(course_data, 1)
-        course_data(j, Idx_c_kappa) = abs(course_data(j, Idx_c_kappa));
+        course_data(j, Idx_c_kappa) = course_data(j, Idx_c_kappa);
     end
     
     course_delta_kappa = zeros(size(course_data, 1), 2);
     for j = 1 : size(course_data, 1) - 1
         course_delta_kappa(j, 1) = course_data(j, Idx_c_u);
-        course_delta_kappa(j, 2) = abs((course_data(j + 1, Idx_c_kappa) - course_data(j, Idx_c_kappa)) / (course_data(j + 1, Idx_c_u) - course_data(j, Idx_c_u)));
+        course_delta_kappa(j, 2) = (course_data(j + 1, Idx_c_kappa) - course_data(j, Idx_c_kappa)) / (course_data(j + 1, Idx_c_u) - course_data(j, Idx_c_u));
     end
     u = zeros(Step, 1);
 
@@ -115,11 +83,7 @@ for i = 1 : length(Folderlist_ipm(1, :))
             if Kappa_array
                 %曲率
                 for idx_pre = 1 : Step
-                    if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) == 0
-                        u(idx_pre, 1) = data(j, Idx_u) + data(j, Idx_vel) * Delta_T * (idx_pre - 1);
-                    else
-                        u(idx_pre, 1) = data(j, idx_pre + Idx_until_array + Step * 3);
-                    end
+                    u(idx_pre, 1) = data(j, Idx_u) + data(j, Idx_vel) * Delta_T * (idx_pre - 1);
                 end
                 for k = 1 : interval
                     kappa_array(k, 1) = LinearInterporater(u(Step / interval * k, 1), course_data, Idx_c_u, Idx_c_kappa);
@@ -144,7 +108,7 @@ for i = 1 : length(Folderlist_ipm(1, :))
             else
                 %曲率
                 for idx_pre = 1 : Step
-                    u(idx_pre, 1) = data(j, idx_pre + Idx_until_array + Step * 3);
+                    u(idx_pre, 1) = data(j, Idx_u) + data(j, Idx_vel) * Delta_T * (idx_pre - 1);
                 end
     
                 %予測区間の曲率の積分値の計算
@@ -231,40 +195,70 @@ for i = 1 : length(Folderlist_ipm(1, :))
     clear out;
 end
 
-%正規化0~1
-for i = 1 : length(MATRIX_INPUT(:, 1))
-    MATRIX_INPUT(i, :) = rescale(MATRIX_INPUT(i, :), 0, 1);
-end
+% %正規化0~1
+% for i = 1 : length(MATRIX_INPUT(:, 1))
+%     MATRIX_INPUT(i, :) = rescale(MATRIX_INPUT(i, :), 0, 1);
+% end
+% idx = randperm(size(MATRIX_INPUT, 2), Num_validation);
+% INPUT_VALIDATION = MATRIX_INPUT(:, idx);
+% MATRIX_INPUT(:, idx) = [];
+% OUTPUT_VALIDATION = MATRIX_OUTPUT(:, idx);
+% MATRIX_OUTPUT(:, idx) = [];
 
-idx = randperm(size(MATRIX_INPUT, 2), Num_validation);
-INPUT_VALIDATION = MATRIX_INPUT(:, idx);
-%MATRIX_INPUT(:, idx) = [];
-OUTPUT_VALIDATION = MATRIX_OUTPUT(:, idx);
-%MATRIX_OUTPUT(:, idx) = [];
 
-net = fitnet([60 60]); %40 40 30 20
-%view(net);
-net = train(net, MATRIX_INPUT, MATRIX_OUTPUT);
-OUTPUT_PREDICTED = net(INPUT_VALIDATION);
-IDX = 1;
+MATRIX_INPUT = MATRIX_INPUT.';
+MATRIX_OUTPUT = MATRIX_OUTPUT.';
 
-predictionError = OUTPUT_VALIDATION(IDX, :) - OUTPUT_PREDICTED(IDX, :);
+idx = randperm(size(MATRIX_INPUT, 1), Num_validation);
+INPUT_VALIDATION = MATRIX_INPUT(idx, :);
+MATRIX_INPUT(idx, :) = [];
+OUTPUT_VALIDATION = MATRIX_OUTPUT(idx, :);
+MATRIX_OUTPUT(idx, :) = [];
 
-thr = 0.1;
-numCorrect = sum(abs(predictionError) < thr);
-numValidation = numel(OUTPUT_VALIDATION(IDX, :));
+% params = hyperparameters("fitrnet", MATRIX_INPUT, MATRIX_OUTPUT);
+% for ii = 1 : length(params)
+%     disp(ii);disp(params(ii))
+% end
+% 
+% params(1).Range = [1 5];
+% params(10).Optimize = true;
+% params(11).Optimize = true;
+% 
+% rng("default")
+% Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "OptimizeHyperparameters", params, "HyperparameterOptimizationOptions", struct("AcquisitionFunctionName", "expected-improvement-plus", "MaxObjectiveEvaluations", 30));
 
-accuracy = numCorrect/numValidation
+Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-8, "LayerSizes", [60 60 60 60])
+testMSE = loss(Mdl, INPUT_VALIDATION, OUTPUT_VALIDATION)
+OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 
-squares = predictionError.^2;
-rmse = sqrt(mean(squares))
+% net = fitnet([60 60]); %40 40 30 20
+% %view(net);
+% net = train(net, MATRIX_INPUT, MATRIX_OUTPUT);
+% OUTPUT_PREDICTED = net(INPUT_VALIDATION);
+% IDX = 1;
 
-figure
-scatter(OUTPUT_PREDICTED(IDX, :),OUTPUT_VALIDATION(IDX, :),'+')
+% predictionError = OUTPUT_VALIDATION(IDX, :) - OUTPUT_PREDICTED(IDX, :);
+% 
+% squares = predictionError.^2;
+% rmse = sqrt(mean(squares))
+
+histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [25 25], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [-0.5 1.5], 'YBinLimits', [0 1]);
+axis equal
+colorbar
+ax = gca;
+ax.CLim = [0 60];
 xlabel("Predicted Value")
 ylabel("True Value")
 
-hold on
-plot([0 1], [0 1],'r--');
-xlim([0, 1]);
-hold off;
+mdl = fitlm(OUTPUT_PREDICTED, OUTPUT_VALIDATION);
+mdl.Rsquared.Ordinary
+
+% scatter(OUTPUT_PREDICTED,OUTPUT_VALIDATION,'+')
+% xlabel("Predicted Value")
+% ylabel("True Value")
+% 
+% hold on
+% plot([0 1], [0 1],'r--');
+% xlim([0, 1]);
+% hold off;
+

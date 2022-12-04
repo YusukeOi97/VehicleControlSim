@@ -5,9 +5,9 @@ addpath('lib');
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
-WhichAnalyze = "p";
-number = 3;
-Data_path = "C:\Data\64\1203\";
+WhichAnalyze = "t";
+number = 1;
+Data_path = "C:\Data\1205\";
 %%%%IPM or SQP or DWA or PP
 Method = "DWA";
 
@@ -36,7 +36,7 @@ else
     Idx_lonjerk = 13;
     Idx_Pre = 13;
     Step = 70;
-    Skipcount = 5;
+    Skipcount = 50;
 end
 
 FolderInfo = dir(Data_path);

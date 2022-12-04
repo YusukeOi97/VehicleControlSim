@@ -7,7 +7,7 @@ function PlotColProbability(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx
     plot(constdata(:, 3), constdata(:, 4), '--k'); 
     hold on
     %daspect([10 5 50]);
-    daspect([30 5 450]);
+    %daspect([30 5 450]);
     colorbar;
     caxis([0.0, 1.0]);
     xlim([25 80]);
