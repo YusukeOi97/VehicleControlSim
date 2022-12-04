@@ -23,8 +23,8 @@ private:
 	//Ô—¼À•WŒn‚Ì•Ï” (BaseÀ•WŒn)
 	double B_x, B_y, B_yaw, B_y_dot, B_yaw_dot, B_y_2dot, B_yaw_2dot, B_vel, B_pre_vel, B_acc, B_delta, B_beta;
 	double input_vel, input_delta, vel_ref;
+	int SimStep;
 	std::vector<SidePoint> side;
-	double calc_time;
 	double ret[3]; //0:vel, 1:delta, 2:time
 
 	bool SideCheck(std::string Side, std::vector<SidePoint> sidepoint);

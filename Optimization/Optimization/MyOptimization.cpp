@@ -277,24 +277,24 @@ void MyProblem::SetRho(vector<double> Rho)
 	}
 }
 
-void MyProblem::SetAllState(int noise_count)
+void MyProblem::SetAllState(int noise_count, int SimStep)
 {
 	System_NUOPT* m = ((System_NUOPT*)model.get());
 
 	//1回目はノイズなし、2回目以降はノイズ印加
-	if (noise_count == 0)
-	{
-		m->init_u = u[0];
-		m->init_v = v[0];
-		m->init_theta = theta[0];
-	}
-	else
+	if (noise_count != 0 && SimStep == 0)
 	{
 		noise.Make();
 
 		m->init_u = u[0] + noise.noise_u;
 		m->init_v = v[0] + noise.noise_v;
 		m->init_theta = theta[0] + noise.noise_theta;
+	}
+	else
+	{
+		m->init_u = u[0];
+		m->init_v = v[0];
+		m->init_theta = theta[0];
 	}
 
 	m->init_v_dot = v_dot[0];
@@ -368,11 +368,11 @@ void MyProblem::Solve(int noise_count, int i, int step)
 	options.outfilename = "_NULL_";
 	options.iisDetect = "off";	//191112 kanada 実行不可能の原因を探らない
 	//showSystem();
-	if (noise_count == 0 && i == step - 1)
-	{
-		//setNuoptWatchFile(filename.c_str());
-		//options.maxitn = 1;
-	}
+	//if (noise_count == 0 && i == step - 1)
+	//{
+	//	setNuoptWatchFile(filename.c_str());
+	//	//options.maxitn = 1;
+	//}
 
 	try
 	{

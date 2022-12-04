@@ -149,7 +149,7 @@ public:
 		{
 			double nearest_point_distance = calc_distance(x, y, c_data[x_index][i], c_data[y_index][i]);
 			double next_point_distance = calc_distance(x, y, c_data[x_index][i + 1], c_data[y_index][i + 1]);
-			if (0 < (next_point_distance - nearest_point_distance) && nearest_point_distance < 2.0) //ポイントが徐々に近くなり、2m以下
+			if (0 < (next_point_distance - nearest_point_distance) && nearest_point_distance < 3.0) //ポイントが徐々に近くなり、3m以下
 			{
 				break;
 			}
