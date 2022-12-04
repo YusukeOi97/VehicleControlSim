@@ -239,7 +239,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 													system(path);
 												}
 											}*/
-											while (shareddata->success == 0 && shareddata->first_access == false)
+											while (shareddata->success == 0 && shareddata->first_success == false)
 											{
 												system(path);
 												falsecount++;
@@ -330,7 +330,7 @@ int main()
 
 	double a[1] = { 1.3 };
 	double width[1] = { 0.9 }; //0.5 0.7 0.9
-	double dist[1] = { 13 }; // 13 16 19
+	double dist[1] = { 19 }; // 13 16 19
 	double U_start = 25;
 	double U_end = 80;
 
