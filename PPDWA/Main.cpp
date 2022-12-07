@@ -90,7 +90,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 							//tire_angle‚Ìƒ‹[ƒv
 							for (logdata.delta = prm.delta_min; logdata.delta <= prm.delta_max; logdata.delta = logdata.delta + prm.delta_delta)
 							{
-								if (logdata.x > 25)
+								if (logdata.x > 40)
 								{
 									//noise‚ğ“ü‚ê‚½ê‡‚Ì”½•œ‰ñ”
 									for (int i = 0; i < prm.NoiseNum; i++)
@@ -153,13 +153,13 @@ int main()
 	std::vector<std::vector<double>> course;
 	Frenet frenet;
 
-	int skip = 3;
+	int skip = 0;
 	int count = 0;
 
 #ifdef OA
-	double a[2] = { 2.5 };
+	double a[1] = { 2.5 };
 	double width[1] = { 1.1 }; //0.5 0.7 0.9 0.6 0.8 1.0
-	double dist[2] = { 13 }; // 13 16 19
+	double dist[1] = { 13 }; // 13 16 19
 
 	//double a[2] = { 1.3, 2.5 };
 	//double width[3] = { 0.9, 1, 1.1 }; //0.5 0.7 0.9 0.6 0.8 1.0

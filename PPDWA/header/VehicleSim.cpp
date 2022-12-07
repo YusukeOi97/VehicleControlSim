@@ -11,9 +11,10 @@ Vehicle_Sim::Vehicle_Sim(Frenet frenet, LinearInterporater table, Prm prm)
 
 void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, double vel_ref)
 {
-	B_x = logdata.x;
-	B_y = logdata.y;
-	B_yaw = logdata.yaw;
+	noise.Make();
+	B_x = logdata.x + noise.noise_u;
+	B_y = logdata.y + noise.noise_v;
+	B_yaw = logdata.yaw + noise.noise_theta;
 	B_vel = logdata.vel;
 	B_delta = logdata.delta;
 	B_beta = atan(prm.l_r * tan(B_delta) / prm.Wheelbase);
@@ -23,23 +24,14 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, double vel_ref)
 	logdata.average_lateral_jerk = 0;
 	logdata.average_longitudinal_jerk = 0;
 
-	logdata.x_pp[0] = logdata.x;
-	logdata.y_pp[0] = logdata.y;
-	logdata.yaw_pp[0] = logdata.yaw;
+	logdata.x_dwa[0] = B_x;
+	logdata.y_dwa[0] = B_y;
+	logdata.yaw_dwa[0] = B_yaw;
 
 	for (int i = 1; i < SimStep; i++)
 	{
-		//ƒmƒCƒY‚ðì¬
-		noise.Make();
 		//ŽÔ—¼‚Ö‚Ì“ü—Í‚ðŒvŽZ
-		if (i < 4)
-		{
-			pp.calc_inp(logdata.x_pp[i - 1] + noise.noise_u, logdata.y_pp[i - 1] + noise.noise_v, logdata.yaw_pp[i - 1] + noise.noise_theta, B_vel, vel_ref, ret);
-		}
-		else
-		{
-			pp.calc_inp(logdata.x_pp[i - 1], logdata.y_pp[i - 1], logdata.yaw_pp[i - 1], B_vel, vel_ref, ret);
-		}
+		pp.calc_inp(logdata.x_pp[i - 1], logdata.y_pp[i - 1], logdata.yaw_pp[i - 1], B_vel, vel_ref, ret);
 
 		//ŽÔ—¼‹““®‚ðŒvŽZ(DBM)
 		B_pre_vel = B_vel;
@@ -81,9 +73,10 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, double vel_ref)
 
 void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata) 
 {
-	B_x = logdata.x;
-	B_y = logdata.y;
-	B_yaw = logdata.yaw;
+	noise.Make();
+	B_x = logdata.x + noise.noise_u;
+	B_y = logdata.y + noise.noise_v;
+	B_yaw = logdata.yaw + noise.noise_theta;
 	B_vel = logdata.vel;
 	B_delta = logdata.delta;
 	B_y_dot = logdata.v_dot - logdata.vel * logdata.theta;
@@ -96,25 +89,14 @@ void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata)
 	logdata.average_lateral_jerk = 0;
 	logdata.average_longitudinal_jerk = 0;
 
-	logdata.x_dwa[0] = logdata.x;
-	logdata.y_dwa[0] = logdata.y;
-	logdata.yaw_dwa[0] = logdata.yaw;
+	logdata.x_dwa[0] = B_x;
+	logdata.y_dwa[0] = B_y;
+	logdata.yaw_dwa[0] = B_yaw;
 
 	for (int i = 1; i < SimStep; i++) 
 	{
-		noise.Make();
-		double u, v, theta;
-
-		if (i < 2)
-		{
-			dwa.Calc_inp(logdata.x_dwa[i - 1] + noise.noise_u, logdata.y_dwa[i - 1] + noise.noise_v, logdata.yaw_dwa[i - 1] + noise.noise_theta, B_vel, B_delta, vel_ref, ret, i);
-		}
-		else
-		{
-			dwa.Calc_inp(logdata.x_dwa[i - 1], logdata.y_dwa[i - 1], logdata.yaw_dwa[i - 1], B_vel, B_delta, vel_ref, ret, i);
-		}
-		frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_dwa[i - 1], logdata.y_dwa[i - 1], logdata.yaw_dwa[i - 1], u, v, theta, frenet.Cache_f);
-
+		dwa.Calc_inp(logdata.x_dwa[i - 1], logdata.y_dwa[i - 1], logdata.yaw_dwa[i - 1], B_vel, B_delta, vel_ref, ret, i);
+		
 		//ŽÔ—¼‹““®‚ðŒvŽZ(DBM)
 		B_pre_vel = B_vel;
 		B_vel = ret[0];

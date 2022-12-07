@@ -5,12 +5,14 @@ addpath('lib');
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
-WhichAnalyze = "c";
-number = 2;
-Data_path = "C:\Data\IPM\Dataset\new\";
-
+WhichAnalyze = "t";
+number = 40;
+Data_path = "C:\Data\1207\";
 %%%%IPM or SQP or DWA or PP
-Method = "IPM";
+Method = "DWA";
+%%%specific initial point trajectory
+sptr = false;
+InitialState = [41 -0.71 -0.14 4];
 
 if Method == "IPM" || Method == "SQP"
     Idx_x = 2;
@@ -37,7 +39,7 @@ else
     Idx_lonjerk = 13;
     Idx_Pre = 13;
     Step = 70;
-    Skipcount = 50;
+    Skipcount = 5;
 end
 
 FolderInfo = dir(Data_path);
@@ -56,7 +58,7 @@ data = csvread(data_name, 1, 0);
 constdata = csvread(const_name, 1, 0);
 
 if WhichAnalyze == "t"
-    PlotTrajectory(data, constdata, Idx_err, Idx_suc, Idx_Pre, Step, Skipcount, Method);
+    PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_Pre, Step, Skipcount, Method, sptr, InitialState);
 elseif WhichAnalyze == "c"
     PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method);
 elseif WhichAnalyze == "lat"
