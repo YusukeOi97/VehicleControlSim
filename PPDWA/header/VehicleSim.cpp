@@ -24,9 +24,9 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, double vel_ref)
 	logdata.average_lateral_jerk = 0;
 	logdata.average_longitudinal_jerk = 0;
 
-	logdata.x_pp[0] = logdata.x;
-	logdata.y_pp[0] = logdata.y;
-	logdata.yaw_pp[0] = logdata.yaw;
+	logdata.x_dwa[0] = B_x;
+	logdata.y_dwa[0] = B_y;
+	logdata.yaw_dwa[0] = B_yaw;
 
 	for (int i = 1; i < SimStep; i++)
 	{
@@ -89,9 +89,9 @@ void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata)
 	logdata.average_lateral_jerk = 0;
 	logdata.average_longitudinal_jerk = 0;
 
-	logdata.x_dwa[0] = logdata.x;
-	logdata.y_dwa[0] = logdata.y;
-	logdata.yaw_dwa[0] = logdata.yaw;
+	logdata.x_dwa[0] = B_x;
+	logdata.y_dwa[0] = B_y;
+	logdata.yaw_dwa[0] = B_yaw;
 
 	for (int i = 1; i < SimStep; i++) 
 	{

@@ -26,7 +26,7 @@ function PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err
     if sptr
         for i = 1 : size(data, 1)
             if data(i, Idx_x) == InitialState(1, 1)
-                if data(i, Idx_y) > InitialState(1, 2) - 0.1 && data(i, Idx_y) < InitialState(1, 2) + 0.1
+                if data(i, Idx_y) > InitialState(1, 2) - 0.3 && data(i, Idx_y) < InitialState(1, 2) + 0.3
                     if data(i, Idx_yaw) == InitialState(1, 3)
                         if data(i, Idx_vel) == InitialState(1, 4)
                             for j = 1 : Step

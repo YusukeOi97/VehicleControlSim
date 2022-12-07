@@ -90,7 +90,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 							//tire_angle‚Ìƒ‹[ƒv
 							for (logdata.delta = prm.delta_min; logdata.delta <= prm.delta_max; logdata.delta = logdata.delta + prm.delta_delta)
 							{
-								if (logdata.x > 43)
+								if (logdata.x > 40)
 								{
 									//noise‚ğ“ü‚ê‚½ê‡‚Ì”½•œ‰ñ”
 									for (int i = 0; i < prm.NoiseNum; i++)

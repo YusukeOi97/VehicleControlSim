@@ -187,7 +187,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 #else
 	//Loop
 	//u‚Ìƒ‹[ƒv
-	for (logdata.u = U_start; logdata.u < U_end; logdata.u = logdata.u + prm.delta_u)
+	for (logdata.u = U_start; logdata.x < U_end; logdata.u = logdata.u + prm.delta_u)
 	{
 		//v‚Ìã‰ºŒÀæ“¾
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
