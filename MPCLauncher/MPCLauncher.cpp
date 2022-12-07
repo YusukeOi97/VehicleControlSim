@@ -221,7 +221,6 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 							//tire_angleのループ
 							for (logdata.delta = prm.delta_min; logdata.delta <= prm.delta_max; logdata.delta = logdata.delta + prm.delta_delta)
 							{
-
 								//コースの途中からデータ取得
 								if (CourseNum == 0)
 								{
