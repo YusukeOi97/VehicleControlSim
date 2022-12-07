@@ -105,7 +105,7 @@ void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata)
 		noise.Make();
 		double u, v, theta;
 
-		if (i < 4)
+		if (i < 2)
 		{
 			dwa.Calc_inp(logdata.x_dwa[i - 1] + noise.noise_u, logdata.y_dwa[i - 1] + noise.noise_v, logdata.yaw_dwa[i - 1] + noise.noise_theta, B_vel, B_delta, vel_ref, ret, i);
 		}

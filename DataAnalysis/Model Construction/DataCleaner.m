@@ -22,7 +22,7 @@ for i = 1 : length(Folderlist(1, :))
     csvwrite(strcat(OutData_path, Method, 'cleaned\', OutFolderlist, '\dwa_data.csv'), DWAData);
     csvwrite(strcat(OutData_path, Method, 'cleaned\', OutFolderlist, '\pp_data.csv'), PPData);
     csvwrite(strcat(OutData_path, Method, 'cleaned\', OutFolderlist, '\course_data.csv'), CourseData);
-    csvwrite(strcat(OutData_path, Method, 'cleaned\', OutFolderlist, '\prmdata.csv'), ParaData);
+    csvwrite(strcat(OutData_path, Method, 'cleaned\', OutFolderlist, '\prm_data.csv'), ParaData);
 end
 
 % for i = 1 : length(Folderlist(1, :))

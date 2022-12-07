@@ -2,9 +2,9 @@ clear;
 close all;
 addpath("C:\VehicleControlSim\DataAnalysis\Model Construction\func\");
 
-Kappa_array = 0;
+Kappa_array = 1;
 
-interval = 7; %ï™äÑêî
+interval = 10; %ï™äÑêî
 constraint = zeros(2 * interval, 1);
 first = true;
 InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
@@ -101,8 +101,10 @@ for i = 1 : length(Folderlist(1, :))
                 for k = 1 : interval
                     const_x = data(j, Idx_u) + k * prediction / interval;
                     ret = LinearInterporater_const(const_x, course_data, Idx_c_u, Idx_c_ymax, Idx_c_ymin);
-                    constraint(2 * k, 1) = ret.y_max;
-                    constraint(2 * k - 1, 1) = ret.y_min;
+%                     constraint(2 * k, 1) = ret.y_max;
+%                     constraint(2 * k - 1, 1) = ret.y_min;
+                     constraint(interval + k, 1) = ret.y_max;
+                     constraint(k, 1) = ret.y_min;
                 end
                 input(:, ColIn) = [in(:, ColIn); kappa_array(:, 1); constraint(:, 1)];
             else
@@ -227,7 +229,8 @@ MATRIX_OUTPUT(idx, :) = [];
 % rng("default")
 % Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "OptimizeHyperparameters", params, "HyperparameterOptimizationOptions", struct("AcquisitionFunctionName", "expected-improvement-plus", "MaxObjectiveEvaluations", 30));
 
-Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-8, "LayerSizes", [60 60 60 60])
+Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-4, "LayerSizes", [60 60 60 60 60])
+%lambda dwa:[60 60 60]1e-4 roughdwa:[60 60 60]1e-3
 testMSE = loss(Mdl, INPUT_VALIDATION, OUTPUT_VALIDATION)
 OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 
@@ -241,17 +244,25 @@ OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 % 
 % squares = predictionError.^2;
 % rmse = sqrt(mean(squares))
+mdl = fitlm(OUTPUT_PREDICTED, OUTPUT_VALIDATION);
+mdl.Rsquared.Ordinary
 
-histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [25 25], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [-0.5 1.5], 'YBinLimits', [0 1]);
+for i = 1 : size(OUTPUT_PREDICTED, 1) / 2
+    if OUTPUT_PREDICTED(i, 1) < 0
+        OUTPUT_PREDICTED(i, 1) = 0;
+    end
+    if OUTPUT_PREDICTED(i, 1) > 1
+        OUTPUT_PREDICTED(i, 1) = 1;
+    end
+end
+histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
 axis equal
 colorbar
 ax = gca;
-ax.CLim = [0 60];
+ax.CLim = [0 100];
 xlabel("Predicted Value")
 ylabel("True Value")
 
-mdl = fitlm(OUTPUT_PREDICTED, OUTPUT_VALIDATION);
-mdl.Rsquared.Ordinary
 
 % scatter(OUTPUT_PREDICTED,OUTPUT_VALIDATION,'+')
 % xlabel("Predicted Value")
@@ -261,4 +272,3 @@ mdl.Rsquared.Ordinary
 % plot([0 1], [0 1],'r--');
 % xlim([0, 1]);
 % hold off;
-

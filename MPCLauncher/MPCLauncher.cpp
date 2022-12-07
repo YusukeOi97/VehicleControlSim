@@ -123,7 +123,7 @@ void InitState(double init_u, double init_v, double init_theta, double init_vel,
 	shareddata->init_vel = init_vel;
 	shareddata->init_delta = init_delta;
 	shareddata->success = 0;
-	shareddata->first_access = false;
+	shareddata->first_success = false;
 }
 
 void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Frenet frenet, double U_start, double U_end, int CourseNum)
@@ -221,11 +221,10 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 							//tire_angleのループ
 							for (logdata.delta = prm.delta_min; logdata.delta <= prm.delta_max; logdata.delta = logdata.delta + prm.delta_delta)
 							{
-
 								//コースの途中からデータ取得
 								if (CourseNum == 0)
 								{
-									if (logdata.x > 40)
+									if (logdata.x > 0)
 									{
 										//noiseを入れた場合の反復
 										for (int i = 0; i < prm.NoiseNum; i++)
@@ -240,7 +239,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 													system(path);
 												}
 											}*/
-											while (shareddata->success == 0 && shareddata->first_access == false)
+											while (shareddata->success == 0 && shareddata->first_success == false)
 											{
 												system(path);
 												falsecount++;
@@ -330,8 +329,8 @@ int main()
 	//int pos1[2] = { 1, 0 };
 
 	double a[1] = { 1.3 };
-	double width[1] = { 1.3 }; //0.5 0.7 0.9
-	double dist[1] = { 13 }; // 13 16 19
+	double width[1] = { 0.9 }; //0.5 0.7 0.9
+	double dist[1] = { 19 }; // 13 16 19
 	double U_start = 25;
 	double U_end = 80;
 

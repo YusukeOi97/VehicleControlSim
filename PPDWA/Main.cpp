@@ -90,10 +90,10 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 							//tire_angle‚Ìƒ‹[ƒv
 							for (logdata.delta = prm.delta_min; logdata.delta <= prm.delta_max; logdata.delta = logdata.delta + prm.delta_delta)
 							{
-								if (logdata.x > 14)
+								if (logdata.x > 25)
 								{
 									//noise‚ğ“ü‚ê‚½ê‡‚Ì”½•œ‰ñ”
-									for (size_t i = 0; i < prm.NoiseNum; i++)
+									for (int i = 0; i < prm.NoiseNum; i++)
 									{
 										//PP
 										sim.Sim_PP_Basecoordinate(pp, logdata, logdata.vel);
@@ -153,13 +153,13 @@ int main()
 	std::vector<std::vector<double>> course;
 	Frenet frenet;
 
-	int skip = 0;
+	int skip = 3;
 	int count = 0;
 
 #ifdef OA
-	double a[2] = { 1.3, 2.5 };
-	double width[3] = { 1.3, 1.05, 0.9 }; //0.5 0.7 0.9 0.6 0.8 1.0
-	double dist[2] = { 13, 19 }; // 13 16 19
+	double a[2] = { 2.5 };
+	double width[1] = { 1.1 }; //0.5 0.7 0.9 0.6 0.8 1.0
+	double dist[2] = { 13 }; // 13 16 19
 
 	//double a[2] = { 1.3, 2.5 };
 	//double width[3] = { 0.9, 1, 1.1 }; //0.5 0.7 0.9 0.6 0.8 1.0
@@ -197,17 +197,18 @@ int main()
 #endif // OA
 
 #ifdef SINE
-	double ampl[1] = { 30 };
+	double ampl[1] = { 20 };
 	double cycle[1] = { 80 };
 	double u_start = 3;
-	double x_end = 40;
+	double x_end = 30;
 
 	for (size_t i = 0; i < sizeof(cycle) / sizeof(cycle[0]); i++)
 	{
 		setting.cycle = cycle[i];
-		for (size_t i = 0; i < sizeof(ampl) / sizeof(ampl[0]); i++)
+		for (size_t j = 0; j < sizeof(ampl) / sizeof(ampl[0]); j++)
 		{
-			setting.ampl = ampl[i];
+			frenet.Cache_f.initialized = false;
+			setting.ampl = ampl[j];
 			gencourse.GetSetting(setting);
 			course = gencourse.Gen_SINE();
 			SetFrenet(course, setting, frenet);

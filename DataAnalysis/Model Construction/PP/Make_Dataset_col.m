@@ -4,7 +4,7 @@ addpath("C:\VehicleControlSim\DataAnalysis\Model Construction\func\");
 
 Kappa_array = 1;
 
-interval = 14; %分割数
+interval = 10; %分割数
 constraint = zeros(2 * interval, 1);
 first = true;
 InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
@@ -23,6 +23,7 @@ Idx_c_kappa = 11;
 
 Idx_col_dwa = 11;
 Idx_col_pp = 11;
+Idx_cal_pp = 10;
 Num_validation = 1500; %検証用のサンプル数
 
 
@@ -53,19 +54,18 @@ for i = 1 : length(Folderlist(1, :))
     %collision probabilityの計算
     out = CalColProb(data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_col_dwa); %col(dwa)
 %     out = [out; CalColProb(pp_data, Idx_col_pp)]; %col(pp)
-    
 
 
-    %入力%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%正規化
+    %入力
     %曲率を絶対値表現
     for j = 1 : size(course_data, 1)
-        course_data(j, Idx_c_kappa) = abs(course_data(j, Idx_c_kappa));
+        course_data(j, Idx_c_kappa) = course_data(j, Idx_c_kappa);
     end
     
     course_delta_kappa = zeros(size(course_data, 1), 2);
     for j = 1 : size(course_data, 1) - 1
         course_delta_kappa(j, 1) = course_data(j, Idx_c_u);
-        course_delta_kappa(j, 2) = abs((course_data(j + 1, Idx_c_kappa) - course_data(j, Idx_c_kappa)) / (course_data(j + 1, Idx_c_u) - course_data(j, Idx_c_u)));
+        course_delta_kappa(j, 2) = (course_data(j + 1, Idx_c_kappa) - course_data(j, Idx_c_kappa)) / (course_data(j + 1, Idx_c_u) - course_data(j, Idx_c_u));
     end
     u = zeros(Step, 1);
 
@@ -101,8 +101,10 @@ for i = 1 : length(Folderlist(1, :))
                 for k = 1 : interval
                     const_x = data(j, Idx_u) + k * prediction / interval;
                     ret = LinearInterporater_const(const_x, course_data, Idx_c_u, Idx_c_ymax, Idx_c_ymin);
-                    constraint(2 * k, 1) = ret.y_max;
-                    constraint(2 * k - 1, 1) = ret.y_min;
+%                     constraint(2 * k, 1) = ret.y_max;
+%                     constraint(2 * k - 1, 1) = ret.y_min;
+                     constraint(interval + k, 1) = ret.y_max;
+                     constraint(k, 1) = ret.y_min;
                 end
                 input(:, ColIn) = [in(:, ColIn); kappa_array(:, 1); constraint(:, 1)];
             else
@@ -227,7 +229,8 @@ MATRIX_OUTPUT(idx, :) = [];
 % rng("default")
 % Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "OptimizeHyperparameters", params, "HyperparameterOptimizationOptions", struct("AcquisitionFunctionName", "expected-improvement-plus", "MaxObjectiveEvaluations", 30));
 
-Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-5, "LayerSizes", [60 60 60])
+Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-4, "LayerSizes", [60 60 60 60 60])
+%lambda dwa:[60 60 60]1e-4 roughdwa:[60 60 60]1e-3
 testMSE = loss(Mdl, INPUT_VALIDATION, OUTPUT_VALIDATION)
 OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 
@@ -241,17 +244,25 @@ OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 % 
 % squares = predictionError.^2;
 % rmse = sqrt(mean(squares))
+mdl1 = fitlm(OUTPUT_PREDICTED(:, 1), OUTPUT_VALIDATION(:, 1));
+mdl1.Rsquared.Ordinary
 
-histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [25 25], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
+figure(1);
+for i = 1 : size(OUTPUT_PREDICTED, 1)
+    if OUTPUT_PREDICTED(i, 1) < 0
+        OUTPUT_PREDICTED(i, 1) = 0;
+    end
+    if OUTPUT_PREDICTED(i, 1) > 1
+        OUTPUT_PREDICTED(i, 1) = 1;
+    end
+end
+histogram2(OUTPUT_PREDICTED(:, 1), OUTPUT_VALIDATION(:, 1), [40 40], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
 axis equal
 colorbar
 ax = gca;
-ax.CLim = [0 40];
+ax.CLim = [0 50];
 xlabel("Predicted Value")
 ylabel("True Value")
-
-mdl = fitlm(OUTPUT_PREDICTED, OUTPUT_VALIDATION);
-mdl.Rsquared.Ordinary
 
 % scatter(OUTPUT_PREDICTED,OUTPUT_VALIDATION,'+')
 % xlabel("Predicted Value")
@@ -261,4 +272,3 @@ mdl.Rsquared.Ordinary
 % plot([0 1], [0 1],'r--');
 % xlim([0, 1]);
 % hold off;
-

@@ -4,7 +4,7 @@ addpath("C:\VehicleControlSim\DataAnalysis\Model Construction\func\");
 
 Kappa_array = 1;
 
-interval = 14; %ÂàÜÂâ≤Êï∞
+interval = 7; %ï™äÑêî
 constraint = zeros(2 * interval, 1);
 first = true;
 InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
@@ -20,11 +20,10 @@ Idx_c_u = 3;
 Idx_c_ymax = 6;
 Idx_c_ymin = 5;
 Idx_c_kappa = 11;
+Num_validation = 1500;
 
 Idx_col_dwa = 11;
 Idx_col_pp = 11;
-Num_validation = 1500; %Ê§úË®ºÁî®„ÅÆ„Çµ„É≥„Éó„É´Êï∞
-
 
 DataPath = 'C:\Data\Dataset\';
 
@@ -32,12 +31,12 @@ Method = 'roughDWA';
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
-Folderlist = Folderlist(1, 3:end); %. .. „ÇíÂâäÈô§
+Folderlist = Folderlist(1, 3:end); %. .. ÇçÌèú
 
 for i = 1 : length(Folderlist(1, :))
     
-    %„Éá„Éº„ÇøË™≠„ÅøËæº„Åø
-    dir = strcat(DataPath, Method, 'cleaned\', string(Folderlist(1, i)), '\pp_data.csv');
+    %ÉfÅ[É^ì«Ç›çûÇ›
+    dir = strcat(DataPath, Method, 'cleaned\', string(Folderlist(1, i)), '\dwa_data.csv');
     data = csvread(dir, 0, 0);
     course_dir = strcat(DataPath, Method, 'cleaned\', string(Folderlist(1, i)), '\course_data.csv');
     course_data = csvread(course_dir, 0, 0);
@@ -49,15 +48,15 @@ for i = 1 : length(Folderlist(1, :))
     DataSize = size(data, 1);
     
 
-    %Âá∫Âäõ
-    %collision probability„ÅÆË®àÁÆó
+    %èoóÕ
+    %collision probabilityÇÃåvéZ
     out = CalColProb(data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_col_dwa); %col(dwa)
 %     out = [out; CalColProb(pp_data, Idx_col_pp)]; %col(pp)
     
 
 
-    %ÂÖ•Âäõ
-    %Êõ≤Áéá„ÇíÁµ∂ÂØæÂÄ§Ë°®Áèæ
+    %ì¸óÕ
+    %ã»ó¶Çê‚ëŒílï\åª
     for j = 1 : size(course_data, 1)
         course_data(j, Idx_c_kappa) = course_data(j, Idx_c_kappa);
     end
@@ -78,10 +77,8 @@ for i = 1 : length(Folderlist(1, :))
             in(2, ColIn) = data(j, Idx_theta);
             in(3, ColIn) = data(j, Idx_vel);
 
-
-
             if Kappa_array
-                %Êõ≤Áéá
+                %ã»ó¶
                 for idx_pre = 1 : Step
                     u(idx_pre, 1) = data(j, Idx_u) + data(j, Idx_vel) * Delta_T * (idx_pre - 1);
                 end
@@ -89,14 +86,14 @@ for i = 1 : length(Folderlist(1, :))
                     kappa_array(k, 1) = LinearInterporater(u(Step / interval * k, 1), course_data, Idx_c_u, Idx_c_kappa);
                 end
     
-                %‰∫àÊ∏¨Âå∫Èñì„ÅÆÊõ≤Áéá„ÅÆÂ§âÂåñ
+                %ó\ë™ãÊä‘ÇÃã»ó¶ÇÃïœâª
                 for k = 1 : interval
                     kappa_array(interval + k, 1) = LinearInterporater(u(Step / interval * k, 1), course_delta_kappa, 1, 2);
                 end
     
     
     
-                %Âà∂Á¥Ñ‰∏ä‰∏ãÈôê
+                %êßñÒè„â∫å¿
                 prediction = data(j, Idx_vel) * Step * Delta_T;
                 for k = 1 : interval
                     const_x = data(j, Idx_u) + k * prediction / interval;
@@ -106,12 +103,12 @@ for i = 1 : length(Folderlist(1, :))
                 end
                 input(:, ColIn) = [in(:, ColIn); kappa_array(:, 1); constraint(:, 1)];
             else
-                %Êõ≤Áéá
+                %ã»ó¶
                 for idx_pre = 1 : Step
                     u(idx_pre, 1) = data(j, Idx_u) + data(j, Idx_vel) * Delta_T * (idx_pre - 1);
                 end
     
-                %‰∫àÊ∏¨Âå∫Èñì„ÅÆÊõ≤Áéá„ÅÆÁ©çÂàÜÂÄ§„ÅÆË®àÁÆó
+                %ó\ë™ãÊä‘ÇÃã»ó¶ÇÃêœï™ílÇÃåvéZ
                 for idx_course = 1 : size(course_data, 1)
                     if course_data(idx_course, Idx_c_u) > u(1, 1)
                         idx_pre_start = idx_course - 1;
@@ -125,7 +122,7 @@ for i = 1 : length(Folderlist(1, :))
                     end
                 end
     
-                %Âè∞ÂΩ¢Ëøë‰ºº„Åó„Å¶Âä†ÁÆó
+                %ë‰å`ãﬂéóÇµÇƒâ¡éZ
                 kappa_total = 0;
                 for idx_course = idx_pre_start : idx_pre_end
                     kappa_total = kappa_total + (course_data(idx_course + 1, Idx_c_kappa) + course_data(idx_course, Idx_c_kappa)) * (course_data(idx_course + 1, Idx_c_u) - course_data(idx_course, Idx_c_u)) / 2;
@@ -136,7 +133,7 @@ for i = 1 : length(Folderlist(1, :))
                 
                 in(4, ColIn) = kappa_total / (u(end, 1) - u(1, 1));
     
-                %‰∫àÊ∏¨Âå∫Èñì„ÅÆÊõ≤Áéá„ÅÆÂ§âÂåñ„ÅÆÁ©çÂàÜÂÄ§„ÅÆË®àÁÆó
+                %ó\ë™ãÊä‘ÇÃã»ó¶ÇÃïœâªÇÃêœï™ílÇÃåvéZ
                 for idx_course = 1 : size(course_delta_kappa, 1)
                     if course_delta_kappa(idx_course, 1) > u(1, 1)
                         idx_pre_start = idx_course - 1;
@@ -150,7 +147,7 @@ for i = 1 : length(Folderlist(1, :))
                     end
                 end
         
-                %Âè∞ÂΩ¢Ëøë‰ºº„Åó„Å¶Âä†ÁÆó
+                %ë‰å`ãﬂéóÇµÇƒâ¡éZ
                 delta_kappa_total = 0;
                 for idx_course = idx_pre_start : idx_pre_end
                     delta_kappa_total = delta_kappa_total + (course_delta_kappa(idx_course + 1, 2) + course_delta_kappa(idx_course, 2)) * (course_delta_kappa(idx_course + 1, 1) - course_delta_kappa(idx_course, 1)) / 2;
@@ -163,7 +160,7 @@ for i = 1 : length(Folderlist(1, :))
     
     
     
-                %Âà∂Á¥Ñ‰∏ä‰∏ãÈôê
+                %êßñÒè„â∫å¿
                 prediction = data(j, Idx_vel) * Step * Delta_T;
                 for k = 1 : interval
                     const_x = data(j, Idx_u) + k * prediction / interval;
@@ -179,86 +176,45 @@ for i = 1 : length(Folderlist(1, :))
 
 
     if first == true
-        MATRIX_INPUT = input;
+        TrainingInput = input;
     else
-        MATRIX_INPUT = [MATRIX_INPUT, input];
+        TrainingInput = [TrainingInput, input];
     end
     
     if first == true %%%
-        MATRIX_OUTPUT = out;
+        TrainingOutput = out;
         first = false;
     else
-        MATRIX_OUTPUT = [MATRIX_OUTPUT, out];
+        TrainingOutput = [TrainingOutput, out];
     end
     clear in;
     clear input;
     clear out;
 end
 
-% %Ê≠£Ë¶èÂåñ0~1
-% for i = 1 : length(MATRIX_INPUT(:, 1))
-%     MATRIX_INPUT(i, :) = rescale(MATRIX_INPUT(i, :), 0, 1);
-% end
-% idx = randperm(size(MATRIX_INPUT, 2), Num_validation);
-% INPUT_VALIDATION = MATRIX_INPUT(:, idx);
-% MATRIX_INPUT(:, idx) = [];
-% OUTPUT_VALIDATION = MATRIX_OUTPUT(:, idx);
-% MATRIX_OUTPUT(:, idx) = [];
+TrainingInput = TrainingInput.';
+TrainingOutput = TrainingOutput.';
 
+idx = randperm(size(TrainingInput, 1), Num_validation);
+INPUT_VALIDATION = TrainingInput(idx, :);
+TrainingInput(idx, :) = [];
+OUTPUT_VALIDATION = TrainingOutput(idx, :);
+TrainingOutput(idx, :) = [];
 
-MATRIX_INPUT = MATRIX_INPUT.';
-MATRIX_OUTPUT = MATRIX_OUTPUT.';
+rng("default");
+n = size(TrainingInput, 1);
+cvp = cvpartition(n, "KFold", 5);
 
-idx = randperm(size(MATRIX_INPUT, 1), Num_validation);
-INPUT_VALIDATION = MATRIX_INPUT(idx, :);
-MATRIX_INPUT(idx, :) = [];
-OUTPUT_VALIDATION = MATRIX_OUTPUT(idx, :);
-MATRIX_OUTPUT(idx, :) = [];
+lambda = [1e-5 1e-4 1e-3];
+cvloss = zeros(length(lambda), 1);
+for i = 1 : length(lambda)
+    cvMdl = fitrnet(TrainingInput, TrainingOutput, "Lambda", lambda(i), "CVPartition", cvp, "Standardize", true, "LayerSizes", [60 60 60]);
+    cvloss(i) = kfoldLoss(cvMdl);
+end
 
-% params = hyperparameters("fitrnet", MATRIX_INPUT, MATRIX_OUTPUT);
-% for ii = 1 : length(params)
-%     disp(ii);disp(params(ii))
-% end
-% 
-% params(1).Range = [1 5];
-% params(10).Optimize = true;
-% params(11).Optimize = true;
-% 
-% rng("default")
-% Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "OptimizeHyperparameters", params, "HyperparameterOptimizationOptions", struct("AcquisitionFunctionName", "expected-improvement-plus", "MaxObjectiveEvaluations", 30));
+plot(lambda, cvloss);
+xlabel("Regularization Strength");
+ylabel("Cross-Validation Loss");
 
-Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-8, "LayerSizes", [60 60 60 60])
-testMSE = loss(Mdl, INPUT_VALIDATION, OUTPUT_VALIDATION)
-OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
-
-% net = fitnet([60 60]); %40 40 30 20
-% %view(net);
-% net = train(net, MATRIX_INPUT, MATRIX_OUTPUT);
-% OUTPUT_PREDICTED = net(INPUT_VALIDATION);
-% IDX = 1;
-
-% predictionError = OUTPUT_VALIDATION(IDX, :) - OUTPUT_PREDICTED(IDX, :);
-% 
-% squares = predictionError.^2;
-% rmse = sqrt(mean(squares))
-
-histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [25 25], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [-0.5 1.5], 'YBinLimits', [0 1]);
-axis equal
-colorbar
-ax = gca;
-ax.CLim = [0 40];
-xlabel("Predicted Value")
-ylabel("True Value")
-
-mdl = fitlm(OUTPUT_PREDICTED, OUTPUT_VALIDATION);
-mdl.Rsquared.Ordinary
-
-% scatter(OUTPUT_PREDICTED,OUTPUT_VALIDATION,'+')
-% xlabel("Predicted Value")
-% ylabel("True Value")
-% 
-% hold on
-% plot([0 1], [0 1],'r--');
-% xlim([0, 1]);
-% hold off;
-
+[~, idx] = min(cvloss);
+bestLambda = lambda(idx)

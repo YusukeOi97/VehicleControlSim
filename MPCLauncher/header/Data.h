@@ -7,7 +7,7 @@ const int vsize = 70; //状態ベクトルのサイズ
 struct SharedData
 {
 	double course[cprm_num][csize]; //コースデータを保存する配列
-	int error_code, iters, fevals, sim_step, method, success, noise_count, first_access; //1,2,3番目->nuoptマニュアル参照、sim_step->MPCを実行するステップ数、method->IPM or SQP、success->プログラム強制終了の場合は0、noise_count->ノイズありで同じ初期状態に対して繰り返す回数
+	int error_code, iters, fevals, sim_step, method, success, noise_count, first_success; //1,2,3番目->nuoptマニュアル参照、sim_step->MPCを実行するステップ数、method->IPM or SQP、success->プログラム強制終了の場合は0、noise_count->ノイズありで同じ初期状態に対して繰り返す回数
 	double T_delta, eps, elapse_time, optValue, tolerance, residual, average_lateral_jerk, average_longitudinal_jerk; //2,3,4,5,6番目->マニュアル参照、average_jerk->乗り心地の指標
 
 	double init_u, init_v, init_x, init_y, init_theta, init_vel, init_delta;
