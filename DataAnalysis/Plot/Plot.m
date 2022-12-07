@@ -7,7 +7,7 @@ addpath('lib');
 %%%%Col prob -> p
 WhichAnalyze = "c";
 number = 2;
-Data_path = "C:\Data\IPM\1205\";
+Data_path = "C:\Data\IPM\Dataset\new\";
 
 %%%%IPM or SQP or DWA or PP
 Method = "IPM";
@@ -24,7 +24,7 @@ if Method == "IPM" || Method == "SQP"
     Idx_lonjerk = 26;
     Idx_Pre = 26;
     Step = 70;
-    Skipcount = 5;
+    Skipcount = 50;
 else
     Idx_x = 2;
     Idx_y = 3;
@@ -54,22 +54,6 @@ end
 const_name = strcat(Data_path, string(Folderlist(1, number)), "\course_data.csv");
 data = csvread(data_name, 1, 0);
 constdata = csvread(const_name, 1, 0);
-
-Idx = 1;
-figure
-for i = 1 : size(data, 1)
-    if data(i, Idx_err) == 0 && data(i, Idx_suc) == 1
-        u(Idx, 1) = data(i, Idx_x);
-        time(Idx, 1) = data(i, Idx_comp);
-        p = data(i, Idx_x);
-        q = data(i, Idx_comp);
-        Idx = Idx + 1;
-        if data(i, Idx_comp) > 0.7
-            p = 1;
-        end
-    end
-end
-scatter(u, time);
 
 if WhichAnalyze == "t"
     PlotTrajectory(data, constdata, Idx_err, Idx_suc, Idx_Pre, Step, Skipcount, Method);
