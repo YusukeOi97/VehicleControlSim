@@ -187,7 +187,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 #else
 	//Loop
 	//uのループ
-	for (logdata.u = U_start; logdata.u < U_end; logdata.u = logdata.u + prm.delta_u)
+	for (logdata.u = U_start; logdata.x < U_end; logdata.u = logdata.u + prm.delta_u)
 	{
 		//vの上下限取得
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
@@ -225,7 +225,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 								//コースの途中からデータ取得
 								if (CourseNum == 0)
 								{
-									if (logdata.x > 40)
+									if (logdata.x > 0)
 									{
 										//noiseを入れた場合の反復
 										for (int i = 0; i < prm.NoiseNum; i++)
@@ -240,7 +240,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 													system(path);
 												}
 											}*/
-											while (shareddata->success == 0 && shareddata->first_access == false)
+											while (shareddata->success == 0 && shareddata->first_success == false)
 											{
 												system(path);
 												falsecount++;
@@ -311,6 +311,7 @@ void SetFrenet(std::vector<std::vector<double>>& course, CourseSetting setting, 
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[4][i], 0.0, course[6][i], course[7][i], temp_theta, frenet.Cache_g); //制約y_minをfrenet->global
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[5][i], 0.0, course[8][i], course[9][i], temp_theta, frenet.Cache_g); //制約y_maxをfrenet->global
 	}
+	frenet.Cache_f.initialized = false;
 }
 
 int main()
@@ -320,7 +321,7 @@ int main()
 	std::vector<std::vector<double>> course;
 	Frenet frenet;
 
-	int skip = 1; //何個目のコースからシミュレーションするか、0でオッケーです
+	int skip = 0; //何個目のコースからシミュレーションするか、0でオッケーです
 	int count = 0;
 
 #ifdef OA
@@ -330,8 +331,8 @@ int main()
 	//int pos1[2] = { 1, 0 };
 
 	double a[1] = { 2.5 };
-	double width[2] = { 1.3, 1.05 }; //0.5 0.7 0.9
-	double dist[1] = { 13 }; // 13 16 19
+	double width[1] = { 1.05 }; //0.5 0.7 0.9
+	double dist[1] = { 19 }; // 13 16 19
 	double U_start = 25;
 	double U_end = 80;
 
@@ -364,17 +365,17 @@ int main()
 #endif // OA
 
 #ifdef SINE
-	double ampl[1] = { 30 };
+	double ampl[1] = { 40 };
 	double cycle[1] = { 80 };
-	double U_start = 0;
-	double U_end = 80;
+	double U_start = 3;
+	double U_end = 30;
 
 	for (size_t i = 0; i < sizeof(cycle) / sizeof(cycle[0]); i++)
 	{
 		setting.cycle = cycle[i];
-		for (size_t i = 0; i < sizeof(ampl) / sizeof(ampl[0]); i++)
+		for (size_t j = 0; j < sizeof(ampl) / sizeof(ampl[0]); j++)
 		{
-			setting.ampl = ampl[i];
+			setting.ampl = ampl[j];
 			gencourse.GetSetting(setting);
 			course = gencourse.Gen_SINE();
 			SetFrenet(course, setting, frenet);

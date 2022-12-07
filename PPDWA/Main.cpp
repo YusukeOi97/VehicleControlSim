@@ -199,7 +199,7 @@ int main()
 	double ampl[3] = { 20, 30, 40 };
 	double cycle[1] = { 80 };
 	double U_start = 0;
-	double U_end = 80
+	double U_end = 80;
 
 	for (size_t i = 0; i < sizeof(cycle) / sizeof(cycle[0]); i++)
 	{
@@ -208,7 +208,7 @@ int main()
 		{
 			setting.ampl = ampl[i];
 			gencourse.GetSetting(setting);
-			course = gencourse.Gen_SIN();
+			course = gencourse.Gen_SINE();
 			SetFrenet(course, setting, frenet);
 
 			if (count >= skip)

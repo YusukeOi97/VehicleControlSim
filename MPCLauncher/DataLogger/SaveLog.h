@@ -36,8 +36,8 @@ std::string CreateLogFileName(std::string str, std::string outdata, CourseSettin
 	std::string foldername = time + "a" + a + "w" + w + "d" + d + "p1" + setting.pos1 + "p2" + setting.pos2;
 #endif // OA
 #ifdef SINE
-	string cycle = std::format("{}", setting.cycle);
-	string ampl = std::format("{}", setting.ampl);
+	std::string cycle = std::format("{}", setting.cycle);
+	std::string ampl = std::format("{}", setting.ampl);
 	std::string foldername = time + "cycle" + cycle + "ampl" + ampl;
 #endif // SINE
 
