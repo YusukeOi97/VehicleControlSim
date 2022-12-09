@@ -21,7 +21,8 @@ private:
 	Prm prm;
 
 	//Ô—¼À•WŒn‚Ì•Ï” (BaseÀ•WŒn)
-	double B_x, B_y, B_yaw, B_y_dot, B_yaw_dot, B_y_2dot, B_yaw_2dot, B_vel, B_pre_vel, B_acc, B_delta, B_beta;
+	double B_x, B_y, B_yaw, B_y_dot, B_yaw_dot, B_y_2dot, B_yaw_2dot, B_vel, B_pre_vel, B_acc, B_delta, B_beta, V_inv;
+	double pre_B_y, pre_B_theta;
 	double input_vel, input_delta, vel_ref;
 	int SimStep;
 	std::vector<SidePoint> side;

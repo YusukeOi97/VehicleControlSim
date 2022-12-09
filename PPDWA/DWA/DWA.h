@@ -15,7 +15,8 @@ struct SidePoint
 class DWA
 {
 public:
-	void Calc_inp(double init_x, double init_y, double init_yaw, double init_vel, double init_tireangle, double vel_ref,  double ret[], int SimIdx);
+	void Calc_inp(double init_x, double init_y, double init_yaw, double init_vel, double init_tireangle, double vel_ref, double init_v_dot, double init_theta_dot, double ret[], int SimIdx);
+	void Calc_inp_g(double init_x, double init_y, double init_yaw, double init_vel, double init_tireangle, double vel_ref, double ret[], int SimIdx);
 
 	DWA(Frenet frenet, LinearInterporater table, Prm prm);
 
@@ -30,10 +31,12 @@ private:
 	
 	//ó\ë™èÛë‘Çäiî[
 	std::vector<std::vector<double>> u, v, theta, tire_ang, v_error;
-	std::vector<double> vel, angvel, rho, Pre_u, Opt_v;
+	std::vector<std::vector<double>> x, y, yaw;
+	std::vector<double> vel, angvel, rho, Pre_u, Opt_u, Opt_v, Opt_v_error, Opt_theta;
 	std::vector<double> v_ref;
 	std::vector<SidePoint> side;
 	double init_u, init_v, init_theta, init_vel, beta, u_dot, v_dot, theta_dot, Opt_angvel;
+	double V_inv, v_2dot, theta_2dot, Pre_v, Pre_theta;
 
 	//Evaluation function
 	int SmpNum, SmpCount, OptIdx, SkipCount = 1;
@@ -45,7 +48,7 @@ private:
 
 	//Other parameter
 	double T_delta;
-	double l_f, l_r, Wheelbase, dist_front, dist_rear, theta_front, theta_rear;
+	double a11, a12, a21, a22, b1, b2, l_f, l_r, Wheelbase, dist_front, dist_rear, theta_front, theta_rear;
 
 	//To measure calculation time
 	LARGE_INTEGER freq, start, end;
@@ -54,8 +57,8 @@ private:
 	LinearInterporater table;
 
 	void SetDW(double init_vel, double vel_ref);
-	void SetRho(int SimIdx, double init_u, double init_vel);
-	void InitState(double init_tire_ang, double init_vel, double init_angvel);
+	void SetRho(int Step, double init_u, double init_vel);
+	void InitState(double init_tire_ang, double init_vel, double init_angvel, double v_dot, double theta_dot, int Step);
 	bool Check();
 	bool AllColCheck(std::vector<bool> collision);
 	void SetPreState();

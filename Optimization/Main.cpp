@@ -182,7 +182,7 @@ int main()
 		constraint.GetConstraint(myProblem.u, myProblem.u_front_l, myProblem.u_front_r, myProblem.u_center_l, myProblem.u_center_r, myProblem.u_rear_l, myProblem.u_rear_r);
 		myProblem.SetConstraints(constraint.v_max, constraint.v_min, constraint.v_ref, constraint.vel_max, constraint.rho, constraint.v_front_max, constraint.v_front_min, constraint.v_rear_max, constraint.v_rear_min);
 		myProblem.SetV(myProblem.vel[0]);
-		myProblem.SetAllState(myProblem.noise_count, i);
+		myProblem.SetAllState(myProblem.noise_count, constraint.rho[0], i);
 
 		std::promise<bool> prms;
 		std::future<bool> ftr = prms.get_future();
