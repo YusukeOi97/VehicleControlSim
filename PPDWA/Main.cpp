@@ -4,7 +4,7 @@
 #include <DataLogger/CopyParam.h>
 #include <header/VehicleSim.h>
 
-void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Frenet frenet, double U_start, double U_end, int CourseNum)
+void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Frenet frenet, double u_start, double x_end, int CourseNum)
 {
 	//csv読み込み
 	RTCLib::CSVLoader CSV_prm("C:\\VehicleControlSim\\Common\\Prm_Setting\\parameter.csv", 1);
@@ -31,7 +31,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	logger_PP.Open(CreateLogFileName("data", "pp_", setting));
 	logger_DWA.Open(CreateLogFileName("data", "dwa_", setting));
 	logger_Course.Open(CreateLogFileName("data", "course_", setting));
-	saveparam.save_prm(CreateLogFileName("data", "prm", setting));
+	saveparam.save_prm(CreateLogFileName("data", "prm_", setting));
 	//ログの保存
 	SetData_PP(logger_PP, constraint, logdata, prm.PPDWASimStep);
 	SetData_DWA(logger_DWA, constraint, logdata, prm.PPDWASimStep);
@@ -52,7 +52,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 #else
 	//Loop
 	//uのループ
-	for (logdata.u = U_start; logdata.u < U_end; logdata.u = logdata.u + prm.delta_u)
+	for (logdata.u = u_start; logdata.x < x_end; logdata.u = logdata.u + prm.delta_u)
 	{
 		//vの上下限取得
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
@@ -74,48 +74,32 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 				std::cout << logdata.sample_count << "\n" << std::endl;
 				std::cout << "u = " << logdata.u << "\n" << std::endl;
 				std::cout << "x = " << logdata.x << "\n" << std::endl;
-				
-				//v_dotのループ
-				for (logdata.v_dot = prm.v_dot_min; logdata.v_dot <= prm.v_dot_max; logdata.v_dot = logdata.v_dot + prm.delta_v_dot)
+				//velのループ
+				for (logdata.vel = prm.vel_min; logdata.vel <= prm.vel_max; logdata.vel = logdata.vel + prm.delta_vel)
 				{
-
-					//theta_dotのループ
-					for (logdata.theta_dot = prm.theta_dot_min; logdata.theta_dot <= prm.theta_dot_max; logdata.theta_dot = logdata.theta_dot + prm.delta_theta_dot)
+					if (logdata.x > 0)
 					{
-
-						//velのループ
-						for (logdata.vel = prm.vel_min; logdata.vel <= prm.vel_max; logdata.vel = logdata.vel + prm.delta_vel)
+						//noiseを入れた場合の反復回数
+						for (int i = 0; i < prm.NoiseNum; i++)
 						{
+							//PP
+							sim.Sim_PP_Basecoordinate(pp, logdata, logdata.vel);
+							logdata.collision = sim.Check(logdata.x_pp, logdata.y_pp, logdata.yaw_pp);
+							logger_PP.PrintData();
 
-							//tire_angleのループ
-							for (logdata.delta = prm.delta_min; logdata.delta <= prm.delta_max; logdata.delta = logdata.delta + prm.delta_delta)
+							//DWA
+							sim.Sim_DWA_Basecoordinate(dwa, logdata);
+							logdata.collision = sim.Check(logdata.x_dwa, logdata.y_dwa, logdata.yaw_dwa);
+							logger_DWA.PrintData();
+							for (size_t j = 0; j < logdata.x_dwa.size(); j++)
 							{
-								if (logdata.x > 0)
-								{
-									//noiseを入れた場合の反復回数
-									for (size_t i = 0; i < prm.NoiseNum; i++)
-									{
-										//PP
-										sim.Sim_PP_Basecoordinate(pp, logdata, logdata.vel);
-										logdata.collision = sim.Check(logdata.x_pp, logdata.y_pp, logdata.yaw_pp);
-										logger_PP.PrintData();
-
-										//DWA
-										sim.Sim_DWA_Basecoordinate(dwa, logdata);
-										logdata.collision = sim.Check(logdata.x_dwa, logdata.y_dwa, logdata.yaw_dwa);
-										logger_DWA.PrintData();
-										for (size_t j = 0; j < logdata.x_dwa.size(); j++)
-										{
-											frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_pp[j], logdata.y_pp[j], logdata.yaw_pp[j], logdata.u_pp[j], logdata.v_pp[j], logdata.theta_pp[j], frenet.Cache_f);
-											frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_dwa[j], logdata.y_dwa[j], logdata.yaw_dwa[j], logdata.u_dwa[j], logdata.v_dwa[j], logdata.theta_dwa[j], frenet.Cache_f);
-										}
-									}
-									//カウントインクリメント
-								}
-								logdata.sample_count++;								
+								frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_pp[j], logdata.y_pp[j], logdata.yaw_pp[j], logdata.u_pp[j], logdata.v_pp[j], logdata.theta_pp[j], frenet.Cache_f);
+								frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_dwa[j], logdata.y_dwa[j], logdata.yaw_dwa[j], logdata.u_dwa[j], logdata.v_dwa[j], logdata.theta_dwa[j], frenet.Cache_f);
 							}
 						}
+						//カウントインクリメント
 					}
+					logdata.sample_count++;
 				}
 			}
 		}
@@ -143,6 +127,7 @@ void SetFrenet(std::vector<std::vector<double>>& course, CourseSetting setting, 
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[4][i], 0.0, course[6][i], course[7][i], temp_theta, frenet.Cache_g); //制約y_minをfrenet->global
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[5][i], 0.0, course[8][i], course[9][i], temp_theta, frenet.Cache_g); //制約y_maxをfrenet->global
 	}
+	frenet.Cache_f.initialized = false;
 }
 
 int main()
@@ -156,16 +141,16 @@ int main()
 	int count = 0;
 
 #ifdef OA
-	double a[2] = { 1.3, 2.5 };
-	double width[3] = { 1.3, 1.05, 0.9 }; //0.5 0.7 0.9 0.6 0.8 1.0
-	double dist[2] = { 13, 19 }; // 13 16 19
+	double a[1] = { 2.5 };
+	double width[1] = { 1.2 }; //0.5 0.7 0.9 0.6 0.8 1.0
+	double dist[1] = { 13 }; // 13 16 19
 
 	//double a[2] = { 1.3, 2.5 };
 	//double width[3] = { 0.9, 1, 1.1 }; //0.5 0.7 0.9 0.6 0.8 1.0
 	//double dist[2] = { 13, 19 }; // 13 16 19
 
-	double U_start = 25;
-	double U_end = 80;
+	double u_start = 25;
+	double x_end = 80;
 
 	for (size_t i = 0; i < sizeof(a) / sizeof(a[0]); i++)
 	{
@@ -187,7 +172,7 @@ int main()
 
 				if (count >= skip)
 				{
-					Launch(course, setting, frenet, U_start, U_end, count - skip);
+					Launch(course, setting, frenet, u_start, x_end, count - skip);
 				}
 				count++;
 			}
@@ -196,24 +181,25 @@ int main()
 #endif // OA
 
 #ifdef SINE
-	double ampl[3] = { 20, 30, 40 };
+	double ampl[1] = { 20 };
 	double cycle[1] = { 80 };
-	double U_start = 0;
-	double U_end = 80
+	double u_start = 3;
+	double x_end = 30;
 
 	for (size_t i = 0; i < sizeof(cycle) / sizeof(cycle[0]); i++)
 	{
 		setting.cycle = cycle[i];
-		for (size_t i = 0; i < sizeof(ampl) / sizeof(ampl[0]); i++)
+		for (size_t j = 0; j < sizeof(ampl) / sizeof(ampl[0]); j++)
 		{
-			setting.ampl = ampl[i];
+			frenet.Cache_f.initialized = false;
+			setting.ampl = ampl[j];
 			gencourse.GetSetting(setting);
-			course = gencourse.Gen_SIN();
+			course = gencourse.Gen_SINE();
 			SetFrenet(course, setting, frenet);
 
 			if (count >= skip)
 			{
-				Launch(course, setting, frenet, U_start, U_end, count - skip);
+				Launch(course, setting, frenet, u_start, x_end, count - skip);
 			}
 			count++;
 		}

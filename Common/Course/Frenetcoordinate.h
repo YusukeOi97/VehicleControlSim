@@ -257,7 +257,7 @@ public:
 			uv = points[index].GetLocalPos(target);
 		}
 		// forward search
-			// if local u > 0 from next point, go next
+		// if local u > 0 from next point, go next
 		while (uv.x() > 0)
 		{
 			if (uv.x() <= points[index].du) break;

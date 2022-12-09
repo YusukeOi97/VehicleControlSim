@@ -187,7 +187,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 #else
 	//Loop
 	//uのループ
-	for (logdata.u = U_start; logdata.u < U_end; logdata.u = logdata.u + prm.delta_u)
+	for (logdata.u = U_start; logdata.x < U_end; logdata.u = logdata.u + prm.delta_u)
 	{
 		//vの上下限取得
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
@@ -205,82 +205,66 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 			{
 				//グローバル座標を取得
 				frenet.Cache_g = frenet.frenetlib.GetGlobal(logdata.u, logdata.v, logdata.theta, logdata.x, logdata.y, logdata.yaw, frenet.Cache_g);
-
-				//v_dotのループ
-				for (logdata.v_dot = prm.v_dot_min; logdata.v_dot <= prm.v_dot_max; logdata.v_dot = logdata.v_dot + prm.delta_v_dot)
+				//velのループ
+				for (logdata.vel = prm.vel_min; logdata.vel <= prm.vel_max; logdata.vel = logdata.vel + prm.delta_vel)
 				{
-
-					//theta_dotのループ
-					for (logdata.theta_dot = prm.theta_dot_min; logdata.theta_dot <= prm.theta_dot_max; logdata.theta_dot = logdata.theta_dot + prm.delta_theta_dot)
+					//コースの途中からデータ取得
+					if (CourseNum == 0)
 					{
-
-						//velのループ
-						for (logdata.vel = prm.vel_min; logdata.vel <= prm.vel_max; logdata.vel = logdata.vel + prm.delta_vel)
+						if (logdata.x > 0)
 						{
-
-							//tire_angleのループ
-							for (logdata.delta = prm.delta_min; logdata.delta <= prm.delta_max; logdata.delta = logdata.delta + prm.delta_delta)
+							//noiseを入れた場合の反復
+							for (int i = 0; i < prm.NoiseNum; i++)
 							{
-								//コースの途中からデータ取得
-								if (CourseNum == 0)
+								int falsecount = 0;
+								shareddata->noise_count = i;
+								InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, 0);
+						/*		if (logdata.theta == 0)
 								{
-									if (logdata.x > 30)
+									while (shareddata->success == 0 && shareddata->first_access == false)
 									{
-										//noiseを入れた場合の反復
-										for (int i = 0; i < prm.NoiseNum; i++)
-										{
-											int falsecount = 0;
-											shareddata->noise_count = i;
-											InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, logdata.delta);
-									/*		if (logdata.theta == 0)
-											{
-												while (shareddata->success == 0 && shareddata->first_access == false)
-												{
-													system(path);
-												}
-											}*/
-											while (shareddata->success == 0 && shareddata->first_success == false)
-											{
-												system(path);
-												falsecount++;
-												if (falsecount > 4)
-												{
-													break;
-												}
-											}
- 											
-											if (!ReadSharedMemory(SHARED_MEMORY_SIZE))
-											{
-												std::cout << "共有メモリの読み取りに失敗しました。\n";
-											}
-
-											logger_MPC.PrintData();
-										}
-									}
-								}
-								else
-								{
-									//noiseを入れた場合の反復回数
-									for (int i = 0; i < prm.NoiseNum; i++)
-									{
-										shareddata->noise_count = i;
-										InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, logdata.delta);
 										system(path);
-
-										if (!ReadSharedMemory(SHARED_MEMORY_SIZE))
-										{
-											std::cout << "共有メモリの読み取りに失敗しました。\n";
-										}
-
-										logger_MPC.PrintData();
+									}
+								}*/
+								while (shareddata->success == 0 && shareddata->first_success == false)
+								{
+									system(path);
+									falsecount++;
+									if (falsecount > 4)
+									{
+										break;
 									}
 								}
+ 											
+								if (!ReadSharedMemory(SHARED_MEMORY_SIZE))
+								{
+									std::cout << "共有メモリの読み取りに失敗しました。\n";
+								}
 
-								//カウントインクリメント
-								logdata.sample_count++;
+								logger_MPC.PrintData();
 							}
 						}
 					}
+					else
+					{
+						//noiseを入れた場合の反復回数
+						for (int i = 0; i < prm.NoiseNum; i++)
+						{
+							shareddata->noise_count = i;
+							InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, 0);
+							system(path);
+
+							if (!ReadSharedMemory(SHARED_MEMORY_SIZE))
+							{
+								std::cout << "共有メモリの読み取りに失敗しました。\n";
+							}
+
+							logger_MPC.PrintData();
+						}
+					}
+
+					//カウントインクリメント
+					logdata.sample_count++;
 				}
 			}
 		}

@@ -277,7 +277,7 @@ void MyProblem::SetRho(vector<double> Rho)
 	}
 }
 
-void MyProblem::SetAllState(int noise_count, int SimStep)
+void MyProblem::SetAllState(int noise_count, double init_rho, int SimStep)
 {
 	System_NUOPT* m = ((System_NUOPT*)model.get());
 
@@ -297,8 +297,17 @@ void MyProblem::SetAllState(int noise_count, int SimStep)
 		m->init_theta = theta[0];
 	}
 
-	m->init_v_dot = v_dot[0];
-	m->init_theta_dot = theta_dot[0];
+	if (SimStep == 0)
+	{
+		m->init_v_dot = vel[0] * theta[0];
+		m->init_theta_dot = -vel[0] * init_rho;
+	}
+	else
+	{
+		m->init_v_dot = v_dot[0];
+		m->init_theta_dot = theta_dot[0];
+	}
+
 	m->init_vel = vel[0];
 	m->init_delta = delta[0];
 
