@@ -16,7 +16,6 @@ class DWA
 {
 public:
 	void Calc_inp(double init_x, double init_y, double init_yaw, double init_vel, double init_tireangle, double vel_ref, double init_v_dot, double init_theta_dot, double ret[], int SimIdx);
-	void Calc_inp_g(double init_x, double init_y, double init_yaw, double init_vel, double init_tireangle, double vel_ref, double ret[], int SimIdx);
 
 	DWA(Frenet frenet, LinearInterporater table, Prm prm);
 
