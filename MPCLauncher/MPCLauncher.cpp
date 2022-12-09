@@ -330,8 +330,8 @@ int main()
 	//int pos1[2] = { 1, 0 };
 
 	double a[1] = { 2.5 };
-	double width[1] = { 1.05 }; //0.5 0.7 0.9
-	double dist[1] = { 19 }; // 13 16 19
+	double width[1] = { 0.9 }; //0.5 0.7 0.9
+	double dist[1] = { 13 }; // 13 16 19
 	double U_start = 25;
 	double U_end = 80;
 
