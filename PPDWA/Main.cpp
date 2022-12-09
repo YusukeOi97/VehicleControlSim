@@ -74,48 +74,32 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 				std::cout << logdata.sample_count << "\n" << std::endl;
 				std::cout << "u = " << logdata.u << "\n" << std::endl;
 				std::cout << "x = " << logdata.x << "\n" << std::endl;
-				
-				//v_dotのループ
-				for (logdata.v_dot = prm.v_dot_min; logdata.v_dot <= prm.v_dot_max; logdata.v_dot = logdata.v_dot + prm.delta_v_dot)
+				//velのループ
+				for (logdata.vel = prm.vel_min; logdata.vel <= prm.vel_max; logdata.vel = logdata.vel + prm.delta_vel)
 				{
-
-					//theta_dotのループ
-					for (logdata.theta_dot = prm.theta_dot_min; logdata.theta_dot <= prm.theta_dot_max; logdata.theta_dot = logdata.theta_dot + prm.delta_theta_dot)
+					if (logdata.x > 0)
 					{
-
-						//velのループ
-						for (logdata.vel = prm.vel_min; logdata.vel <= prm.vel_max; logdata.vel = logdata.vel + prm.delta_vel)
+						//noiseを入れた場合の反復回数
+						for (int i = 0; i < prm.NoiseNum; i++)
 						{
+							//PP
+							sim.Sim_PP_Basecoordinate(pp, logdata, logdata.vel);
+							logdata.collision = sim.Check(logdata.x_pp, logdata.y_pp, logdata.yaw_pp);
+							logger_PP.PrintData();
 
-							//tire_angleのループ
-							for (logdata.delta = prm.delta_min; logdata.delta <= prm.delta_max; logdata.delta = logdata.delta + prm.delta_delta)
+							//DWA
+							sim.Sim_DWA_Basecoordinate(dwa, logdata);
+							logdata.collision = sim.Check(logdata.x_dwa, logdata.y_dwa, logdata.yaw_dwa);
+							logger_DWA.PrintData();
+							for (size_t j = 0; j < logdata.x_dwa.size(); j++)
 							{
-								if (logdata.x > 40)
-								{
-									//noiseを入れた場合の反復回数
-									for (int i = 0; i < prm.NoiseNum; i++)
-									{
-										//PP
-										sim.Sim_PP_Basecoordinate(pp, logdata, logdata.vel);
-										logdata.collision = sim.Check(logdata.x_pp, logdata.y_pp, logdata.yaw_pp);
-										logger_PP.PrintData();
-
-										//DWA
-										sim.Sim_DWA_Basecoordinate(dwa, logdata);
-										logdata.collision = sim.Check(logdata.x_dwa, logdata.y_dwa, logdata.yaw_dwa);
-										logger_DWA.PrintData();
-										for (size_t j = 0; j < logdata.x_dwa.size(); j++)
-										{
-											frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_pp[j], logdata.y_pp[j], logdata.yaw_pp[j], logdata.u_pp[j], logdata.v_pp[j], logdata.theta_pp[j], frenet.Cache_f);
-											frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_dwa[j], logdata.y_dwa[j], logdata.yaw_dwa[j], logdata.u_dwa[j], logdata.v_dwa[j], logdata.theta_dwa[j], frenet.Cache_f);
-										}
-									}
-									//カウントインクリメント
-								}
-								logdata.sample_count++;								
+								frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_pp[j], logdata.y_pp[j], logdata.yaw_pp[j], logdata.u_pp[j], logdata.v_pp[j], logdata.theta_pp[j], frenet.Cache_f);
+								frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_dwa[j], logdata.y_dwa[j], logdata.yaw_dwa[j], logdata.u_dwa[j], logdata.v_dwa[j], logdata.theta_dwa[j], frenet.Cache_f);
 							}
 						}
+						//カウントインクリメント
 					}
+					logdata.sample_count++;
 				}
 			}
 		}
@@ -158,7 +142,7 @@ int main()
 
 #ifdef OA
 	double a[1] = { 2.5 };
-	double width[1] = { 1.1 }; //0.5 0.7 0.9 0.6 0.8 1.0
+	double width[1] = { 1.2 }; //0.5 0.7 0.9 0.6 0.8 1.0
 	double dist[1] = { 13 }; // 13 16 19
 
 	//double a[2] = { 1.3, 2.5 };

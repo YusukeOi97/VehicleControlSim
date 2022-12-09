@@ -247,10 +247,10 @@ System_NUOPT::System_NUOPT()
 			smp_line(__LINE__, __FILE__); u[k + 1] == u[k] + vel[k] * T_delta;
 			smp_line(__LINE__, __FILE__); v_2dot[k] == -a11 * v_dot[k] * V_inv[k] + (a11 + acc[k]) * theta[k] + a12 * theta_dot[k] * V_inv[k] + b1 * delta[k] + (a12 - vel[k] * vel[k]) * Rho[k];
 			smp_line(__LINE__, __FILE__); v_dot[k + 1] == v_dot[k] + v_2dot[k] * T_delta;
-			smp_line(__LINE__, __FILE__); v[k + 1] == v[k] + v_dot[k] * T_delta;
+			smp_line(__LINE__, __FILE__); v[k + 1] == v[k] + v_dot[k + 1] * T_delta;
 			smp_line(__LINE__, __FILE__); theta_2dot[k] == -a21 * v_dot[k] * V_inv[k] + a21 * theta[k] + a22 * theta_dot[k] * V_inv[k] + b2 * delta[k] + (a22 - acc[k]) * Rho[k];
 			smp_line(__LINE__, __FILE__); theta_dot[k + 1] == theta_dot[k] + theta_2dot[k] * T_delta;
-			smp_line(__LINE__, __FILE__); theta[k + 1] == theta[k] + theta_dot[k] * T_delta;
+			smp_line(__LINE__, __FILE__); theta[k + 1] == theta[k] + theta_dot[k + 1] * T_delta;
 			smp_line(__LINE__, __FILE__); delta[k + 1] == delta[k] + delta_dot[k] * T_delta;
 			smp_line(__LINE__, __FILE__); v_front_l[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] + theta_front);
 			smp_line(__LINE__, __FILE__); v_front_r[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] - theta_front);

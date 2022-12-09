@@ -57,11 +57,10 @@ void SetData_PP(DataLogger& logger, getconstraint& constraint, LogData& logdata,
 	logger.push_back<double>("6start_v", logdata.v);
 	logger.push_back<double>("7start_theta", logdata.theta);
 	logger.push_back<double>("8vel", logdata.vel);
-	logger.push_back<double>("9delta", logdata.delta);
-	logger.push_back<double>("10average_time", logdata.average_time);
-	logger.push_back<int>("11collision", logdata.collision);
-	logger.push_back<double>("12average_lateral_jerk", logdata.average_lateral_jerk);
-	logger.push_back<double>("13average_longitudinal_jerk", logdata.average_longitudinal_jerk);
+	logger.push_back<double>("9average_time", logdata.average_time);
+	logger.push_back<int>("10collision", logdata.collision);
+	logger.push_back<double>("11average_lateral_jerk", logdata.average_lateral_jerk);
+	logger.push_back<double>("12average_longitudinal_jerk", logdata.average_longitudinal_jerk);
 
 	//«—ˆ‹““®‚ÌŒ‹‰Ê‚ğo—Í
 	std::string data_name;
@@ -108,11 +107,10 @@ void SetData_DWA(DataLogger& logger, getconstraint& constraint, LogData& logdata
 	logger.push_back<double>("6v", logdata.v);
 	logger.push_back<double>("7theta", logdata.theta);
 	logger.push_back<double>("8speed", logdata.vel);
-	logger.push_back<double>("9delta", logdata.delta);
-	logger.push_back<double>("10average_time", logdata.average_time);
-	logger.push_back<int>("11collision", logdata.collision);
-	logger.push_back<double>("12average_lateral_jerk", logdata.average_lateral_jerk);
-	logger.push_back<double>("13average_longitudinal_jerk", logdata.average_longitudinal_jerk);
+	logger.push_back<double>("9average_time", logdata.average_time);
+	logger.push_back<int>("10collision", logdata.collision);
+	logger.push_back<double>("11average_lateral_jerk", logdata.average_lateral_jerk);
+	logger.push_back<double>("12average_longitudinal_jerk", logdata.average_longitudinal_jerk);
 	//logger.push_back<double>("14sample_collision_probability", logdata.collision_probability);
 
 	//«—ˆ‹““®‚ÌŒ‹‰Ê‚ğo—Í

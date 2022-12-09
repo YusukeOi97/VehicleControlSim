@@ -26,7 +26,7 @@ inline void Noise::Make()
 	std::uniform_real_distribution<float> distr(FLOAT_MIN, FLOAT_MAX);
 
 	
-	double num1, num2, num3, num4, num5, num6, num7;
+	double num1, num2, num3, num4, num5, num6;
 	// 0~1‚Ìˆê—l—”¶¬
 	num1 = distr(eng);
 	num2 = distr(eng);
