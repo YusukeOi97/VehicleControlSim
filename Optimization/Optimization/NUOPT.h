@@ -25,7 +25,7 @@
 
 class System_NUOPT : public SystemInterface {
 public:
-System_NUOPT();
+System_NUOPT(double Lr, double WB);
   ParameterProxy rcd_horizon;
   SetProxy tempSet;
   ElementProxy tempElem;
@@ -53,6 +53,7 @@ System_NUOPT();
   VariableProxy v_center_r;
   VariableProxy v_rear_l;
   VariableProxy v_rear_r;
+  VariableProxy beta;
   VariableProxy V_inv;
   VariableParameterProxy T_delta;
   VariableParameterProxy a11;
@@ -81,6 +82,8 @@ System_NUOPT();
   VariableParameterProxy Sf_theta_2dot;
   VariableParameterProxy Sf_delta;
   VariableParameterProxy Sf_delta_dot;
+  VariableParameterProxy l_r;
+  VariableParameterProxy Wheelbase;
   VariableParameterProxy width;
   VariableParameterProxy dist_front;
   VariableParameterProxy dist_rear;

@@ -1,4 +1,4 @@
-function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk)
+function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method)
     figure(1)
     plot(constdata(:, 7), constdata(:, 8), 'k');
     hold on

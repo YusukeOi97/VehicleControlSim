@@ -28,7 +28,7 @@ Num_validation = 1500; %åüèÿópÇÃÉTÉìÉvÉãêî
 
 DataPath = 'C:\Data\Dataset\';
 
-Method = 'IPM';
+Method = 'SQPcp';
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
@@ -206,9 +206,9 @@ MATRIX_OUTPUT = MATRIX_OUTPUT.';
 
 idx = randperm(size(MATRIX_INPUT, 1), Num_validation);
 INPUT_VALIDATION = MATRIX_INPUT(idx, :);
-MATRIX_INPUT(idx, :) = [];
+%MATRIX_INPUT(idx, :) = [];
 OUTPUT_VALIDATION = MATRIX_OUTPUT(idx, :);
-MATRIX_OUTPUT(idx, :) = [];
+%MATRIX_OUTPUT(idx, :) = [];
 
 % params = hyperparameters("fitrnet", MATRIX_INPUT, MATRIX_OUTPUT);
 % for ii = 1 : length(params)
@@ -238,11 +238,11 @@ OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 % squares = predictionError.^2;
 % rmse = sqrt(mean(squares))
 
-histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
+histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [30 30], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
 axis equal
 colorbar
 ax = gca;
-ax.CLim = [0 100];
+ax.CLim = [0 80];
 xlabel("Predicted Value")
 ylabel("True Value")
 

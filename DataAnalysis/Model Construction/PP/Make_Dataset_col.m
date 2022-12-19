@@ -21,9 +21,9 @@ Idx_c_ymax = 6;
 Idx_c_ymin = 5;
 Idx_c_kappa = 11;
 
-Idx_col_dwa = 11;
-Idx_col_pp = 11;
-Idx_cal_pp = 10;
+Idx_col_dwa = 10;
+Idx_col_pp = 10;
+Idx_cal_pp = 9;
 Num_validation = 1500; %åüèÿópÇÃÉTÉìÉvÉãêî
 
 
@@ -256,11 +256,11 @@ for i = 1 : size(OUTPUT_PREDICTED, 1)
         OUTPUT_PREDICTED(i, 1) = 1;
     end
 end
-histogram2(OUTPUT_PREDICTED(:, 1), OUTPUT_VALIDATION(:, 1), [40 40], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
+histogram2(OUTPUT_PREDICTED(:, 1), OUTPUT_VALIDATION(:, 1), [30 30], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
 axis equal
 colorbar
 ax = gca;
-ax.CLim = [0 50];
+ax.CLim = [0 80];
 xlabel("Predicted Value")
 ylabel("True Value")
 

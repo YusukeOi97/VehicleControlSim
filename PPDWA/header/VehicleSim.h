@@ -9,8 +9,8 @@ class Vehicle_Sim
 {
 public:
 	Vehicle_Sim(Frenet frenet, LinearInterporater table, Prm prm);
-	void Sim_PP_Basecoordinate(PP PP, LogData& log, double vel_ref);
-	void Sim_DWA_Basecoordinate(DWA dwa, LogData& log);
+	void Sim_PP_Basecoordinate(PP PP, LogData& logdata);
+	void Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata);
 
 	bool Check(std::vector<double> x, std::vector<double> y, std::vector<double> yaw);
 

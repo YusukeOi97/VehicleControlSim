@@ -29,7 +29,7 @@ Num_validation = 1500; %åüèÿópÇÃÉTÉìÉvÉãêî
 
 DataPath = 'C:\Data\Dataset\';
 
-Method = 'IPM';
+Method = 'IPMtime';
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
@@ -218,9 +218,9 @@ MATRIX_OUTPUT = MATRIX_OUTPUT.';
 
 idx = randperm(size(MATRIX_INPUT, 1), Num_validation);
 INPUT_VALIDATION = MATRIX_INPUT(idx, :);
-MATRIX_INPUT(idx, :) = [];
+%MATRIX_INPUT(idx, :) = [];
 OUTPUT_VALIDATION = MATRIX_OUTPUT(idx, :);
-MATRIX_OUTPUT(idx, :) = [];
+%MATRIX_OUTPUT(idx, :) = [];
 
 % params = hyperparameters("fitrnet", MATRIX_INPUT, MATRIX_OUTPUT);
 % for ii = 1 : length(params)

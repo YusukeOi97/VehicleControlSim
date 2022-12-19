@@ -214,6 +214,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 						if (logdata.x > 0)
 						{
 							//noise‚ğ“ü‚ê‚½ê‡‚Ì”½•œ
+							//KBM‚Ìê‡‚É‚Ívsize‚ğ•ÏX
 							for (int i = 0; i < prm.NoiseNum; i++)
 							{
 								int falsecount = 0;
@@ -355,7 +356,7 @@ int main()
 #ifdef SINE
 	double ampl[3] = { 20, 30, 40 };
 	double cycle[1] = { 80 };
-	double U_start = 3;
+	double U_start = 2;
 	double U_end = 30;
 
 	for (size_t i = 0; i < sizeof(cycle) / sizeof(cycle[0]); i++)
