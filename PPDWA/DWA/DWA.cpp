@@ -245,45 +245,6 @@ bool DWA::Check()
 	//厳密な衝突判定用
 	bool left_f, right_f, left, right;
 	bool Ret;
-	////左前
-	//for (int i = 0; i < DWAPreStep; i = i + SkipCount)
-	//{
-	//	side[i].u = u[SmpCount][i] + dist_front * cos(theta[SmpCount][i] + theta_front);
-	//	side[i].v = v[SmpCount][i] + dist_front * sin(theta[SmpCount][i] + theta_front);
-	//	side[i].theta = theta[SmpCount][i];
-	//}
-	//left_f = SideCheck("left", side);
-
-	////右前
-	//for (int i = 0; i < DWAPreStep; i = i + SkipCount)
-	//{
-	//	side[i].u = u[SmpCount][i] + dist_front * cos(theta[SmpCount][i] - theta_front);
-	//	side[i].v = v[SmpCount][i] + dist_front * sin(theta[SmpCount][i] - theta_front);
-	//	side[i].theta = theta[SmpCount][i];
-	//}
-	//right_f = SideCheck("right", side);
-
-	////左中
-	//for (int i = 0; i < DWAPreStep; i = i + SkipCount)
-	//{
-	//	side[i].u = u[SmpCount][i] + (dist_front * cos(theta[SmpCount][i] + theta_front) + dist_rear * cos(theta[SmpCount][i] + M_PI - theta_rear)) / 2;
-	//	side[i].v = v[SmpCount][i] + (dist_front * sin(theta[SmpCount][i] + theta_front) + dist_rear * sin(theta[SmpCount][i] + M_PI - theta_rear)) / 2;
-	//	side[i].theta = theta[SmpCount][i];
-	//}
-	//left = SideCheck("left", side);
-
-	////右中
-	//for (int i = 0; i < DWAPreStep; i = i + SkipCount)
-	//{
-	//	side[i].u = u[SmpCount][i] + (dist_front * cos(theta[SmpCount][i] - theta_front) + dist_rear * cos(theta[SmpCount][i] + M_PI + theta_rear)) / 2;
-	//	side[i].v = u[SmpCount][i] + (dist_front * sin(theta[SmpCount][i] - theta_front) + dist_rear * sin(theta[SmpCount][i] + M_PI + theta_rear)) / 2;
-	//	side[i].theta = theta[SmpCount][i];
-	//}
-	//right = SideCheck("right", side);
-
-	//if (left_f && right_f && left && right) { Ret = true; }
-	//else { Ret = false; }
-
 	//左前
 	for (int i = 0; i < DWAPreStep; i = i + SkipCount)
 	{
@@ -291,66 +252,105 @@ bool DWA::Check()
 		side[i].v = v[SmpCount][i] + dist_front * sin(theta[SmpCount][i] + theta_front);
 		side[i].theta = theta[SmpCount][i];
 	}
-	Ret = SideCheck("left", side);
-	if (Ret)
+	left_f = SideCheck("left", side);
+
+	//右前
+	for (int i = 0; i < DWAPreStep; i = i + SkipCount)
 	{
-		//右前
-		for (int i = 0; i < DWAPreStep; i = i + SkipCount)
-		{
-			side[i].u = u[SmpCount][i] + dist_front * cos(theta[SmpCount][i] - theta_front);
-			side[i].v = v[SmpCount][i] + dist_front * sin(theta[SmpCount][i] - theta_front);
-			side[i].theta = theta[SmpCount][i];
-		}
-		Ret = SideCheck("right", side);
-
-		if (Ret)
-		{
-			//左中
-			for (int i = 0; i < DWAPreStep; i = i + SkipCount)
-			{
-				side[i].u = u[SmpCount][i] + (dist_front * cos(theta[SmpCount][i] + theta_front) + dist_rear * cos(theta[SmpCount][i] + M_PI - theta_rear)) / 2;
-				side[i].v = v[SmpCount][i] + (dist_front * sin(theta[SmpCount][i] + theta_front) + dist_rear * sin(theta[SmpCount][i] + M_PI - theta_rear)) / 2;
-				side[i].theta = theta[SmpCount][i];
-			}
-			Ret = SideCheck("left", side);
-
-			if (Ret)
-			{
-				//右中
-				for (int i = 0; i < DWAPreStep; i = i + SkipCount)
-				{
-					side[i].u = u[SmpCount][i] + (dist_front * cos(theta[SmpCount][i] - theta_front) + dist_rear * cos(theta[SmpCount][i] + M_PI + theta_rear)) / 2;
-					side[i].v = u[SmpCount][i] + (dist_front * sin(theta[SmpCount][i] - theta_front) + dist_rear * sin(theta[SmpCount][i] + M_PI + theta_rear)) / 2;
-					side[i].theta = theta[SmpCount][i];
-				}
-				Ret = SideCheck("right", side);
-
-				//if (pred_collision == 0)
-				//{
-				//	//左後
-				//	for (int i = 0; i < DWAPreStep; i = i + SkipCount)
-				//	{
-				//		side[i].u = u[i] + prm.dist_rear * cos(yaw[i] + M_PI - prm.theta_rear);
-				//		side[i].y = y[i] + prm.dist_rear * sin(yaw[i] + M_PI - prm.theta_rear);
-				//		side[i].yaw = yaw[i];
-				//	}
-				//	pred_collision = side_point_check();
-
-				//	if (pred_collision == 0)
-				//	{
-				//		//右後
-				//		for (int i = 0; i < DWAPreStep; i++)
-				//		{
-				//			side[i].u = u[i] + prm.dist_rear * cos(yaw[i] + M_PI + prm.theta_rear);
-				//			side[i].y = y[i] + prm.dist_rear * sin(yaw[i] + M_PI + prm.theta_rear);
-				//			side[i].yaw = yaw[i];
-				//		}
-				//		pred_collision = side_point_check();
-				//	}
-				//}
-			}
-		}
+		side[i].u = u[SmpCount][i] + dist_front * cos(theta[SmpCount][i] - theta_front);
+		side[i].v = v[SmpCount][i] + dist_front * sin(theta[SmpCount][i] - theta_front);
+		side[i].theta = theta[SmpCount][i];
 	}
+	right_f = SideCheck("right", side);
+
+	//左中
+	for (int i = 0; i < DWAPreStep; i = i + SkipCount)
+	{
+		side[i].u = u[SmpCount][i] + (dist_front * cos(theta[SmpCount][i] + theta_front) + dist_rear * cos(theta[SmpCount][i] + M_PI - theta_rear)) / 2;
+		side[i].v = v[SmpCount][i] + (dist_front * sin(theta[SmpCount][i] + theta_front) + dist_rear * sin(theta[SmpCount][i] + M_PI - theta_rear)) / 2;
+		side[i].theta = theta[SmpCount][i];
+	}
+	left = SideCheck("left", side);
+
+	//右中
+	for (int i = 0; i < DWAPreStep; i = i + SkipCount)
+	{
+		side[i].u = u[SmpCount][i] + (dist_front * cos(theta[SmpCount][i] - theta_front) + dist_rear * cos(theta[SmpCount][i] + M_PI + theta_rear)) / 2;
+		side[i].v = u[SmpCount][i] + (dist_front * sin(theta[SmpCount][i] - theta_front) + dist_rear * sin(theta[SmpCount][i] + M_PI + theta_rear)) / 2;
+		side[i].theta = theta[SmpCount][i];
+	}
+	right = SideCheck("right", side);
+
+	if (left_f && right_f && left && right) { Ret = true; }
+	else { Ret = false; }
+
+	////左前
+	//for (int i = 0; i < DWAPreStep; i = i + SkipCount)
+	//{
+	//	side[i].u = u[SmpCount][i] + dist_front * cos(theta[SmpCount][i] + theta_front);
+	//	side[i].v = v[SmpCount][i] + dist_front * sin(theta[SmpCount][i] + theta_front);
+	//	side[i].theta = theta[SmpCount][i];
+	//}
+	//Ret = SideCheck("left", side);
+	//if (Ret)
+	//{
+	//	//右前
+	//	for (int i = 0; i < DWAPreStep; i = i + SkipCount)
+	//	{
+	//		side[i].u = u[SmpCount][i] + dist_front * cos(theta[SmpCount][i] - theta_front);
+	//		side[i].v = v[SmpCount][i] + dist_front * sin(theta[SmpCount][i] - theta_front);
+	//		side[i].theta = theta[SmpCount][i];
+	//	}
+	//	Ret = SideCheck("right", side);
+
+	//	if (Ret)
+	//	{
+	//		//左中
+	//		for (int i = 0; i < DWAPreStep; i = i + SkipCount)
+	//		{
+	//			side[i].u = u[SmpCount][i] + (dist_front * cos(theta[SmpCount][i] + theta_front) + dist_rear * cos(theta[SmpCount][i] + M_PI - theta_rear)) / 2;
+	//			side[i].v = v[SmpCount][i] + (dist_front * sin(theta[SmpCount][i] + theta_front) + dist_rear * sin(theta[SmpCount][i] + M_PI - theta_rear)) / 2;
+	//			side[i].theta = theta[SmpCount][i];
+	//		}
+	//		Ret = SideCheck("left", side);
+
+	//		if (Ret)
+	//		{
+	//			//右中
+	//			for (int i = 0; i < DWAPreStep; i = i + SkipCount)
+	//			{
+	//				side[i].u = u[SmpCount][i] + (dist_front * cos(theta[SmpCount][i] - theta_front) + dist_rear * cos(theta[SmpCount][i] + M_PI + theta_rear)) / 2;
+	//				side[i].v = u[SmpCount][i] + (dist_front * sin(theta[SmpCount][i] - theta_front) + dist_rear * sin(theta[SmpCount][i] + M_PI + theta_rear)) / 2;
+	//				side[i].theta = theta[SmpCount][i];
+	//			}
+	//			Ret = SideCheck("right", side);
+
+	//			//if (pred_collision == 0)
+	//			//{
+	//			//	//左後
+	//			//	for (int i = 0; i < DWAPreStep; i = i + SkipCount)
+	//			//	{
+	//			//		side[i].u = u[i] + prm.dist_rear * cos(yaw[i] + M_PI - prm.theta_rear);
+	//			//		side[i].y = y[i] + prm.dist_rear * sin(yaw[i] + M_PI - prm.theta_rear);
+	//			//		side[i].yaw = yaw[i];
+	//			//	}
+	//			//	pred_collision = side_point_check();
+
+	//			//	if (pred_collision == 0)
+	//			//	{
+	//			//		//右後
+	//			//		for (int i = 0; i < DWAPreStep; i++)
+	//			//		{
+	//			//			side[i].u = u[i] + prm.dist_rear * cos(yaw[i] + M_PI + prm.theta_rear);
+	//			//			side[i].y = y[i] + prm.dist_rear * sin(yaw[i] + M_PI + prm.theta_rear);
+	//			//			side[i].yaw = yaw[i];
+	//			//		}
+	//			//		pred_collision = side_point_check();
+	//			//	}
+	//			//}
+	//		}
+	//	}
+	//}
 	return Ret;
 }
 

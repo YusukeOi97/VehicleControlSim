@@ -21,9 +21,9 @@ Idx_c_ymax = 6;
 Idx_c_ymin = 5;
 Idx_c_kappa = 11;
 
-Idx_col_dwa = 11;
-Idx_col_pp = 11;
-Idx_cal_dwa = 10;
+Idx_col_dwa = 10;
+Idx_col_pp = 10;
+Idx_cal_dwa = 9;
 Num_validation = 1500; %ŒŸØ—p‚ÌƒTƒ“ƒvƒ‹”
 
 
@@ -53,12 +53,9 @@ for i = 1 : length(Folderlist(1, :))
         else
             out(1, ColOut) = data(j, Idx_cal_dwa) * 1e3; %cal(ipm)
             %out(1, ColOut) = 0.12 + 0.03*rand; %cal(ipm)
-            if out(1, ColOut) > 0.22
-                out(1, ColOut) = 0.22;
-            end
-            if out(1, ColOut) < 0.16
-                out(1, ColOut) = 0.16;
-            end
+%             if out(1, ColOut) > 1.8
+%                 out(1, ColOut) = 1.7;
+%             end
             ColOut = ColOut + 1;
         end
     end
@@ -252,7 +249,7 @@ OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 % squares = predictionError.^2;
 % rmse = sqrt(mean(squares))
 
-histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
+histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 10], 'YBinLimits', [0 10]);
 axis equal
 colorbar
 ax = gca;

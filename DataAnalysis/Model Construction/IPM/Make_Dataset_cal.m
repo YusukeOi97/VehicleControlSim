@@ -29,7 +29,7 @@ Num_validation = 1500; %ŒŸØ—p‚ÌƒTƒ“ƒvƒ‹”
 
 DataPath = 'C:\Data\Dataset\';
 
-Method = 'IPM';
+Method = 'IPMtime';
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
@@ -50,9 +50,9 @@ for i = 1 : length(Folderlist(1, :))
     for j = 2 : DataSize
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
-            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.2
+            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.19
             else
-                out(1, ColOut) = data(j, Idx_cal); %cal(ipm)
+                out(1, ColOut) = data(j, Idx_cal) * 1e3; %cal(ipm)
                 ColOut = ColOut + 1;
             end
         end
@@ -75,7 +75,7 @@ for i = 1 : length(Folderlist(1, :))
     for j = 2 : DataSize
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
-            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.2
+            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.19
             else
                 %v, yaw, vel
                 in(1, ColIn) = data(j, Idx_v);
@@ -218,9 +218,9 @@ MATRIX_OUTPUT = MATRIX_OUTPUT.';
 
 idx = randperm(size(MATRIX_INPUT, 1), Num_validation);
 INPUT_VALIDATION = MATRIX_INPUT(idx, :);
-MATRIX_INPUT(idx, :) = [];
+%MATRIX_INPUT(idx, :) = [];
 OUTPUT_VALIDATION = MATRIX_OUTPUT(idx, :);
-MATRIX_OUTPUT(idx, :) = [];
+%MATRIX_OUTPUT(idx, :) = [];
 
 % params = hyperparameters("fitrnet", MATRIX_INPUT, MATRIX_OUTPUT);
 % for ii = 1 : length(params)
@@ -250,7 +250,7 @@ OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 % squares = predictionError.^2;
 % rmse = sqrt(mean(squares))
 
-histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 0.5], 'YBinLimits', [0 0.5]);
+histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 500], 'YBinLimits', [0 500]);
 axis equal
 colorbar
 ax = gca;

@@ -41,7 +41,7 @@ MyProblem::MyProblem(SharedData* shareddata)
 {
 	SimpleInitialize();
 	{
-		model = (std::shared_ptr<void>)((void*)new System_NUOPT());
+		model = (std::shared_ptr<void>)((void*)new System_NUOPT(shareddata->l_r, shareddata->l_f + shareddata->l_r));
 
 		System_NUOPT* m = ((System_NUOPT*)model.get());
 
@@ -62,6 +62,8 @@ MyProblem::MyProblem(SharedData* shareddata)
 		T_delta = shareddata->T_delta;
 		method = shareddata->method;
 		eps = shareddata->eps;
+		m->l_r = l_r;
+		m->Wheelbase = l_f + l_r;
 		m->width = width;
 		m->dist_front = dist_front;
 		m->dist_rear = dist_rear;
@@ -375,7 +377,7 @@ void MyProblem::Solve(int noise_count, int i, int step)
 
 	options.outputMode = "silent"; //on->標準出力抑制
 	options.outfilename = "_NULL_";
-	options.iisDetect = "off";	//191112 kanada 実行不可能の原因を探らない
+	options.iisDetect = "off";
 	//showSystem();
 	//if (noise_count == 0 && i == step - 1)
 	//{

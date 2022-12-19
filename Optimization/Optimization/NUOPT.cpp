@@ -120,9 +120,9 @@ public:
 #define right rightsimple
 #endif
 
-System_NUOPT::System_NUOPT()
+System_NUOPT::System_NUOPT(double Lr, double WB)
 	: SystemInterface("NUOPT")
-	, rcd_horizon(this), tempSet(this), tempElem(this), a(this), b(this), Step_cn(this), Idx(this), Step_eval(this), Idx_eval(this), eps(this), u(this), vel(this), acc(this), v(this), v_dot(this), v_2dot(this), theta(this), theta_dot(this), theta_2dot(this), delta(this), delta_dot(this), v_front_l(this), v_front_r(this), v_center_l(this), v_center_r(this), v_rear_l(this), v_rear_r(this), V_inv(this), T_delta(this), a11(this), a12(this), a21(this), a22(this), b1(this), b2(this), Q_vel(this), Q_acc(this), Q_v(this), Q_v_dot(this), Q_v_2dot(this), Q_theta(this), Q_theta_dot(this), Q_theta_2dot(this), Q_delta(this), Q_delta_dot(this), Sf_vel(this), Sf_acc(this), Sf_v(this), Sf_v_dot(this), Sf_v_2dot(this), Sf_theta(this), Sf_theta_dot(this), Sf_theta_2dot(this), Sf_delta(this), Sf_delta_dot(this), width(this), dist_front(this), dist_rear(this), theta_front(this), theta_rear(this), init_u(this), init_vel(this), acc_init(this), init_v(this), init_v_dot(this), y_2dot_init(this), init_theta(this), init_theta_dot(this), theta_2dot_init(this), init_delta(this), delta_dot_init(this), vel_ref(this), vel_max(this), v_ref(this), v_max(this), v_min(this), v_front_max(this), v_front_min(this), v_rear_max(this), v_rear_min(this), Rho(this), obj(this)
+	, rcd_horizon(this), tempSet(this), tempElem(this), a(this), b(this), Step_cn(this), Idx(this), Step_eval(this), Idx_eval(this), eps(this), u(this), vel(this), acc(this), v(this), v_dot(this), v_2dot(this), theta(this), theta_dot(this), theta_2dot(this), delta(this), delta_dot(this), v_front_l(this), v_front_r(this), v_center_l(this), v_center_r(this), v_rear_l(this), v_rear_r(this), beta(this), V_inv(this), T_delta(this), a11(this), a12(this), a21(this), a22(this), b1(this), b2(this), Q_vel(this), Q_acc(this), Q_v(this), Q_v_dot(this), Q_v_2dot(this), Q_theta(this), Q_theta_dot(this), Q_theta_2dot(this), Q_delta(this), Q_delta_dot(this), Sf_vel(this), Sf_acc(this), Sf_v(this), Sf_v_dot(this), Sf_v_2dot(this), Sf_theta(this), Sf_theta_dot(this), Sf_theta_2dot(this), Sf_delta(this), Sf_delta_dot(this), l_r(this), Wheelbase(this), width(this), dist_front(this), dist_rear(this), theta_front(this), theta_rear(this), init_u(this), init_vel(this), acc_init(this), init_v(this), init_v_dot(this), y_2dot_init(this), init_theta(this), init_theta_dot(this), theta_2dot_init(this), init_delta(this), delta_dot_init(this), vel_ref(this), vel_max(this), v_ref(this), v_max(this), v_min(this), v_front_max(this), v_front_min(this), v_rear_max(this), v_rear_min(this), Rho(this), obj(this)
 {
 	{
 		options.outfilename = "NUOPT";
@@ -167,6 +167,7 @@ System_NUOPT::System_NUOPT()
 		smp_line(__LINE__, __FILE__); Variable v_center_r(index = Idx, name = "v_center_r"); this->v_center_r.setEntity(v_center_r); v_center_r.entryOutput();
 		smp_line(__LINE__, __FILE__); Variable v_rear_l(index = Idx, name = "v_rear_l"); this->v_rear_l.setEntity(v_rear_l); v_rear_l.entryOutput();
 		smp_line(__LINE__, __FILE__); Variable v_rear_r(index = Idx, name = "v_rear_r"); this->v_rear_r.setEntity(v_rear_r); v_rear_r.entryOutput();
+		smp_line(__LINE__, __FILE__); Variable beta(index = Idx, name = "beta"); this->beta.setEntity(beta); beta.entryOutput();
 		smp_line(__LINE__, __FILE__); Variable V_inv(index = Idx, name = "V_inv"); this->V_inv.setEntity(V_inv); V_inv.entryOutput();
 		
 		smp_line(__LINE__, __FILE__); VariableParameter T_delta(name = "T_delta"); this->T_delta.setEntity(T_delta); T_delta.entryOutput();
@@ -176,6 +177,13 @@ System_NUOPT::System_NUOPT()
 		smp_line(__LINE__, __FILE__); VariableParameter a22(name = "a22"); this->a22.setEntity(a22); a22.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter b1(name = "b1");	this->b1.setEntity(b1); b1.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter b2(name = "b2");	this->b2.setEntity(b2); b2.entryOutput();
+		smp_line(__LINE__, __FILE__); VariableParameter l_r(name = "l_r"); this->l_r.setEntity(l_r); l_r.entryOutput();
+		smp_line(__LINE__, __FILE__); VariableParameter Wheelbase(name = "Wheelbase"); this->Wheelbase.setEntity(Wheelbase); Wheelbase.entryOutput();
+		smp_line(__LINE__, __FILE__); VariableParameter width(name = "width"); this->width.setEntity(width); width.entryOutput();
+		smp_line(__LINE__, __FILE__); VariableParameter dist_front(name = "dist_front"); this->dist_front.setEntity(dist_front); dist_front.entryOutput();
+		smp_line(__LINE__, __FILE__); VariableParameter dist_rear(name = "dist_rear"); this->dist_rear.setEntity(dist_rear); dist_rear.entryOutput();
+		smp_line(__LINE__, __FILE__); VariableParameter theta_front(name = "theta_front"); this->theta_front.setEntity(theta_front); theta_front.entryOutput();
+		smp_line(__LINE__, __FILE__); VariableParameter theta_rear(name = "theta_rear"); this->theta_rear.setEntity(theta_rear); theta_rear.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter Q_vel(name = "Q_vel"); this->Q_vel.setEntity(Q_vel); Q_vel.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter Q_acc(name = "Q_acc"); this->Q_acc.setEntity(Q_acc); Q_acc.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter Q_v(name = "Q_v"); this->Q_v.setEntity(Q_v); Q_v.entryOutput();
@@ -196,11 +204,6 @@ System_NUOPT::System_NUOPT()
 		smp_line(__LINE__, __FILE__); VariableParameter Sf_theta_2dot(name = "Sf_theta_2dot"); this->Sf_theta_2dot.setEntity(Sf_theta_2dot); Sf_theta_2dot.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter Sf_delta(name = "Sf_delta"); this->Sf_delta.setEntity(Sf_delta); Sf_delta.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter Sf_delta_dot(name = "Sf_delta_dot"); this->Sf_delta_dot.setEntity(Sf_delta_dot); Sf_delta_dot.entryOutput();
-		smp_line(__LINE__, __FILE__); VariableParameter width(name = "width"); this->width.setEntity(width); width.entryOutput();
-		smp_line(__LINE__, __FILE__); VariableParameter dist_front(name = "dist_front"); this->dist_front.setEntity(dist_front); dist_front.entryOutput();
-		smp_line(__LINE__, __FILE__); VariableParameter dist_rear(name = "dist_rear"); this->dist_rear.setEntity(dist_rear); dist_rear.entryOutput();
-		smp_line(__LINE__, __FILE__); VariableParameter theta_front(name = "theta_front"); this->theta_front.setEntity(theta_front); theta_front.entryOutput();
-		smp_line(__LINE__, __FILE__); VariableParameter theta_rear(name = "theta_rear"); this->theta_rear.setEntity(theta_rear); theta_rear.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter init_u(name = "init_u"); this->init_u.setEntity(init_u); init_u.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter init_vel(name = "init_vel"); this->init_vel.setEntity(init_vel); init_vel.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter init_v(name = "init_v"); this->init_v.setEntity(init_v); init_v.entryOutput();
@@ -223,6 +226,8 @@ System_NUOPT::System_NUOPT()
 		smp_line(__LINE__, __FILE__); VariableParameter v_rear_min(index = Idx, name = "v_rear_min");	this->v_rear_min.setEntity(v_rear_min); v_rear_min.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter Rho(index = Idx, name = "Rho");	this->Rho.setEntity(Rho); Rho.entryOutput();
 
+		smp_line(__LINE__, __FILE__); l_r = Lr;
+		smp_line(__LINE__, __FILE__); Wheelbase = WB;
 		smp_line(__LINE__, __FILE__); u[0] == init_u;
 		smp_line(__LINE__, __FILE__); vel[0] == init_vel;
 		smp_line(__LINE__, __FILE__); v[0] == init_v;
@@ -238,19 +243,36 @@ System_NUOPT::System_NUOPT()
 		smp_line(__LINE__, __FILE__); v_rear_r[0] == v[0] + dist_rear * sin(theta[0] + M_PI + theta_rear);
 
 
-		///////////// Dynamic Bicycle Model ////////////////////
+		/////////////// Dynamic Bicycle Model ////////////////////
+		//smp_line(__LINE__, __FILE__); for (int k = 0; k < rcd_horizon; k++)
+		//{
+		//	smp_line(__LINE__, __FILE__); vel[k + 1] == vel[k] + acc[k] * T_delta;
+		//	smp_line(__LINE__, __FILE__); V_inv[k] == 1 / (vel[k] + log(1 + exp(-2 * vel[k])));
+		//	//smp_line(__LINE__, __FILE__); V_inv[k] == 1 / (vel[k] + 0.0000001);
+		//	smp_line(__LINE__, __FILE__); u[k + 1] == u[k] + vel[k] * T_delta;
+		//	smp_line(__LINE__, __FILE__); v_2dot[k] == -a11 * v_dot[k] * V_inv[k] + (a11 + acc[k]) * theta[k] + a12 * theta_dot[k] * V_inv[k] + b1 * delta[k] + (a12 - vel[k] * vel[k]) * Rho[k];
+		//	smp_line(__LINE__, __FILE__); v_dot[k + 1] == v_dot[k] + v_2dot[k] * T_delta;
+		//	smp_line(__LINE__, __FILE__); v[k + 1] == v[k] + v_dot[k + 1] * T_delta;
+		//	smp_line(__LINE__, __FILE__); theta_2dot[k] == -a21 * v_dot[k] * V_inv[k] + a21 * theta[k] + a22 * theta_dot[k] * V_inv[k] + b2 * delta[k] + (a22 - acc[k]) * Rho[k];
+		//	smp_line(__LINE__, __FILE__); theta_dot[k + 1] == theta_dot[k] + theta_2dot[k] * T_delta;
+		//	smp_line(__LINE__, __FILE__); theta[k + 1] == theta[k] + theta_dot[k + 1] * T_delta;
+		//	smp_line(__LINE__, __FILE__); delta[k + 1] == delta[k] + delta_dot[k] * T_delta;
+		//	smp_line(__LINE__, __FILE__); v_front_l[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] + theta_front);
+		//	smp_line(__LINE__, __FILE__); v_front_r[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] - theta_front);
+		//	smp_line(__LINE__, __FILE__); v_center_l[k + 1] == v[k + 1] + (dist_front * sin(theta[k + 1] + theta_front) + dist_rear * sin(theta[k + 1] + M_PI - theta_rear)) / 2;
+		//	smp_line(__LINE__, __FILE__); v_center_r[k + 1] == v[k + 1] + (dist_front * sin(theta[k + 1] - theta_front) + dist_rear * sin(theta[k + 1] + M_PI + theta_rear)) / 2;
+		//	smp_line(__LINE__, __FILE__); v_rear_l[k + 1] == v[k + 1] + dist_rear * sin(theta[k + 1] + M_PI - theta_rear);
+		//	smp_line(__LINE__, __FILE__); v_rear_r[k + 1] == v[k + 1] + dist_rear * sin(theta[k + 1] + M_PI + theta_rear);
+		//}
+
+		///////////// Kinematic Bicycle Model ////////////////////
 		smp_line(__LINE__, __FILE__); for (int k = 0; k < rcd_horizon; k++)
 		{
+			smp_line(__LINE__, __FILE__); beta[k] == atan(l_r * tan(delta[k]) / Wheelbase);
 			smp_line(__LINE__, __FILE__); vel[k + 1] == vel[k] + acc[k] * T_delta;
-			smp_line(__LINE__, __FILE__); V_inv[k] == 1 / (vel[k] + log(1 + exp(-2 * vel[k])));
-			//smp_line(__LINE__, __FILE__); V_inv[k] == 1 / (vel[k] + 0.0000001);
-			smp_line(__LINE__, __FILE__); u[k + 1] == u[k] + vel[k] * T_delta;
-			smp_line(__LINE__, __FILE__); v_2dot[k] == -a11 * v_dot[k] * V_inv[k] + (a11 + acc[k]) * theta[k] + a12 * theta_dot[k] * V_inv[k] + b1 * delta[k] + (a12 - vel[k] * vel[k]) * Rho[k];
-			smp_line(__LINE__, __FILE__); v_dot[k + 1] == v_dot[k] + v_2dot[k] * T_delta;
-			smp_line(__LINE__, __FILE__); v[k + 1] == v[k] + v_dot[k + 1] * T_delta;
-			smp_line(__LINE__, __FILE__); theta_2dot[k] == -a21 * v_dot[k] * V_inv[k] + a21 * theta[k] + a22 * theta_dot[k] * V_inv[k] + b2 * delta[k] + (a22 - acc[k]) * Rho[k];
-			smp_line(__LINE__, __FILE__); theta_dot[k + 1] == theta_dot[k] + theta_2dot[k] * T_delta;
-			smp_line(__LINE__, __FILE__); theta[k + 1] == theta[k] + theta_dot[k + 1] * T_delta;
+			smp_line(__LINE__, __FILE__); u[k + 1] == u[k] + ((vel[k] * cos(theta[k] + beta[k])) / (1 - Rho[k] * v[k])) * T_delta;
+			smp_line(__LINE__, __FILE__); v[k + 1] == v[k] + (vel[k] * sin(theta[k] + beta[k])) * T_delta;
+			smp_line(__LINE__, __FILE__); theta[k + 1] == theta[k] + ((1 / l_r) * vel[k] * sin(beta[k]) - Rho[k] * vel[k] * cos(theta[k] + beta[k]) / (1 - Rho[k] * v[k])) * T_delta;
 			smp_line(__LINE__, __FILE__); delta[k + 1] == delta[k] + delta_dot[k] * T_delta;
 			smp_line(__LINE__, __FILE__); v_front_l[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] + theta_front);
 			smp_line(__LINE__, __FILE__); v_front_r[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] - theta_front);
@@ -262,8 +284,8 @@ System_NUOPT::System_NUOPT()
 
 		//smp_line(__LINE__, __FILE__); acc[Idx] >= -3, Idx;
 		//smp_line(__LINE__, __FILE__); acc[Idx] <= 3.3, Idx;
-		//smp_line(__LINE__, __FILE__); vel[Idx] >= 0, Idx;
-		//smp_line(__LINE__, __FILE__); vel[Idx] <= vel_max[Idx], Idx;
+		smp_line(__LINE__, __FILE__); vel[Idx] >= 0, Idx;
+		smp_line(__LINE__, __FILE__); vel[Idx] <= vel_max[Idx], Idx;
 		smp_line(__LINE__, __FILE__); v_front_r[Idx] >= v_front_min[Idx], Idx;
 		smp_line(__LINE__, __FILE__); v_front_l[Idx] <= v_front_max[Idx], Idx;
 		smp_line(__LINE__, __FILE__); v_center_r[Idx] >= v_min[Idx], Idx;
