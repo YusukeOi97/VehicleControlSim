@@ -219,13 +219,18 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 								int falsecount = 0;
 								shareddata->noise_count = i;
 								InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, 0);
-						/*		if (logdata.theta == 0)
-								{
-									while (shareddata->success == 0 && shareddata->first_access == false)
-									{
-										system(path);
-									}
-								}*/
+								//if (logdata.theta == 0)
+								//{
+								//	while (shareddata->success == 0 && shareddata->first_success == false)
+								//	{
+								//		system(path);
+								//		falsecount++;
+								//		if (falsecount > 4)
+								//		{
+								//			break;
+								//		}
+								//	}
+								//}
 								while (shareddata->success == 0 && shareddata->first_success == false)
 								{
 									system(path);
@@ -313,11 +318,11 @@ int main()
 	//double dist[1] = { 13 }; // 13 16 19
 	//int pos1[2] = { 1, 0 };
 
-	double a[1] = { 2.5 };
-	double width[1] = { 0.9 }; //0.5 0.7 0.9
-	double dist[1] = { 13 }; // 13 16 19
+	double a[1] = { 1.3 };
+	double width[3] = { 1.3, 1.05, 0.9 }; //0.5 0.7 0.9
+	double dist[2] = { 13, 19 }; // 13 16 19
 	double U_start = 25;
-	double U_end = 80;
+	double U_end = 76;
 
 	for (size_t i = 0; i < sizeof(a) / sizeof(a[0]); i++)
 	{
@@ -348,7 +353,7 @@ int main()
 #endif // OA
 
 #ifdef SINE
-	double ampl[1] = { 40 };
+	double ampl[3] = { 20, 30, 40 };
 	double cycle[1] = { 80 };
 	double U_start = 3;
 	double U_end = 30;

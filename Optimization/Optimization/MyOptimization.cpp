@@ -382,14 +382,30 @@ void MyProblem::Solve(int noise_count, int i, int step)
 	//	setNuoptWatchFile(filename.c_str());
 	//	//options.maxitn = 1;
 	//}
-
-	try
+	if (i == 0)
 	{
-		m->solve();
+		for (int i = 0; i < 1; i++)
+		{
+			try
+			{
+				m->solve();
+			}
+			catch (...)
+			{
+				printf("Ž¸”s");
+			}
+		}
 	}
-	catch (...)
+	else
 	{
-		printf("Ž¸”s");
+		try
+		{
+			m->solve();
+		}
+		catch (...)
+		{
+			printf("Ž¸”s");
+		}
 	}
 }
 

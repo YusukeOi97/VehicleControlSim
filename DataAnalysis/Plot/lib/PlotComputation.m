@@ -5,12 +5,12 @@ function PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
         hold on
         plot(constdata(:, 9), constdata(:, 10), 'k'); 
         hold on
-        plot(constdata(:, 3), constdata(:, 4), '--k'); 
+        plot(constdata(:, 1), constdata(:, 2), '--k'); 
         hold on
         %daspect([10 5 50]);
-        daspect([30 5 450]);
+        %daspect([30 5 450]);
         colorbar;
-        caxis([0.08, 0.5]);
+        caxis([0.08, 0.3]);
         xlim([25 80]);
         %ylim([-1.5 1.5]);
         xlabel('$x$[m]', 'Interpreter', 'latex');

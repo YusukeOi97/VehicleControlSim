@@ -6,8 +6,8 @@ addpath('lib');
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
 WhichAnalyze = "p";
-number = 90;
-Data_path = "C:\Data\1209\";
+number = 1;
+Data_path = "C:\Data\IPM\1218\";
 %%%%IPM or SQP or DWA or PP
 Method = "IPM";
 %%%specific initial point trajectory
