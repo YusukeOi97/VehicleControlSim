@@ -33,14 +33,14 @@ function PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
             vel = data(i + 1, Idx_vel);
             th_yaw = 0.1;
             if yaw < -th_yaw
-                y = y - 0.16;
+                y = y - 0.1;
             elseif yaw > -th_yaw && yaw < 0
-                y = y - 0.08;
+                y = y - 0.05;
             elseif yaw == 0
             elseif yaw > 0 && yaw < th_yaw
-                y = y + 0.08;
+                y = y + 0.05;
             else
-                y = y + 0.16;
+                y = y + 0.1;
             end
             delta = 0.5;
             if vel == 4
