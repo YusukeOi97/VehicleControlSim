@@ -192,7 +192,7 @@ int main()
 		std::future_status timeresult = ftr.wait_for(std::chrono::seconds(5));
 		if (timeresult != std::future_status::timeout)
 		{
-			printf("not timeout\n");
+			printf("not timeout    (u, v, theta, vel) = (%.1f, %.1f, %.1f, %.1f)\n", myProblem.u[0], myProblem.v[0], myProblem.theta[0], myProblem.vel[0]);
 			myProblem.timeout = ftr.get();
 		}
 		else

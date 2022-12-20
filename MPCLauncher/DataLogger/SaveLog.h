@@ -139,9 +139,9 @@ void OutData_Course(DataLogger& logger, std::vector<std::vector<double>> course)
 	logger.push_back<double>("5v_min", v_min);
 	logger.push_back<double>("6v_max", v_max);
 	logger.push_back<double>("7x_min", x_min);
-	logger.push_back<double>("8y_min", v_min);
+	logger.push_back<double>("8y_min", y_min);
 	logger.push_back<double>("9x_max", x_max);
-	logger.push_back<double>("10y_max", v_max);
+	logger.push_back<double>("10y_max", y_max);
 	logger.push_back<double>("11rho", rho);
 	logger.PrintHeader();
 

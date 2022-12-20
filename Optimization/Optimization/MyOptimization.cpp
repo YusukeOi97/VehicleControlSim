@@ -41,7 +41,7 @@ MyProblem::MyProblem(SharedData* shareddata)
 {
 	SimpleInitialize();
 	{
-		model = (std::shared_ptr<void>)((void*)new System_NUOPT(shareddata->l_r, shareddata->l_f + shareddata->l_r));
+		model = (std::shared_ptr<void>)((void*)new System_NUOPT());
 
 		System_NUOPT* m = ((System_NUOPT*)model.get());
 
@@ -384,30 +384,14 @@ void MyProblem::Solve(int noise_count, int i, int step)
 	//	setNuoptWatchFile(filename.c_str());
 	//	//options.maxitn = 1;
 	//}
-	if (i == 0)
+
+	try
 	{
-		for (int i = 0; i < 1; i++)
-		{
-			try
-			{
-				m->solve();
-			}
-			catch (...)
-			{
-				printf("Ž¸”s");
-			}
-		}
+		m->solve();
 	}
-	else
+	catch (...)
 	{
-		try
-		{
-			m->solve();
-		}
-		catch (...)
-		{
-			printf("Ž¸”s");
-		}
+		printf("Ž¸”s");
 	}
 }
 

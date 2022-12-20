@@ -25,7 +25,7 @@
 
 class System_NUOPT : public SystemInterface {
 public:
-System_NUOPT(double Lr, double WB);
+System_NUOPT();
   ParameterProxy rcd_horizon;
   SetProxy tempSet;
   ElementProxy tempElem;
