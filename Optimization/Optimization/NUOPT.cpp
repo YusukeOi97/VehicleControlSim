@@ -280,10 +280,6 @@ System_NUOPT::System_NUOPT()
 			smp_line(__LINE__, __FILE__); v_rear_r[k + 1] == v[k + 1] + dist_rear * sin(theta[k + 1] + M_PI + theta_rear);
 		}
 
-<<<<<<< HEAD
-		//smp_line(__LINE__, __FILE__); acc[Idx] >= -3, Idx;
-		//smp_line(__LINE__, __FILE__); acc[Idx] <= 3.3, Idx;
-=======
 		/////////////// Kinematic Bicycle Model ////////////////////
 		//smp_line(__LINE__, __FILE__); for (int k = 0; k < rcd_horizon; k++)
 		//{
@@ -305,7 +301,6 @@ System_NUOPT::System_NUOPT()
 
 		smp_line(__LINE__, __FILE__); acc[Idx] >= -3, Idx;
 		smp_line(__LINE__, __FILE__); acc[Idx] <= 3.3, Idx;
->>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 		smp_line(__LINE__, __FILE__); vel[Idx] >= 0, Idx;
 		smp_line(__LINE__, __FILE__); vel[Idx] <= vel_max[Idx], Idx;
 		smp_line(__LINE__, __FILE__); v_front_r[Idx] >= v_front_min[Idx], Idx;

@@ -241,10 +241,6 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 									system(path);
 									falsecount++;
 								}
-								if (shareddata->elapse_time > 0.15)
-								{
-									double p = 0;
-								}
  											
 								if (!ReadSharedMemory(SHARED_MEMORY_SIZE))
 								{
@@ -265,21 +261,12 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 							InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, 0);
 							while (shareddata->success == 0 && shareddata->first_success == false)
 							{
-<<<<<<< HEAD
-								system(path);
-								falsecount++;
-								if (falsecount > 4)
-								{
-									break;
-								}
-=======
 								if (falsecount > 1)
 								{
 									break;
 								}
 								system(path);
 								falsecount++;
->>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 							}
 
 							if (!ReadSharedMemory(SHARED_MEMORY_SIZE))

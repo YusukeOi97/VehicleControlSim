@@ -30,7 +30,11 @@ Num_validation = 1500; %ŒŸØ—p‚ÌƒTƒ“ƒvƒ‹”
 DataPath = 'C:\Data\Dataset\';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Method = 'SQPtime';
+=======
+Method = 'IPMtime';
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 =======
 Method = 'IPMtime';
 >>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
@@ -55,7 +59,11 @@ for i = 1 : length(Folderlist(1, :))
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
 <<<<<<< HEAD
+<<<<<<< HEAD
             if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1% || data(j, Idx_cal) > 0.2
+=======
+            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.3
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 =======
             if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.3
 >>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
@@ -84,7 +92,11 @@ for i = 1 : length(Folderlist(1, :))
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
 <<<<<<< HEAD
+<<<<<<< HEAD
             if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1% || data(j, Idx_cal) > 0.2
+=======
+            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.3
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 =======
             if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.3
 >>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7

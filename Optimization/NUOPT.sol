@@ -23,7 +23,11 @@ FUNC_EVAL_COUNT                                            11
 FACTORIZATION_COUNT                                        10
 RESIDUAL                                      3.907203987e-10
 <<<<<<< HEAD
+<<<<<<< HEAD
 ELAPSED_TIME(sec.)                                       0.05
+=======
+ELAPSED_TIME(sec.)                                       0.06
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 =======
 ELAPSED_TIME(sec.)                                       0.06
 >>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
@@ -31,6 +35,7 @@ ELAPSED_TIME(sec.)                                       0.06
 %%
 %% VARIABLES 
 %%
+<<<<<<< HEAD
 <<<<<<< HEAD
              NAME       VALUE STATUS      SLACK      [           BOUND TYPE           ]
 V#    1 u[0]                0  REMVD                 [ -Inf <=      u[0]      <= +Inf ]
@@ -1820,6 +1825,8 @@ V# 1784 Rho[66]             0  REMVD  0.00000000e+00 [             Rho[66]    ==
 V# 1785 Rho[67]             0  REMVD  0.00000000e+00 [             Rho[67]    == 0    ]
 V# 1786 Rho[68]             0  REMVD  0.00000000e+00 [             Rho[68]    == 0    ]
 =======
+=======
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
             NAME      VALUE STATUS      SLACK      [              BOUND TYPE             ]
 V#   1 u[0]               0  REMVD                 [    -Inf <=      u[0]      <= +Inf   ]
 V#   2 u[1]               0  FREE                  [    -Inf <=      u[1]      <= +Inf   ]
@@ -2504,6 +2511,9 @@ V# 680 Rho[20]            0  REMVD  0.00000000e+00 [                Rho[20]    =
 V# 681 Rho[21]            0  REMVD  0.00000000e+00 [                Rho[21]    == 0      ]
 V# 682 Rho[22]            0  REMVD  0.00000000e+00 [                Rho[22]    == 0      ]
 V# 683 Rho[23]            0  REMVD  0.00000000e+00 [                Rho[23]    == 0      ]
+<<<<<<< HEAD
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
+=======
 >>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 
 %%
@@ -2990,6 +3000,7 @@ F# 476 obj                                                     0  FREE          
 %%
 %% BOUNDS 
 %%
+<<<<<<< HEAD
 <<<<<<< HEAD
         [           BOUND TYPE         ]     DUAL VALUE   
 B#  701 [ -10 <=   delta_dot[0]  <= 10 ]  -3.907203987e-11
@@ -3590,6 +3601,8 @@ B# 1784 [            Rho[66]     == 0  ]                 0
 B# 1785 [            Rho[67]     == 0  ]                 0
 B# 1786 [            Rho[68]     == 0  ]                 0
 =======
+=======
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
        [              BOUND TYPE             ]     DUAL VALUE   
 B#  26 [       0 <=     vel[0]               ]                 0
 B#  27 [       0 <=     vel[1]               ]                 0
@@ -3899,6 +3912,9 @@ B# 680 [                Rho[20]    == 0      ]                 0
 B# 681 [                Rho[21]    == 0      ]                 0
 B# 682 [                Rho[22]    == 0      ]                 0
 B# 683 [                Rho[23]    == 0      ]                 0
+<<<<<<< HEAD
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
+=======
 >>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 
 %%
@@ -4417,11 +4433,15 @@ FACTORIZATION_COUNT                                        27
 RESIDUAL                                      1.698802696e-08
 CONSTRAINT_INFEASIBILITY                      5.546848884e-08
 ELAPSED_TIME(sec.)                                       0.10
+<<<<<<< HEAD
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
+=======
 >>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 
 %%
 %% VARIABLES 
 %%
+<<<<<<< HEAD
 <<<<<<< HEAD
              NAME          VALUE     STATUS      SLACK      [           BOUND TYPE                   ]
 V#    1 u[0]                      40  REMVD                 [ -Inf <=      u[0]      <= +Inf         ]
@@ -6211,6 +6231,8 @@ V# 1784 Rho[66]            0.0396349  REMVD  0.00000000e+00 [             Rho[66
 V# 1785 Rho[67]            0.0325508  REMVD  0.00000000e+00 [             Rho[67]    == 0.0325508    ]
 V# 1786 Rho[68]            0.0265205  REMVD  0.00000000e+00 [             Rho[68]    == 0.0265205    ]
 =======
+=======
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
             NAME          VALUE     STATUS      SLACK      [              BOUND TYPE                   ]
 V#   1 u[0]                      45  REMVD                 [    -Inf <=      u[0]      <= +Inf         ]
 V#   2 u[1]                 46.0001  FREE                  [    -Inf <=      u[1]      <= +Inf         ]
@@ -6895,11 +6917,15 @@ V# 680 Rho[20]          -0.00717589  REMVD  0.00000000e+00 [                Rho[
 V# 681 Rho[21]          -0.00214375  REMVD  0.00000000e+00 [                Rho[21]    == -0.00214375  ]
 V# 682 Rho[22]          -0.00919376  REMVD  0.00000000e+00 [                Rho[22]    == -0.00919376  ]
 V# 683 Rho[23]            -0.100069  REMVD  0.00000000e+00 [                Rho[23]    == -0.100069    ]
+<<<<<<< HEAD
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
+=======
 >>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 
 %%
 %% FUNCTIONS 
 %%
+<<<<<<< HEAD
 <<<<<<< HEAD
                                 NAME                            VALUE    STATUS      SLACK      [                           BOUND TYPE                          ]
 F#    1 C:\VehicleControlSim\Optimization\NUOPT.smp:96                 0  EQUAL  0.00000000e+00 [         C:\VehicleControlSim\Optimization\NUOPT.smp:96   == 0 ]
@@ -8301,6 +8327,8 @@ F# 1396 C:\VehicleControlSim\Optimization\NUOPT.smp:140[68]     0.178654  FREE  
 F# 1397 C:\VehicleControlSim\Optimization\NUOPT.smp:140[69]     0.172429  FREE   1.72428506e-01 [ 0 <= C:\VehicleControlSim\Optimization\NUOPT.smp:140[69]      ]
 F# 1398 obj                                                      6903.89  FREE                  [                      OBJECTIVE (MINIMIZE)                     ]
 =======
+=======
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
                                NAME                            VALUE    STATUS      SLACK      [                           BOUND TYPE                          ]
 F#   1 C:\VehicleControlSim\Optimization\NUOPT.smp:99                 0  EQUAL  0.00000000e+00 [         C:\VehicleControlSim\Optimization\NUOPT.smp:99   == 0 ]
 F#   2 C:\VehicleControlSim\Optimization\NUOPT.smp:100                0  EQUAL  0.00000000e+00 [        C:\VehicleControlSim\Optimization\NUOPT.smp:100   == 0 ]
@@ -8778,11 +8806,15 @@ F# 473 C:\VehicleControlSim\Optimization\NUOPT.smp:162[22]     0.378155  FREE   
 F# 474 C:\VehicleControlSim\Optimization\NUOPT.smp:162[23]     0.349383  FREE   3.49383152e-01 [ 0 <= C:\VehicleControlSim\Optimization\NUOPT.smp:162[23]      ]
 F# 475 C:\VehicleControlSim\Optimization\NUOPT.smp:162[24]     0.345845  FREE   3.45844987e-01 [ 0 <= C:\VehicleControlSim\Optimization\NUOPT.smp:162[24]      ]
 F# 476 obj                                                      161.956  FREE                  [                      OBJECTIVE (MINIMIZE)                     ]
+<<<<<<< HEAD
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
+=======
 >>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 
 %%
 %% BOUNDS 
 %%
+<<<<<<< HEAD
 <<<<<<< HEAD
         [           BOUND TYPE                   ]     DUAL VALUE   
 B#  701 [ -10 <=   delta_dot[0]  <= 10           ]                 0
@@ -9383,6 +9415,8 @@ B# 1784 [            Rho[66]     == 0.0396349    ]   1.631566889e+13
 B# 1785 [            Rho[67]     == 0.0325508    ]  -2.039930882e+13
 B# 1786 [            Rho[68]     == 0.0265205    ]   1.122418119e+13
 =======
+=======
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
        [              BOUND TYPE                   ]     DUAL VALUE   
 B#  26 [       0 <=     vel[0]                     ]                 0
 B#  27 [       0 <=     vel[1]                     ]                 0
@@ -9692,11 +9726,15 @@ B# 680 [                Rho[20]    == -0.00717589  ]      -15.69235929
 B# 681 [                Rho[21]    == -0.00214375  ]       -3.27768513
 B# 682 [                Rho[22]    == -0.00919376  ]       2.372358806
 B# 683 [                Rho[23]    == -0.100069    ]      -9.513990723
+<<<<<<< HEAD
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
+=======
 >>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 
 %%
 %% CONSTRAINTS 
 %%
+<<<<<<< HEAD
 <<<<<<< HEAD
         [                   CONSTRAINT/OBJECTIVE TYPE                   ]      DUAL/WGT    
 C#    1 [         C:\VehicleControlSim\Optimization\NUOPT.smp:96   == 0 ]       4489.218029
@@ -11097,6 +11135,8 @@ C# 1395 [ 0 <= C:\VehicleControlSim\Optimization\NUOPT.smp:140[67]      ]       
 C# 1396 [ 0 <= C:\VehicleControlSim\Optimization\NUOPT.smp:140[68]      ]                 0
 C# 1397 [ 0 <= C:\VehicleControlSim\Optimization\NUOPT.smp:140[69]      ]             1.875
 =======
+=======
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
        [                   CONSTRAINT/OBJECTIVE TYPE                   ]      DUAL/WGT    
 C#   1 [         C:\VehicleControlSim\Optimization\NUOPT.smp:99   == 0 ]  -6.000633616e-47
 C#   2 [        C:\VehicleControlSim\Optimization\NUOPT.smp:100   == 0 ]      -22602.82372
@@ -11573,4 +11613,7 @@ C# 472 [ 0 <= C:\VehicleControlSim\Optimization\NUOPT.smp:162[21]      ]   1.446
 C# 473 [ 0 <= C:\VehicleControlSim\Optimization\NUOPT.smp:162[22]      ]   1.677914238e-06
 C# 474 [ 0 <= C:\VehicleControlSim\Optimization\NUOPT.smp:162[23]      ]   1.816563694e-06
 C# 475 [ 0 <= C:\VehicleControlSim\Optimization\NUOPT.smp:162[24]      ]   1.835794808e-06
+<<<<<<< HEAD
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
+=======
 >>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
