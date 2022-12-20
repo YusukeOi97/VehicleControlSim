@@ -1,7 +1,7 @@
 clear;
 close all;
 
-Method = 'IPM';
+Method = 'SQPcp';
 Data_path = strcat('C:\Data\Dataset\', Method, '\');
 OutData_path = 'C:\Data\Dataset\';
 

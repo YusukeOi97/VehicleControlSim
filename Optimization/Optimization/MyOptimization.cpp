@@ -350,7 +350,7 @@ void MyProblem::Solve(int noise_count, int i, int step)
 {
 	System_NUOPT* m = ((System_NUOPT*)model.get());
 	options.eps = eps;
-
+	options.maxitn = 30;
 
 	//‰ğ–@‚Ìİ’è
 	if (method == 0)

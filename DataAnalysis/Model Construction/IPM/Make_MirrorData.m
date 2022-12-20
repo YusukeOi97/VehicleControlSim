@@ -13,7 +13,7 @@ Idx_g_max = 10;
 Idx_rho = 11;
 step = 70;
 
-DataPath = 'C:\Data\Dataset\IPMcleaned\';
+DataPath = 'C:\Data\Dataset\SQPcpcleaned\';
 FolderInfo = dir(DataPath);
 Folderlist = {FolderInfo.name};
 Folderlist = Folderlist(1, 3 : end);

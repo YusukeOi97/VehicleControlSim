@@ -5,11 +5,11 @@ addpath('lib');
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
-WhichAnalyze = "";
-number = 1;
-Data_path = "C:\Data\SQP\Dataset\";
+WhichAnalyze = "p";
+number = 19;
+Data_path = "C:\Data\SQP\1218\";
 %%%%IPM or SQP or DWA or PP
-Method = "DWA";
+Method = "SQP";
 %%%specific initial point trajectory
 sptr = false;
 InitialState = [49 -0.05 0.14 10];

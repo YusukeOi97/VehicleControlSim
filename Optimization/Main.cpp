@@ -188,7 +188,7 @@ int main()
 		std::future<bool> ftr = prms.get_future();
 		std::thread Thread(Opt, std::ref(myProblem), myProblem.noise_count, i, myProblem.sim_step, std::move(prms));
 
-		std::future_status timeresult = ftr.wait_for(std::chrono::seconds(5));
+		std::future_status timeresult = ftr.wait_for(std::chrono::seconds(15));
 		if (timeresult != std::future_status::timeout)
 		{
 			printf("not timeout\n");
@@ -228,10 +228,14 @@ int main()
 			}
 		}
 
-		if (i != myProblem.sim_step - 1)
+		if (i != myProblem.sim_step - 1 && myProblem.error_code == 0 && myProblem.timeout == false)
 		{
 			myProblem.UpdateState();
 		}
+		//if (myProblem.error_code != 0)
+		//{
+		//	i = i - 1;
+		//}
 	}
 
 	//ãOê’ÇGlobalÇ…ïœä∑

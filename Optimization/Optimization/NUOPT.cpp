@@ -262,8 +262,8 @@ System_NUOPT::System_NUOPT()
 
 		//smp_line(__LINE__, __FILE__); acc[Idx] >= -3, Idx;
 		//smp_line(__LINE__, __FILE__); acc[Idx] <= 3.3, Idx;
-		//smp_line(__LINE__, __FILE__); vel[Idx] >= 0, Idx;
-		//smp_line(__LINE__, __FILE__); vel[Idx] <= vel_max[Idx], Idx;
+		smp_line(__LINE__, __FILE__); vel[Idx] >= 0, Idx;
+		smp_line(__LINE__, __FILE__); vel[Idx] <= vel_max[Idx], Idx;
 		smp_line(__LINE__, __FILE__); v_front_r[Idx] >= v_front_min[Idx], Idx;
 		smp_line(__LINE__, __FILE__); v_front_l[Idx] <= v_front_max[Idx], Idx;
 		smp_line(__LINE__, __FILE__); v_center_r[Idx] >= v_min[Idx], Idx;
@@ -271,12 +271,12 @@ System_NUOPT::System_NUOPT()
 		//smp_line(__LINE__, __FILE__); v_rear_r[Idx] >= v_rear_min[Idx], Idx;
 		//smp_line(__LINE__, __FILE__); v_rear_l[Idx] <= v_rear_max[Idx], Idx;
 
-		//smp_line(__LINE__, __FILE__); delta[Idx] <= 1.0472, Idx;
-		//smp_line(__LINE__, __FILE__); delta[Idx] >= -1.0472, Idx;
+		smp_line(__LINE__, __FILE__); delta[Idx] <= 1.0472, Idx;
+		smp_line(__LINE__, __FILE__); delta[Idx] >= -1.0472, Idx;
 		//smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 0.5, Idx;
 		//smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -0.5, Idx;
-		smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 30, Idx;
-		smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -30, Idx;
+		smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 10, Idx;
+		smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -10, Idx;
 
 
 		smp_line(__LINE__, __FILE__); Objective obj(type = minimize, name = "obj"); this->obj.setEntity(obj); obj.entryOutput();
