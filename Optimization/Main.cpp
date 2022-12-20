@@ -161,6 +161,7 @@ int main()
 	table.GetCourse(shareddata->course, csize);
 	constraint.Init_Course(table);
 	myProblem.InitState(shareddata);
+	double vel_ref = shareddata->init_vel;
 
 	//ÉNÉâÉbÉVÉÖÇµÇΩèÍçáÇÃÇΩÇﬂÇ…àÍíUclose
 	if (shareddata != NULL)
@@ -181,7 +182,7 @@ int main()
 		myProblem.SetFront_u();
 		constraint.GetConstraint(myProblem.u, myProblem.u_front_l, myProblem.u_front_r, myProblem.u_center_l, myProblem.u_center_r, myProblem.u_rear_l, myProblem.u_rear_r);
 		myProblem.SetConstraints(constraint.v_max, constraint.v_min, constraint.v_ref, constraint.vel_max, constraint.rho, constraint.v_front_max, constraint.v_front_min, constraint.v_rear_max, constraint.v_rear_min);
-		myProblem.SetV(myProblem.vel[0]);
+		myProblem.SetV(vel_ref);
 		myProblem.SetAllState(myProblem.noise_count, constraint.rho[0], i);
 
 		std::promise<bool> prms;
@@ -191,7 +192,7 @@ int main()
 		std::future_status timeresult = ftr.wait_for(std::chrono::seconds(5));
 		if (timeresult != std::future_status::timeout)
 		{
-			printf("not timeout\n");
+			printf("not timeout    (u, v, theta, vel) = (%.1f, %.1f, %.1f, %.1f)\n", myProblem.u[0], myProblem.v[0], myProblem.theta[0], myProblem.vel[0]);
 			myProblem.timeout = ftr.get();
 		}
 		else

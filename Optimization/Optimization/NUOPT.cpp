@@ -120,7 +120,7 @@ public:
 #define right rightsimple
 #endif
 
-System_NUOPT::System_NUOPT(double Lr, double WB)
+System_NUOPT::System_NUOPT()
 	: SystemInterface("NUOPT")
 	, rcd_horizon(this), tempSet(this), tempElem(this), a(this), b(this), Step_cn(this), Idx(this), Step_eval(this), Idx_eval(this), eps(this), u(this), vel(this), acc(this), v(this), v_dot(this), v_2dot(this), theta(this), theta_dot(this), theta_2dot(this), delta(this), delta_dot(this), v_front_l(this), v_front_r(this), v_center_l(this), v_center_r(this), v_rear_l(this), v_rear_r(this), beta(this), V_inv(this), T_delta(this), a11(this), a12(this), a21(this), a22(this), b1(this), b2(this), Q_vel(this), Q_acc(this), Q_v(this), Q_v_dot(this), Q_v_2dot(this), Q_theta(this), Q_theta_dot(this), Q_theta_2dot(this), Q_delta(this), Q_delta_dot(this), Sf_vel(this), Sf_acc(this), Sf_v(this), Sf_v_dot(this), Sf_v_2dot(this), Sf_theta(this), Sf_theta_dot(this), Sf_theta_2dot(this), Sf_delta(this), Sf_delta_dot(this), l_r(this), Wheelbase(this), width(this), dist_front(this), dist_rear(this), theta_front(this), theta_rear(this), init_u(this), init_vel(this), acc_init(this), init_v(this), init_v_dot(this), y_2dot_init(this), init_theta(this), init_theta_dot(this), theta_2dot_init(this), init_delta(this), delta_dot_init(this), vel_ref(this), vel_max(this), v_ref(this), v_max(this), v_min(this), v_front_max(this), v_front_min(this), v_rear_max(this), v_rear_min(this), Rho(this), obj(this)
 {
@@ -226,8 +226,6 @@ System_NUOPT::System_NUOPT(double Lr, double WB)
 		smp_line(__LINE__, __FILE__); VariableParameter v_rear_min(index = Idx, name = "v_rear_min");	this->v_rear_min.setEntity(v_rear_min); v_rear_min.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter Rho(index = Idx, name = "Rho");	this->Rho.setEntity(Rho); Rho.entryOutput();
 
-		smp_line(__LINE__, __FILE__); l_r = Lr;
-		smp_line(__LINE__, __FILE__); Wheelbase = WB;
 		smp_line(__LINE__, __FILE__); u[0] == init_u;
 		smp_line(__LINE__, __FILE__); vel[0] == init_vel;
 		smp_line(__LINE__, __FILE__); v[0] == init_v;
@@ -241,7 +239,7 @@ System_NUOPT::System_NUOPT(double Lr, double WB)
 		smp_line(__LINE__, __FILE__); v_center_r[0] == v[0] + (dist_front * sin(theta[0] - theta_front) + dist_rear * sin(theta[0] + M_PI + theta_rear)) / 2;
 		smp_line(__LINE__, __FILE__); v_rear_l[0] == v[0] + dist_rear * sin(theta[0] + M_PI - theta_rear);
 		smp_line(__LINE__, __FILE__); v_rear_r[0] == v[0] + dist_rear * sin(theta[0] + M_PI + theta_rear);
-
+		smp_line(__LINE__, __FILE__); beta[0] == atan(l_r * tan(delta[0]) / (Wheelbase + 0.0001));
 
 		/////////////// Dynamic Bicycle Model ////////////////////
 		//smp_line(__LINE__, __FILE__); for (int k = 0; k < rcd_horizon; k++)
@@ -268,11 +266,13 @@ System_NUOPT::System_NUOPT(double Lr, double WB)
 		///////////// Kinematic Bicycle Model ////////////////////
 		smp_line(__LINE__, __FILE__); for (int k = 0; k < rcd_horizon; k++)
 		{
-			smp_line(__LINE__, __FILE__); beta[k] == atan(l_r * tan(delta[k]) / Wheelbase);
+			smp_line(__LINE__, __FILE__); beta[k + 1] == atan(l_r * tan(delta[k + 1]) / (Wheelbase + 0.0001));
 			smp_line(__LINE__, __FILE__); vel[k + 1] == vel[k] + acc[k] * T_delta;
-			smp_line(__LINE__, __FILE__); u[k + 1] == u[k] + ((vel[k] * cos(theta[k] + beta[k])) / (1 - Rho[k] * v[k])) * T_delta;
-			smp_line(__LINE__, __FILE__); v[k + 1] == v[k] + (vel[k] * sin(theta[k] + beta[k])) * T_delta;
-			smp_line(__LINE__, __FILE__); theta[k + 1] == theta[k] + ((1 / l_r) * vel[k] * sin(beta[k]) - Rho[k] * vel[k] * cos(theta[k] + beta[k]) / (1 - Rho[k] * v[k])) * T_delta;
+			smp_line(__LINE__, __FILE__); u[k + 1] == u[k] + ((vel[k] * cos(theta[k] + beta[k])) / (1 + Rho[k] * v[k])) * T_delta;
+			smp_line(__LINE__, __FILE__); v_dot[k] == vel[k] * sin(theta[k] + beta[k]);
+			smp_line(__LINE__, __FILE__); v[k + 1] == v[k] + v_dot[k] * T_delta;
+			smp_line(__LINE__, __FILE__); theta_dot[k] == vel[k] * sin(beta[k]) / (l_r + 0.0001) + Rho[k] * vel[k] * cos(theta[k] + beta[k]) / (1 + Rho[k] * v[k]);
+			smp_line(__LINE__, __FILE__); theta[k + 1] == theta[k] + theta_dot[k] * T_delta;
 			smp_line(__LINE__, __FILE__); delta[k + 1] == delta[k] + delta_dot[k] * T_delta;
 			smp_line(__LINE__, __FILE__); v_front_l[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] + theta_front);
 			smp_line(__LINE__, __FILE__); v_front_r[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] - theta_front);
@@ -293,12 +293,12 @@ System_NUOPT::System_NUOPT(double Lr, double WB)
 		//smp_line(__LINE__, __FILE__); v_rear_r[Idx] >= v_rear_min[Idx], Idx;
 		//smp_line(__LINE__, __FILE__); v_rear_l[Idx] <= v_rear_max[Idx], Idx;
 
-		//smp_line(__LINE__, __FILE__); delta[Idx] <= 1.0472, Idx;
-		//smp_line(__LINE__, __FILE__); delta[Idx] >= -1.0472, Idx;
+		smp_line(__LINE__, __FILE__); delta[Idx] <= 1.0472, Idx;
+		smp_line(__LINE__, __FILE__); delta[Idx] >= -1.0472, Idx;
 		//smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 0.5, Idx;
 		//smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -0.5, Idx;
-		smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 30, Idx;
-		smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -30, Idx;
+		smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 3, Idx;
+		smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -3, Idx;
 
 
 		smp_line(__LINE__, __FILE__); Objective obj(type = minimize, name = "obj"); this->obj.setEntity(obj); obj.entryOutput();

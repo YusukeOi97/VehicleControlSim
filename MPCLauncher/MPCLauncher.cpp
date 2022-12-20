@@ -225,13 +225,18 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 								//	while (shareddata->success == 0 && shareddata->first_success == false)
 								//	{
 								//		system(path);
+								//		falsecount++;
+								//		if (falsecount > 4)
+								//		{
+								//			break;
+								//		}
 								//	}
 								//}
 								while (shareddata->success == 0 && shareddata->first_success == false)
 								{
 									system(path);
 									falsecount++;
-									if (falsecount > 4)
+									if (falsecount > 2)
 									{
 										break;
 									}
@@ -251,9 +256,18 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 						//noise‚ğ“ü‚ê‚½ê‡‚Ì”½•œ‰ñ”
 						for (int i = 0; i < prm.NoiseNum; i++)
 						{
+							int falsecount = 0;
 							shareddata->noise_count = i;
 							InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, 0);
-							system(path);
+							while (shareddata->success == 0 && shareddata->first_success == false)
+							{
+								system(path);
+								falsecount++;
+								if (falsecount > 3)
+								{
+									break;
+								}
+							}
 
 							if (!ReadSharedMemory(SHARED_MEMORY_SIZE))
 							{
@@ -295,6 +309,7 @@ void SetFrenet(std::vector<std::vector<double>>& course, CourseSetting setting, 
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[4][i], 0.0, course[6][i], course[7][i], temp_theta, frenet.Cache_g); //§–ñy_min‚ğfrenet->global
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[5][i], 0.0, course[8][i], course[9][i], temp_theta, frenet.Cache_g); //§–ñy_max‚ğfrenet->global
 	}
+	frenet.Cache_f.initialized = false;
 }
 
 int main()
@@ -314,7 +329,7 @@ int main()
 	//int pos1[2] = { 1, 0 };
 
 	double a[1] = { 2.5 };
-	double width[1] = { 1.3 }; //0.5 0.7 0.9
+	double width[3] = { 1.3, 1.05, 0.9 }; //0.5 0.7 0.9
 	double dist[2] = { 13, 19 }; // 13 16 19
 	double U_start = 25;
 	double U_end = 76;
@@ -356,9 +371,9 @@ int main()
 	for (size_t i = 0; i < sizeof(cycle) / sizeof(cycle[0]); i++)
 	{
 		setting.cycle = cycle[i];
-		for (size_t i = 0; i < sizeof(ampl) / sizeof(ampl[0]); i++)
+		for (size_t j = 0; j < sizeof(ampl) / sizeof(ampl[0]); j++)
 		{
-			setting.ampl = ampl[i];
+			setting.ampl = ampl[j];
 			gencourse.GetSetting(setting);
 			course = gencourse.Gen_SINE();
 			SetFrenet(course, setting, frenet);

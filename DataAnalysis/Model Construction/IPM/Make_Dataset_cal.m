@@ -4,7 +4,7 @@ addpath("C:\VehicleControlSim\DataAnalysis\Model Construction\func\");
 
 Kappa_array = 1;
 
-interval = 10; %•ªŠ„”
+interval = 14; %•ªŠ„”
 constraint = zeros(2 * interval, 1);
 first = true;
 InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
@@ -50,9 +50,9 @@ for i = 1 : length(Folderlist(1, :))
     for j = 2 : DataSize
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
-            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.19
+            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.3
             else
-                out(1, ColOut) = data(j, Idx_cal) * 1e3; %cal(ipm)
+                out(1, ColOut) = data(j, Idx_cal) * 1000; %cal(ipm)
                 ColOut = ColOut + 1;
             end
         end
@@ -75,7 +75,7 @@ for i = 1 : length(Folderlist(1, :))
     for j = 2 : DataSize
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
-            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.19
+            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.3
             else
                 %v, yaw, vel
                 in(1, ColIn) = data(j, Idx_v);
@@ -234,7 +234,7 @@ OUTPUT_VALIDATION = MATRIX_OUTPUT(idx, :);
 % rng("default")
 % Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "OptimizeHyperparameters", params, "HyperparameterOptimizationOptions", struct("AcquisitionFunctionName", "expected-improvement-plus", "MaxObjectiveEvaluations", 30));
 
-Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-4, "LayerSizes", [60 60 60 60 60])
+Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-4, "LayerSizes", [60 60 60 60 60 60])
 %lambda dwa:[60 60 60]1e-4 roughdwa:[60 60 60]1e-3
 testMSE = loss(Mdl, INPUT_VALIDATION, OUTPUT_VALIDATION)
 OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);

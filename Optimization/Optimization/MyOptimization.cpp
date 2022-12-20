@@ -41,7 +41,7 @@ MyProblem::MyProblem(SharedData* shareddata)
 {
 	SimpleInitialize();
 	{
-		model = (std::shared_ptr<void>)((void*)new System_NUOPT(shareddata->l_r, shareddata->l_f + shareddata->l_r));
+		model = (std::shared_ptr<void>)((void*)new System_NUOPT());
 
 		System_NUOPT* m = ((System_NUOPT*)model.get());
 
