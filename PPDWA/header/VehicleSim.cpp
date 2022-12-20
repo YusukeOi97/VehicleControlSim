@@ -9,7 +9,7 @@ Vehicle_Sim::Vehicle_Sim(Frenet frenet, LinearInterporater table, Prm prm)
 	side.resize(this->SimStep);
 }
 
-void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, double vel_ref)
+void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata)
 {
 	noise.Make();
 	B_x = logdata.x + noise.noise_u;
@@ -22,6 +22,8 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, double vel_ref)
 	B_yaw_dot = 0;
 	logdata.v_dot = B_y_dot + logdata.vel * logdata.theta;
 	logdata.theta_dot = B_yaw_dot - logdata.rho * logdata.vel;
+	vel_ref = logdata.vel;
+
 	logdata.total_time = 0;
 	logdata.average_lateral_jerk = 0;
 	logdata.average_longitudinal_jerk = 0;

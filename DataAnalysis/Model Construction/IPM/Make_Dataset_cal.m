@@ -4,7 +4,7 @@ addpath("C:\VehicleControlSim\DataAnalysis\Model Construction\func\");
 
 Kappa_array = 1;
 
-interval = 10; %ï™äÑêî
+interval = 14; %ï™äÑêî
 constraint = zeros(2 * interval, 1);
 first = true;
 InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
@@ -29,7 +29,11 @@ Num_validation = 1500; %åüèÿópÇÃÉTÉìÉvÉãêî
 
 DataPath = 'C:\Data\Dataset\';
 
+<<<<<<< HEAD
 Method = 'SQPtime';
+=======
+Method = 'IPMtime';
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
@@ -50,9 +54,13 @@ for i = 1 : length(Folderlist(1, :))
     for j = 2 : DataSize
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
+<<<<<<< HEAD
             if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1% || data(j, Idx_cal) > 0.2
+=======
+            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.3
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
             else
-                out(1, ColOut) = data(j, Idx_cal); %cal(ipm)
+                out(1, ColOut) = data(j, Idx_cal) * 1000; %cal(ipm)
                 ColOut = ColOut + 1;
             end
         end
@@ -75,7 +83,11 @@ for i = 1 : length(Folderlist(1, :))
     for j = 2 : DataSize
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
+<<<<<<< HEAD
             if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1% || data(j, Idx_cal) > 0.2
+=======
+            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.3
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
             else
                 %v, yaw, vel
                 in(1, ColIn) = data(j, Idx_v);
@@ -218,9 +230,9 @@ MATRIX_OUTPUT = MATRIX_OUTPUT.';
 
 idx = randperm(size(MATRIX_INPUT, 1), Num_validation);
 INPUT_VALIDATION = MATRIX_INPUT(idx, :);
-MATRIX_INPUT(idx, :) = [];
+%MATRIX_INPUT(idx, :) = [];
 OUTPUT_VALIDATION = MATRIX_OUTPUT(idx, :);
-MATRIX_OUTPUT(idx, :) = [];
+%MATRIX_OUTPUT(idx, :) = [];
 
 % params = hyperparameters("fitrnet", MATRIX_INPUT, MATRIX_OUTPUT);
 % for ii = 1 : length(params)
@@ -234,7 +246,7 @@ MATRIX_OUTPUT(idx, :) = [];
 % rng("default")
 % Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "OptimizeHyperparameters", params, "HyperparameterOptimizationOptions", struct("AcquisitionFunctionName", "expected-improvement-plus", "MaxObjectiveEvaluations", 30));
 
-Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-4, "LayerSizes", [60 60 60 60 60])
+Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-4, "LayerSizes", [60 60 60 60 60 60])
 %lambda dwa:[60 60 60]1e-4 roughdwa:[60 60 60]1e-3
 testMSE = loss(Mdl, INPUT_VALIDATION, OUTPUT_VALIDATION)
 OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
@@ -250,7 +262,7 @@ OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 % squares = predictionError.^2;
 % rmse = sqrt(mean(squares))
 
-histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 0.5], 'YBinLimits', [0 0.5]);
+histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 500], 'YBinLimits', [0 500]);
 axis equal
 colorbar
 ax = gca;

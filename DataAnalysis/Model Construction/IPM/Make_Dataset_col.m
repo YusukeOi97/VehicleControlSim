@@ -238,11 +238,11 @@ OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 % squares = predictionError.^2;
 % rmse = sqrt(mean(squares))
 
-histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
+histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [30 30], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
 axis equal
 colorbar
 ax = gca;
-ax.CLim = [0 100];
+ax.CLim = [0 80];
 xlabel("Predicted Value")
 ylabel("True Value")
 

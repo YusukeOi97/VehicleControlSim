@@ -21,9 +21,9 @@ Idx_c_ymax = 6;
 Idx_c_ymin = 5;
 Idx_c_kappa = 11;
 
-Idx_col_dwa = 11;
-Idx_col_pp = 11;
-Idx_cal_pp = 10;
+Idx_col_dwa = 10;
+Idx_col_pp = 10;
+Idx_cal_pp = 9;
 Num_validation = 1500; %åüèÿópÇÃÉTÉìÉvÉãêî
 
 
@@ -50,7 +50,7 @@ for i = 1 : length(Folderlist(1, :))
     for j = 2 : DataSize
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
-            out(1, ColOut) = data(j, Idx_cal_pp) * 1e6;
+            out(1, ColOut) = data(j, Idx_cal_pp) * 1e3;
             ColOut = ColOut + 1;
         end
     end
@@ -245,7 +245,7 @@ OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 % squares = predictionError.^2;
 % rmse = sqrt(mean(squares))
 figure
-histogram2(OUTPUT_PREDICTED(:, 1), OUTPUT_VALIDATION(:, 1), [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 5], 'YBinLimits', [0 5]);
+histogram2(OUTPUT_PREDICTED(:, 1), OUTPUT_VALIDATION(:, 1), [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
 axis equal
 colorbar
 ax = gca;

@@ -214,26 +214,32 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 						if (logdata.x > 32)
 						{
 							//noise‚ğ“ü‚ê‚½ê‡‚Ì”½•œ
+							//KBM‚Ìê‡‚É‚Ívsize‚ğ•ÏX
 							for (int i = 0; i < prm.NoiseNum; i++)
 							{
 								int falsecount = 0;
 								shareddata->noise_count = i;
 								InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, 0);
-						/*		if (logdata.theta == 0)
-								{
-									while (shareddata->success == 0 && shareddata->first_access == false)
-									{
-										system(path);
-									}
-								}*/
+								//if (logdata.theta == 0)
+								//{
+								//	while (shareddata->success == 0 && shareddata->first_success == false)
+								//	{
+								//		system(path);
+								//		falsecount++;
+								//		if (falsecount > 4)
+								//		{
+								//			break;
+								//		}
+								//	}
+								//}
 								while (shareddata->success == 0 && shareddata->first_success == false)
 								{
-									system(path);
-									falsecount++;
-									if (falsecount > 4)
+									if (falsecount > 1)
 									{
 										break;
 									}
+									system(path);
+									falsecount++;
 								}
 								if (shareddata->elapse_time > 0.15)
 								{
@@ -259,12 +265,21 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 							InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, 0);
 							while (shareddata->success == 0 && shareddata->first_success == false)
 							{
+<<<<<<< HEAD
 								system(path);
 								falsecount++;
 								if (falsecount > 4)
 								{
 									break;
 								}
+=======
+								if (falsecount > 1)
+								{
+									break;
+								}
+								system(path);
+								falsecount++;
+>>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
 							}
 
 							if (!ReadSharedMemory(SHARED_MEMORY_SIZE))
@@ -307,6 +322,7 @@ void SetFrenet(std::vector<std::vector<double>>& course, CourseSetting setting, 
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[4][i], 0.0, course[6][i], course[7][i], temp_theta, frenet.Cache_g); //§–ñy_min‚ğfrenet->global
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[5][i], 0.0, course[8][i], course[9][i], temp_theta, frenet.Cache_g); //§–ñy_max‚ğfrenet->global
 	}
+	frenet.Cache_f.initialized = false;
 }
 
 int main()
@@ -360,17 +376,17 @@ int main()
 #endif // OA
 
 #ifdef SINE
-	double ampl[1] = { 30 };
+	double ampl[1] = { 40 };
 	double cycle[1] = { 80 };
-	double U_start = 0;
-	double U_end = 80;
+	double U_start = 2;
+	double U_end = 30;
 
 	for (size_t i = 0; i < sizeof(cycle) / sizeof(cycle[0]); i++)
 	{
 		setting.cycle = cycle[i];
-		for (size_t i = 0; i < sizeof(ampl) / sizeof(ampl[0]); i++)
+		for (size_t j = 0; j < sizeof(ampl) / sizeof(ampl[0]); j++)
 		{
-			setting.ampl = ampl[i];
+			setting.ampl = ampl[j];
 			gencourse.GetSetting(setting);
 			course = gencourse.Gen_SINE();
 			SetFrenet(course, setting, frenet);

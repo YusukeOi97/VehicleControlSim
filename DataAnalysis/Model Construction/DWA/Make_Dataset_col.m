@@ -21,14 +21,14 @@ Idx_c_ymax = 6;
 Idx_c_ymin = 5;
 Idx_c_kappa = 11;
 
-Idx_col_dwa = 11;
-Idx_col_pp = 11;
+Idx_col_dwa = 10;
+Idx_col_pp = 10;
 Num_validation = 1500; %åüèÿópÇÃÉTÉìÉvÉãêî
 
 
 DataPath = 'C:\Data\Dataset\';
 
-Method = 'DWA';
+Method = 'roughDWA';
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
@@ -247,19 +247,19 @@ OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 mdl = fitlm(OUTPUT_PREDICTED, OUTPUT_VALIDATION);
 mdl.Rsquared.Ordinary
 
-for i = 1 : size(OUTPUT_PREDICTED, 1) / 2
-    if OUTPUT_PREDICTED(i, 1) < 0
-        OUTPUT_PREDICTED(i, 1) = 0;
-    end
-    if OUTPUT_PREDICTED(i, 1) > 1
-        OUTPUT_PREDICTED(i, 1) = 1;
-    end
-end
-histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
+% for i = 1 : size(OUTPUT_PREDICTED, 1) / 2
+%     if OUTPUT_PREDICTED(i, 1) < 0
+%         OUTPUT_PREDICTED(i, 1) = 0;
+%     end
+%     if OUTPUT_PREDICTED(i, 1) > 1
+%         OUTPUT_PREDICTED(i, 1) = 1;
+%     end
+% end
+histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [30 30], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
 axis equal
 colorbar
 ax = gca;
-ax.CLim = [0 100];
+ax.CLim = [0 80];
 xlabel("Predicted Value")
 ylabel("True Value")
 
