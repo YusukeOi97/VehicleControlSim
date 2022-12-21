@@ -269,10 +269,8 @@ System_NUOPT::System_NUOPT()
 			smp_line(__LINE__, __FILE__); beta[k + 1] == atan(l_r * tan(delta[k + 1]) / (Wheelbase + 0.0001));
 			smp_line(__LINE__, __FILE__); vel[k + 1] == vel[k] + acc[k] * T_delta;
 			smp_line(__LINE__, __FILE__); u[k + 1] == u[k] + ((vel[k] * cos(theta[k] + beta[k])) / (1 - Rho[k] * v[k])) * T_delta;
-			smp_line(__LINE__, __FILE__); v_dot[k] == vel[k] * sin(theta[k] + beta[k]);
-			smp_line(__LINE__, __FILE__); v[k + 1] == v[k] + v_dot[k] * T_delta;
-			smp_line(__LINE__, __FILE__); theta_dot[k] == vel[k] * sin(beta[k]) / (l_r + 0.0001) - Rho[k] * vel[k] * cos(theta[k] + beta[k]) / (1 - Rho[k] * v[k]);
-			smp_line(__LINE__, __FILE__); theta[k + 1] == theta[k] + theta_dot[k] * T_delta;
+			smp_line(__LINE__, __FILE__); v[k + 1] == v[k] + vel[k] * sin(theta[k] + beta[k]) * T_delta;
+			smp_line(__LINE__, __FILE__); theta[k + 1] == theta[k] + (vel[k] * sin(beta[k]) / (l_r + 0.0001) - Rho[k] * vel[k] * cos(theta[k] + beta[k]) / (1 - Rho[k] * v[k])) * T_delta;
 			smp_line(__LINE__, __FILE__); delta[k + 1] == delta[k] + delta_dot[k] * T_delta;
 			smp_line(__LINE__, __FILE__); v_front_l[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] + theta_front);
 			smp_line(__LINE__, __FILE__); v_front_r[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] - theta_front);
@@ -282,8 +280,27 @@ System_NUOPT::System_NUOPT()
 			smp_line(__LINE__, __FILE__); v_rear_r[k + 1] == v[k + 1] + dist_rear * sin(theta[k + 1] + M_PI + theta_rear);
 		}
 
-		//smp_line(__LINE__, __FILE__); acc[Idx] >= -3, Idx;
-		//smp_line(__LINE__, __FILE__); acc[Idx] <= 3.3, Idx;
+		/////////////// Kinematic Bicycle Model ////////////////////
+		//smp_line(__LINE__, __FILE__); for (int k = 0; k < rcd_horizon; k++)
+		//{
+		//	smp_line(__LINE__, __FILE__); beta[k + 1] == atan(l_r * tan(delta[k + 1]) / (Wheelbase + 0.0001));
+		//	smp_line(__LINE__, __FILE__); vel[k + 1] == vel[k] + acc[k] * T_delta;
+		//	smp_line(__LINE__, __FILE__); u[k + 1] == u[k] + ((vel[k] * cos(theta[k] + beta[k])) / (1 - Rho[k] * v[k])) * T_delta;
+		//	smp_line(__LINE__, __FILE__); v_dot[k] == vel[k] * sin(theta[k] + beta[k]);
+		//	smp_line(__LINE__, __FILE__); v[k + 1] == v[k] + v_dot[k] * T_delta;
+		//	smp_line(__LINE__, __FILE__); theta_dot[k] == vel[k] * sin(beta[k]) / (l_r + 0.0001) - Rho[k] * vel[k] * cos(theta[k] + beta[k]) / (1 - Rho[k] * v[k]);
+		//	smp_line(__LINE__, __FILE__); theta[k + 1] == theta[k] + theta_dot[k] * T_delta;
+		//	smp_line(__LINE__, __FILE__); delta[k + 1] == delta[k] + delta_dot[k] * T_delta;
+		//	smp_line(__LINE__, __FILE__); v_front_l[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] + theta_front);
+		//	smp_line(__LINE__, __FILE__); v_front_r[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] - theta_front);
+		//	smp_line(__LINE__, __FILE__); v_center_l[k + 1] == v[k + 1] + (dist_front * sin(theta[k + 1] + theta_front) + dist_rear * sin(theta[k + 1] + M_PI - theta_rear)) / 2;
+		//	smp_line(__LINE__, __FILE__); v_center_r[k + 1] == v[k + 1] + (dist_front * sin(theta[k + 1] - theta_front) + dist_rear * sin(theta[k + 1] + M_PI + theta_rear)) / 2;
+		//	smp_line(__LINE__, __FILE__); v_rear_l[k + 1] == v[k + 1] + dist_rear * sin(theta[k + 1] + M_PI - theta_rear);
+		//	smp_line(__LINE__, __FILE__); v_rear_r[k + 1] == v[k + 1] + dist_rear * sin(theta[k + 1] + M_PI + theta_rear);
+		//}
+
+		smp_line(__LINE__, __FILE__); acc[Idx] >= -3, Idx;
+		smp_line(__LINE__, __FILE__); acc[Idx] <= 3.3, Idx;
 		smp_line(__LINE__, __FILE__); vel[Idx] >= 0, Idx;
 		smp_line(__LINE__, __FILE__); vel[Idx] <= vel_max[Idx], Idx;
 		smp_line(__LINE__, __FILE__); v_front_r[Idx] >= v_front_min[Idx], Idx;
@@ -297,8 +314,8 @@ System_NUOPT::System_NUOPT()
 		smp_line(__LINE__, __FILE__); delta[Idx] >= -1.0472, Idx;
 		//smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 0.5, Idx;
 		//smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -0.5, Idx;
-		smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 3, Idx;
-		smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -3, Idx;
+		smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 10, Idx;
+		smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -10, Idx;
 
 
 		smp_line(__LINE__, __FILE__); Objective obj(type = minimize, name = "obj"); this->obj.setEntity(obj); obj.entryOutput();
