@@ -268,10 +268,10 @@ System_NUOPT::System_NUOPT()
 		{
 			smp_line(__LINE__, __FILE__); beta[k + 1] == atan(l_r * tan(delta[k + 1]) / (Wheelbase + 0.0001));
 			smp_line(__LINE__, __FILE__); vel[k + 1] == vel[k] + acc[k] * T_delta;
-			smp_line(__LINE__, __FILE__); u[k + 1] == u[k] + ((vel[k] * cos(theta[k] + beta[k])) / (1 + Rho[k] * v[k])) * T_delta;
+			smp_line(__LINE__, __FILE__); u[k + 1] == u[k] + ((vel[k] * cos(theta[k] + beta[k])) / (1 - Rho[k] * v[k])) * T_delta;
 			smp_line(__LINE__, __FILE__); v_dot[k] == vel[k] * sin(theta[k] + beta[k]);
 			smp_line(__LINE__, __FILE__); v[k + 1] == v[k] + v_dot[k] * T_delta;
-			smp_line(__LINE__, __FILE__); theta_dot[k] == vel[k] * sin(beta[k]) / (l_r + 0.0001) + Rho[k] * vel[k] * cos(theta[k] + beta[k]) / (1 + Rho[k] * v[k]);
+			smp_line(__LINE__, __FILE__); theta_dot[k] == vel[k] * sin(beta[k]) / (l_r + 0.0001) - Rho[k] * vel[k] * cos(theta[k] + beta[k]) / (1 - Rho[k] * v[k]);
 			smp_line(__LINE__, __FILE__); theta[k + 1] == theta[k] + theta_dot[k] * T_delta;
 			smp_line(__LINE__, __FILE__); delta[k + 1] == delta[k] + delta_dot[k] * T_delta;
 			smp_line(__LINE__, __FILE__); v_front_l[k + 1] == v[k + 1] + dist_front * sin(theta[k + 1] + theta_front);
