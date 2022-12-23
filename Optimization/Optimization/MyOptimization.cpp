@@ -476,7 +476,11 @@ void MyProblem::GetOptResult()
 	//jerk‹‚ß‚é—p
 	average_lateral_jerk = 0;
 	average_longitudinal_jerk = 0;
-	for (int i = 0; i < rcd_horizon; i++)
+	for (int i = 1; i < rcd_horizon - 1; i++)
+	{
+		this->v_2dot[i] = (this->v_dot[i + 1] - this->v_dot[i - 1]) / (2 * T_delta);
+	}
+	for (int i = 1; i < rcd_horizon - 1; i++)
 	{
 		//Ô—¼‹““®‚ğŒvZ(DBM)
 		B_y_2dot = this->v_2dot[i] - this->vel[i] * this->theta_dot[i] - this->acc[i] * this->theta[i];

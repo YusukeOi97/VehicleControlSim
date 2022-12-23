@@ -10,18 +10,8 @@ function PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
         %daspect([10 5 50]);
         daspect([30 5 450]);
         colorbar;
-<<<<<<< HEAD
-<<<<<<< HEAD
-        caxis([0.05, 0.5]);
-        xlim([25 80]);
-=======
-        caxis([30, 100]);
+        caxis([0.0, 50]);
         xlim([0 55]);
->>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
-=======
-        caxis([30, 100]);
-        xlim([0 55]);
->>>>>>> 4eed0f03c4e3e1d7bfd57985d4c70283aa5ab4b7
         %ylim([-1.5 1.5]);
         xlabel('$x$[m]', 'Interpreter', 'latex');
         ylabel('$y$[m]', 'Interpreter', 'latex');
