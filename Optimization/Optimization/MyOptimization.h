@@ -24,7 +24,7 @@ public:
 	Noise noise;
 
 	// ŠÖ”‚Ì’è‹`
-	MyProblem(SharedData* shareddata);
+	MyProblem(struct SharedData* shareddata);
 	~MyProblem();
 	void Solve(int noise_count, int i, int step);
 	void GetOptResult();

@@ -37,7 +37,7 @@ public:
 	}
 };
 
-MyProblem::MyProblem(SharedData* shareddata) 
+MyProblem::MyProblem(struct SharedData* shareddata)
 {
 	SimpleInitialize();
 	{

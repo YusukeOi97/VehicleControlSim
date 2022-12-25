@@ -170,10 +170,10 @@ System_NUOPT::System_NUOPT()
 		smp_line(__LINE__, __FILE__); Variable beta(index = Idx, name = "beta"); this->beta.setEntity(beta); beta.entryOutput();
 		smp_line(__LINE__, __FILE__); Variable V_inv(index = Idx, name = "V_inv"); this->V_inv.setEntity(V_inv); V_inv.entryOutput();
 		
-		smp_line(__LINE__, __FILE__); VariableParameter T_delta(name = "T_delta"); this->T_delta.setEntity(T_delta); T_delta.entryOutput();
-		smp_line(__LINE__, __FILE__); VariableParameter a11(name = "a11"); this->a11.setEntity(a11); a11.entryOutput();
-		smp_line(__LINE__, __FILE__); VariableParameter a12(name = "a12"); this->a12.setEntity(a12); a12.entryOutput();
-		smp_line(__LINE__, __FILE__); VariableParameter a21(name = "a21"); this->a21.setEntity(a21); a21.entryOutput();
+		smp_line(__LINE__, __FILE__); Parameter T_delta(name = "T_delta"); this->T_delta.setEntity(T_delta); T_delta.entryOutput();
+		smp_line(__LINE__, __FILE__); Parameter a11(name = "a11"); this->a11.setEntity(a11); a11.entryOutput();
+		smp_line(__LINE__, __FILE__); Parameter a12(name = "a12"); this->a12.setEntity(a12); a12.entryOutput();
+		smp_line(__LINE__, __FILE__); Parameter a21(name = "a21"); this->a21.setEntity(a21); a21.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter a22(name = "a22"); this->a22.setEntity(a22); a22.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter b1(name = "b1");	this->b1.setEntity(b1); b1.entryOutput();
 		smp_line(__LINE__, __FILE__); VariableParameter b2(name = "b2");	this->b2.setEntity(b2); b2.entryOutput();
