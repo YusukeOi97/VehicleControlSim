@@ -5,8 +5,8 @@ addpath('lib');
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
-WhichAnalyze = "c";
-number = 54;
+WhichAnalyze = "lon";
+number = 4;
 Data_path = "C:\Data\SQP\1220\";
 %%%%IPM or SQP or DWA or PP
 Method = "IPM";

@@ -211,7 +211,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 					//コースの途中からデータ取得
 					if (CourseNum == 0)
 					{
-						if (logdata.x > 0)
+						if (logdata.x > 44)
 						{
 							//noiseを入れた場合の反復
 							//KBMの場合にはvsizeを変更
@@ -328,7 +328,7 @@ int main()
 	//double dist[1] = { 13 }; // 13 16 19
 	//int pos1[2] = { 1, 0 };
 
-	double a[1] = { 1.3 };
+	double a[1] = { 2.5 };
 	double width[3] = { 1.3, 1.05, 0.9 }; //0.5 0.7 0.9
 	double dist[2] = { 13, 19 }; // 13 16 19
 	double U_start = 25;

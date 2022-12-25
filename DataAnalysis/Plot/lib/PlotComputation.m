@@ -10,7 +10,7 @@ function PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
         %daspect([10 5 50]);
         daspect([30 5 450]);
         colorbar;
-        caxis([30, 100]);
+        caxis([0.0, 50]);
         xlim([0 55]);
         %ylim([-1.5 1.5]);
         xlabel('$x$[m]', 'Interpreter', 'latex');
