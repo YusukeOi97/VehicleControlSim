@@ -138,6 +138,7 @@ void MyProblem::InitOptVec()
 	x.resize(vsize);
 	y.resize(vsize);
 	yaw.resize(vsize);
+	v_error.resize(vsize);
 }
 
 void MyProblem::InitState(SharedData* shareddata)
@@ -472,21 +473,30 @@ void MyProblem::GetOptResult()
 	this->optValue = result.optValue;
 	this->tolerance = result.tolerance;
 	this->residual = result.residual;
+	for (int i = 0; i < rcd_horizon; i++)
+	{
+		v_error[i] = this->v[i] - this->v_ref[i];
+	}
 
 	//jerkãÅÇﬂÇÈóp
 	average_lateral_jerk = 0;
 	average_longitudinal_jerk = 0;
-	for (int i = 1; i < rcd_horizon - 1; i++)
+	for (int i = 1; i < rcd_horizon; i++)
 	{
-		this->v_2dot[i] = (this->v_dot[i + 1] - this->v_dot[i - 1]) / (2 * T_delta);
+		this->v_dot[i] = (this->v[i] - this->v[i - 1]) / T_delta;
+		this->theta_dot[i] = (this->theta[i] - this->theta[i - 1]) / T_delta;
 	}
-	for (int i = 1; i < rcd_horizon - 1; i++)
+	for (int i = 1; i < rcd_horizon; i++)
+	{
+		this->v_2dot[i] = (this->v_dot[i] - this->v_dot[i - 1]) / T_delta;
+	}
+	for (int i = 1; i < rcd_horizon; i++)
 	{
 		//é‘óºãììÆÇåvéZ(DBM)
 		B_y_2dot = this->v_2dot[i] - this->vel[i] * this->theta_dot[i] - this->acc[i] * this->theta[i];
 		lateral_G[i] = B_y_2dot;
 	}
-	for (int j = 1; j < rcd_horizon - 1; j++)
+	for (int j = 2; j < rcd_horizon - 1; j++)
 	{
 		lateral_jerk[j] = (lateral_G[j + 1] - lateral_G[j - 1]) / (2 * T_delta);
 		longitudinal_jerk[j] = (this->acc[j + 1] - this->acc[j - 1]) / (2 * T_delta);
@@ -494,7 +504,7 @@ void MyProblem::GetOptResult()
 		average_longitudinal_jerk += abs(longitudinal_jerk[j]);
 	}
 
-	average_lateral_jerk = average_lateral_jerk / (rcd_horizon - 2);
-	average_longitudinal_jerk = average_longitudinal_jerk / (rcd_horizon - 2);
+	average_lateral_jerk = average_lateral_jerk / (rcd_horizon - 4);
+	average_longitudinal_jerk = average_longitudinal_jerk / (rcd_horizon - 4);
 	max_jerk = (std::max)(*max_element(lateral_jerk.begin(), lateral_jerk.end()), abs(*min_element(lateral_jerk.begin(), lateral_jerk.end())));
 }
