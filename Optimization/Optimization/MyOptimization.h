@@ -2,6 +2,7 @@
 #include <header/Data.h>
 #include <Course/GetConstraint.h>
 #include <NoiseMake/NoiseMake.h>
+#include <setting.h>
 
 class MyProblem {
 public:

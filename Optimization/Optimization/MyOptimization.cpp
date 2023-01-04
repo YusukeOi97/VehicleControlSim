@@ -275,9 +275,16 @@ void MyProblem::SetYmin_rear(vector<double> v_rear_min)
 void MyProblem::SetRho(vector<double> Rho)
 {
 	System_NUOPT* m = ((System_NUOPT*)model.get());
+
+#ifdef OA
+	for (int i = 0; i < Rho.size(); ++i) {
+		m->Rho[i] = 0;
+	}
+#else
 	for (int i = 0; i < Rho.size(); ++i) {
 		m->Rho[i] = Rho[i];
 	}
+#endif // OA
 }
 
 void MyProblem::SetAllState(int noise_count, double init_rho, int SimStep)
