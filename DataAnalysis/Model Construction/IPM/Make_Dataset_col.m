@@ -7,11 +7,8 @@ Kappa_array = 1;
 interval = 10; %ï™äÑêî
 constraint = zeros(2 * interval, 1);
 first = true;
-InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
-vel_max = 7;
-theta_ = 70;
-Step = 70;
-Delta_T = 0.03;
+Step = 20;
+Delta_T = 0.1;
 Idx_u = 5;
 Idx_v = 6;
 Idx_theta = 7;
@@ -26,9 +23,9 @@ Idx_suc_mpc = 19;
 Num_validation = 1500; %åüèÿópÇÃÉTÉìÉvÉãêî
 
 
-DataPath = 'C:\Data\Dataset\';
+DataPath = 'C:\Data\Dataset\KBM\';
 
-Method = 'SQPcp';
+Method = 'SQP';
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
@@ -63,8 +60,8 @@ for i = 1 : length(Folderlist(1, :))
     u = zeros(Step, 1);
 
     ColIn = 1;
-    for j = 2 : DataSize
-        if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
+    for j = 1 : DataSize - 1
+        if data(j, Idx_u) == data(j + 1, Idx_u) && data(j, Idx_v) == data(j + 1, Idx_v) && data(j, Idx_theta) == data(j + 1, Idx_theta) && data(j, Idx_vel) == data(j + 1, Idx_vel)
         else
             %v, yaw, vel
             in(1, ColIn) = data(j, Idx_v);
@@ -206,9 +203,9 @@ MATRIX_OUTPUT = MATRIX_OUTPUT.';
 
 idx = randperm(size(MATRIX_INPUT, 1), Num_validation);
 INPUT_VALIDATION = MATRIX_INPUT(idx, :);
-%MATRIX_INPUT(idx, :) = [];
+MATRIX_INPUT(idx, :) = [];
 OUTPUT_VALIDATION = MATRIX_OUTPUT(idx, :);
-%MATRIX_OUTPUT(idx, :) = [];
+MATRIX_OUTPUT(idx, :) = [];
 
 % params = hyperparameters("fitrnet", MATRIX_INPUT, MATRIX_OUTPUT);
 % for ii = 1 : length(params)

@@ -2,7 +2,7 @@ clear;
 close all;
 
 Idx_data = [3 4 6 7 10 11 13 14];
-Idx_pre = 13;
+Idx_pre = 26;
 Idx_course = [2 4];
 Idx_min = 5;
 Idx_max = 6;
@@ -11,9 +11,9 @@ Idx_g_max_x = 9;
 Idx_g_min = 8;
 Idx_g_max = 10;
 Idx_rho = 11;
-step = 70;
+step = 20;
 
-DataPath = 'C:\Data\Dataset\SQPcpcleaned\';
+DataPath = 'C:\Data\Dataset\KBM\IPMcrcleaned\';
 FolderInfo = dir(DataPath);
 Folderlist = {FolderInfo.name};
 Folderlist = Folderlist(1, 3 : end);

@@ -7,11 +7,8 @@ Kappa_array = 1;
 interval = 10; %分割数
 constraint = zeros(2 * interval, 1);
 first = true;
-InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
-vel_max = 7;
-theta_ = 70;
 Step = 20;
-Delta_T = 0.1;
+Delta_T = 0.03;
 Idx_u = 5;
 Idx_v = 6;
 Idx_theta = 7;
@@ -21,15 +18,16 @@ Idx_c_ymax = 6;
 Idx_c_ymin = 5;
 Idx_c_kappa = 11;
 
-Idx_col_dwa = 10;
-Idx_col_pp = 10;
-Idx_cal_pp = 9;
-Num_validation = 1500; %検証用のサンプル数
+%%%%Degree of collision risk(cr), Calculation time(ct)%%%%
+Idx_cr_dwa = 10;
+Idx_cr_pp = 10;
+Idx_ct_dwa = 9;
+Idx_ct_pp = 9;
+numValidation = 1500; %検証用のサンプル数
 
 
 DataPath = 'C:\Data\Dataset\KBM\';
-
-Method = 'PP';
+Method = 'DWA';
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
@@ -37,31 +35,42 @@ Folderlist = Folderlist(1, 3:end); %. .. を削除
 
 for i = 1 : length(Folderlist(1, :))
     
-    %データ読み込み
-    dir = strcat(DataPath, Method, 'cleaned\', string(Folderlist(1, i)), '\pp_data.csv');
-    pp_data = csvread(dir, 0, 0);
+    %dwaデータ読み込み
+    dwa_dir = strcat(DataPath, Method, 'cleaned\', string(Folderlist(1, i)), '\dwa_data.csv');
+    dwa_data = csvread(dwa_dir, 0, 0);
     course_dir = strcat(DataPath, Method, 'cleaned\', string(Folderlist(1, i)), '\course_data.csv');
     course_data = csvread(course_dir, 0, 0);
+    %roughdwa
+    roughdwa_dir = strcat(DataPath, 'roughDWAcleaned\', string(Folderlist(1, i)), '\dwa_data.csv');
+    roughdwa_data = csvread(roughdwa_dir, 0, 0);
+    %pp
+    pp_dir = strcat(DataPath, 'PPcleaned\', string(Folderlist(1, i)), '\pp_data.csv');
+    pp_data = csvread(pp_dir, 0, 0);
+    DataSize = size(dwa_data, 1);
     
-%     %pp
-%     pp_dir = strcat(Data_path, 'DWAPPcleaned\', string(Folderlist_ipm(1, i)), '\pp_data.csv');
-%     pp_data = csvread(pp_dir, 0, 0);
 
-    DataSize = size(pp_data, 1);
-    
-
-    %出力
-    %collision probabilityの計算
-    out = CalColRisk(pp_data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_col_dwa); %col(dwa)
-%     out = [out; CalColProb(pp_data, Idx_col_pp)]; %col(pp)
-
-
-    %入力
-    %曲率を絶対値表現
-    for j = 1 : size(course_data, 1)
-        course_data(j, Idx_c_kappa) = course_data(j, Idx_c_kappa);
+    %%%出力%%%
+    %Collision risk
+    out = CalColRisk(dwa_data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_cr_dwa); %cr(dwa)
+    out = [out; CalColRisk(roughdwa_data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_cr_dwa)]; %cr(roughdwa)
+    out = [out; CalColRisk(pp_data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_cr_pp)]; %cr(pp)
+    %Calculation time
+    out(4, 1) = dwa_data(1, Idx_ct_dwa) * 1e3;
+    out(5, 1) = roughdwa_data(1, Idx_ct_dwa) * 1e3;
+    out(6, 1) = pp_data(1, Idx_ct_pp) * 1e3;
+    ColOut = 2;
+    for j = 2 : DataSize - 30
+        if dwa_data(j, Idx_u) == dwa_data(j - 1, Idx_u) && dwa_data(j, Idx_v) == dwa_data(j - 1, Idx_v) && dwa_data(j, Idx_theta) == dwa_data(j - 1, Idx_theta) && dwa_data(j, Idx_vel) == dwa_data(j - 1, Idx_vel)
+        else
+            out(4, ColOut) = dwa_data(j, Idx_ct_dwa) * 1e3;
+            out(5, ColOut) = roughdwa_data(j, Idx_ct_dwa) * 1e3;
+            out(6, ColOut) = pp_data(j, Idx_ct_pp) * 1e3;
+            ColOut = ColOut + 1;
+        end
     end
-    
+
+
+    %%%入力%%%
     course_delta_kappa = zeros(size(course_data, 1), 2);
     for j = 1 : size(course_data, 1) - 1
         course_delta_kappa(j, 1) = course_data(j, Idx_c_u);
@@ -71,19 +80,19 @@ for i = 1 : length(Folderlist(1, :))
 
     ColIn = 1;
     for j = 1 : DataSize - 1
-        if pp_data(j, Idx_u) == pp_data(j + 1, Idx_u) && pp_data(j, Idx_v) == pp_data(j + 1, Idx_v) && pp_data(j, Idx_theta) == pp_data(j + 1, Idx_theta) && pp_data(j, Idx_vel) == pp_data(j + 1, Idx_vel)
+        if dwa_data(j, Idx_u) == dwa_data(j + 1, Idx_u) && dwa_data(j, Idx_v) == dwa_data(j + 1, Idx_v) && dwa_data(j, Idx_theta) == dwa_data(j + 1, Idx_theta) && dwa_data(j, Idx_vel) == dwa_data(j + 1, Idx_vel)
         else
             %v, yaw, vel
-            in(1, ColIn) = pp_data(j, Idx_v);
-            in(2, ColIn) = pp_data(j, Idx_theta);
-            in(3, ColIn) = pp_data(j, Idx_vel);
+            in_state(1, ColIn) = dwa_data(j, Idx_v);
+            in_state(2, ColIn) = dwa_data(j, Idx_theta);
+            in_state(3, ColIn) = dwa_data(j, Idx_vel);
 
 
 
             if Kappa_array
                 %曲率
                 for idx_pre = 1 : Step
-                    u(idx_pre, 1) = pp_data(j, Idx_u) + pp_data(j, Idx_vel) * Delta_T * (idx_pre - 1);
+                    u(idx_pre, 1) = dwa_data(j, Idx_u) + dwa_data(j, Idx_vel) * Delta_T * (idx_pre - 1);
                 end
                 for k = 1 : interval
                     kappa_array(k, 1) = LinearInterporater(u(Step / interval * k, 1), course_data, Idx_c_u, Idx_c_kappa);
@@ -93,24 +102,22 @@ for i = 1 : length(Folderlist(1, :))
                 for k = 1 : interval
                     kappa_array(interval + k, 1) = LinearInterporater(u(Step / interval * k, 1), course_delta_kappa, 1, 2);
                 end
-    
-    
-    
+
                 %制約上下限
-                prediction = pp_data(j, Idx_vel) * Step * Delta_T;
+                prediction = dwa_data(j, Idx_vel) * Step * Delta_T;
                 for k = 1 : interval
-                    const_x = pp_data(j, Idx_u) + k * prediction / interval;
+                    const_x = dwa_data(j, Idx_u) + k * prediction / interval;
                     ret = LinearInterporater_const(const_x, course_data, Idx_c_u, Idx_c_ymax, Idx_c_ymin);
 %                     constraint(2 * k, 1) = ret.y_max;
 %                     constraint(2 * k - 1, 1) = ret.y_min;
                      constraint(interval + k, 1) = ret.y_max;
                      constraint(k, 1) = ret.y_min;
                 end
-                input(:, ColIn) = [in(:, ColIn); kappa_array(:, 1); constraint(:, 1)];
+                in(:, ColIn) = [in_state(:, ColIn); kappa_array(:, 1); constraint(:, 1)];
             else
                 %曲率
                 for idx_pre = 1 : Step
-                    u(idx_pre, 1) = pp_data(j, Idx_u) + pp_data(j, Idx_vel) * Delta_T * (idx_pre - 1);
+                    u(idx_pre, 1) = dwa_data(j, Idx_u) + dwa_data(j, Idx_vel) * Delta_T * (idx_pre - 1);
                 end
     
                 %予測区間の曲率の積分値の計算
@@ -136,7 +143,7 @@ for i = 1 : length(Folderlist(1, :))
                 kappa_minus_end = (course_data(idx_pre_end + 1, Idx_c_kappa) + LinearInterporater(u(end, 1), course_data, Idx_c_u, Idx_c_kappa)) * (course_data(idx_pre_end + 1, Idx_c_u) - u(end, 1)) / 2;
                 kappa_total = kappa_total - kappa_minus_start - kappa_minus_end;
                 
-                in(4, ColIn) = kappa_total / (u(end, 1) - u(1, 1));
+                in_state(4, ColIn) = kappa_total / (u(end, 1) - u(1, 1));
     
                 %予測区間の曲率の変化の積分値の計算
                 for idx_course = 1 : size(course_delta_kappa, 1)
@@ -161,19 +168,19 @@ for i = 1 : length(Folderlist(1, :))
                 kappa_minus_end = (course_delta_kappa(idx_pre_end + 1, 2) + LinearInterporater(u(end, 1), course_delta_kappa, 1, 2)) * (course_delta_kappa(idx_pre_end + 1, 1) - u(end, 1)) / 2;
                 delta_kappa_total = delta_kappa_total - kappa_minus_start - kappa_minus_end;
                 
-                in(5, ColIn) = delta_kappa_total / (u(end, 1) - u(1, 1));
+                in_state(5, ColIn) = delta_kappa_total / (u(end, 1) - u(1, 1));
     
     
     
                 %制約上下限
-                prediction = pp_data(j, Idx_vel) * Step * Delta_T;
+                prediction = dwa_data(j, Idx_vel) * Step * Delta_T;
                 for k = 1 : interval
-                    const_x = pp_data(j, Idx_u) + k * prediction / interval;
+                    const_x = dwa_data(j, Idx_u) + k * prediction / interval;
                     ret = LinearInterporater_const(const_x, course_data, Idx_c_u, Idx_c_ymax, Idx_c_ymin);
                     constraint(2 * k, 1) = ret.y_max;
                     constraint(2 * k - 1, 1) = ret.y_min;
                 end
-                input(:, ColIn) = [in(:, ColIn); constraint(:, 1)];
+                in(:, ColIn) = [in_state(:, ColIn); constraint(:, 1)];
             end
             ColIn = ColIn + 1;
         end
@@ -181,94 +188,68 @@ for i = 1 : length(Folderlist(1, :))
 
 
     if first == true
-        MATRIX_INPUT = input;
+        INPUT = in;
     else
-        MATRIX_INPUT = [MATRIX_INPUT, input];
+        INPUT = [INPUT, in];
     end
     
     if first == true %%%
-        MATRIX_OUTPUT = out;
+        OUTPUT = out;
         first = false;
     else
-        MATRIX_OUTPUT = [MATRIX_OUTPUT, out];
+        OUTPUT = [OUTPUT, out];
     end
+    clear in_state;
     clear in;
-    clear input;
     clear out;
 end
 
-% %正規化0~1
-% for i = 1 : length(MATRIX_INPUT(:, 1))
-%     MATRIX_INPUT(i, :) = rescale(MATRIX_INPUT(i, :), 0, 1);
-% end
-% idx = randperm(size(MATRIX_INPUT, 2), Num_validation);
-% INPUT_VALIDATION = MATRIX_INPUT(:, idx);
-% MATRIX_INPUT(:, idx) = [];
-% OUTPUT_VALIDATION = MATRIX_OUTPUT(:, idx);
-% MATRIX_OUTPUT(:, idx) = [];
+INPUT = INPUT.';
+OUTPUT = OUTPUT.';
 
+idx = randperm(size(INPUT, 1), numValidation);
+INPUT_TEST = INPUT(idx, :);
+INPUT(idx, :) = [];
+OUTPUT_TEST = OUTPUT(idx, :);
+OUTPUT(idx, :) = [];
 
-MATRIX_INPUT = MATRIX_INPUT.';
-MATRIX_OUTPUT = MATRIX_OUTPUT.';
+numFeatures = size(INPUT, 2);
+numResponces = size(OUTPUT, 2);
+layers = [
+    featureInputLayer(numFeatures, 'Normalization', 'zscore')
+    fullyConnectedLayer(120)
+    reluLayer
+    fullyConnectedLayer(120)
+    reluLayer
+    fullyConnectedLayer(100)
+    reluLayer
+    fullyConnectedLayer(100)
+    reluLayer
+    fullyConnectedLayer(80)
+    reluLayer
+    fullyConnectedLayer(80)
+    reluLayer
+    fullyConnectedLayer(numResponces)
+    regressionLayer
+    ];
 
-idx = randperm(size(MATRIX_INPUT, 1), Num_validation);
-INPUT_VALIDATION = MATRIX_INPUT(idx, :);
-MATRIX_INPUT(idx, :) = [];
-OUTPUT_VALIDATION = MATRIX_OUTPUT(idx, :);
-MATRIX_OUTPUT(idx, :) = [];
+options = trainingOptions('adam', 'Shuffle', 'every-epoch', 'Plots', 'training-progress', 'Verbose', false);
+Mdl = trainNetwork(INPUT, OUTPUT, layers, options);
 
-% params = hyperparameters("fitrnet", MATRIX_INPUT, MATRIX_OUTPUT);
-% for ii = 1 : length(params)
-%     disp(ii);disp(params(ii))
-% end
-% 
-% params(1).Range = [1 5];
-% params(10).Optimize = true;
-% params(11).Optimize = true;
-% 
-% rng("default")
-% Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "OptimizeHyperparameters", params, "HyperparameterOptimizationOptions", struct("AcquisitionFunctionName", "expected-improvement-plus", "MaxObjectiveEvaluations", 30));
-
-Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-4, "LayerSizes", [60 60 60 60 60])
-%lambda dwa:[60 60 60]1e-4 roughdwa:[60 60 60]1e-3
-testMSE = loss(Mdl, INPUT_VALIDATION, OUTPUT_VALIDATION)
-OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
-
-% net = fitnet([60 60]); %40 40 30 20
-% %view(net);
-% net = train(net, MATRIX_INPUT, MATRIX_OUTPUT);
-% OUTPUT_PREDICTED = net(INPUT_VALIDATION);
-% IDX = 1;
-
-% predictionError = OUTPUT_VALIDATION(IDX, :) - OUTPUT_PREDICTED(IDX, :);
-% 
-% squares = predictionError.^2;
-% rmse = sqrt(mean(squares))
-mdl1 = fitlm(OUTPUT_PREDICTED(:, 1), OUTPUT_VALIDATION(:, 1));
-mdl1.Rsquared.Ordinary
-
-figure(1);
-for i = 1 : size(OUTPUT_PREDICTED, 1)
-    if OUTPUT_PREDICTED(i, 1) < 0
-        OUTPUT_PREDICTED(i, 1) = 0;
-    end
-    if OUTPUT_PREDICTED(i, 1) > 1
-        OUTPUT_PREDICTED(i, 1) = 1;
-    end
+OUTPUT_PREDICTED = predict(Mdl, INPUT_TEST);
+for i = 1 : numResponces
+    %strcat('MSE (Response number = ', string(i), ' )')
+    %testMSE = loss(Mdl, INPUT_TEST(:, i), OUTPUT_TEST(:, i))
+    strcat('R (Response number = ', string(i), ' )')
+    mdl = fitlm(OUTPUT_PREDICTED(:, i), OUTPUT_TEST(:, i));
+    mdl.Rsquared.Ordinary
+    
+    figure(i);
+    histogram2(OUTPUT_PREDICTED(:, i), OUTPUT_TEST(:, i), [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
+    axis equal
+    colorbar
+    ax = gca;
+    ax.CLim = [0 30];
+    xlabel("Predicted Value")
+    ylabel("True Value")
 end
-histogram2(OUTPUT_PREDICTED(:, 1), OUTPUT_VALIDATION(:, 1), [30 30], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);
-axis equal
-colorbar
-ax = gca;
-ax.CLim = [0 80];
-xlabel("Predicted Value")
-ylabel("True Value")
-
-% scatter(OUTPUT_PREDICTED,OUTPUT_VALIDATION,'+')
-% xlabel("Predicted Value")
-% ylabel("True Value")
-% 
-% hold on
-% plot([0 1], [0 1],'r--');
-% xlim([0, 1]);
-% hold off;

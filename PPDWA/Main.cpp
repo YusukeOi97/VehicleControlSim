@@ -83,12 +83,12 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 						for (int i = 0; i < prm.NoiseNum; i++)
 						{
 							//PP
-							sim.Sim_PP_Basecoordinate(pp, logdata);
+							sim.Sim_PP_Basecoordinate(pp, logdata, i);
 							logdata.collision = sim.Check(logdata.x_pp, logdata.y_pp, logdata.yaw_pp);
 							logger_PP.PrintData();
 
 							//DWA
-							sim.Sim_DWA_Basecoordinate(dwa, logdata);
+							sim.Sim_DWA_Basecoordinate(dwa, logdata, i);
 							logdata.collision = sim.Check(logdata.x_dwa, logdata.y_dwa, logdata.yaw_dwa);
 							logger_DWA.PrintData();
 							for (size_t j = 0; j < logdata.x_dwa.size(); j++)
@@ -137,20 +137,19 @@ int main()
 	std::vector<std::vector<double>> course;
 	Frenet frenet;
 
-	int skip = 2;
+	int skip = 0;
 	int count = 0;
 
 #ifdef OA
-	double a[2] = { 1.3, 2.5 };
-	double width[4] = { 0.75, 0.9, 1.05, 1.3 }; //0.5 0.7 0.9 0.6 0.8 1.0
+	double a[2] = { 2.5, 1.3 };
+	double width[4] = { 1.3, 1.05, 0.9, 0.7 }; //0.5 0.7 0.9
 	double dist[2] = { 13, 19 }; // 13 16 19
+	double u_start = 25;
+	double x_end = 76;
 
 	//double a[2] = { 1.3, 2.5 };
 	//double width[3] = { 0.9, 1, 1.1 }; //0.5 0.7 0.9 0.6 0.8 1.0
 	//double dist[2] = { 13, 19 }; // 13 16 19
-
-	double u_start = 25;
-	double x_end = 80;
 
 	for (size_t i = 0; i < sizeof(a) / sizeof(a[0]); i++)
 	{

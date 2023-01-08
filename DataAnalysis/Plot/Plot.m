@@ -5,11 +5,11 @@ addpath('lib');
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
-WhichAnalyze = "lon";
-number = 4;
-Data_path = "C:\Data\SQP\1220\";
+WhichAnalyze = "p";
+number = 11;
+Data_path = "C:\Data\Dataset\KBM\DWAcleaned\";
 %%%%IPM or SQP or DWA or PP
-Method = "IPM";
+Method = "DWA";
 %%%specific initial point trajectory
 sptr = false;
 InitialState = [45 0.23 0.14 10];
@@ -38,8 +38,8 @@ else
     Idx_latjerk = 11;
     Idx_lonjerk = 12;
     Idx_Pre = 12;
-    Step = 70;
-    Skipcount = 5;
+    Step = 20;
+    Skipcount = 50;
 end
 
 FolderInfo = dir(Data_path);

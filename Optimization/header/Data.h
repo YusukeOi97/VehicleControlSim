@@ -2,7 +2,7 @@
 
 const int cprm_num = 11; //コースのパラメータ数
 const int csize = 400;
-const int vsize = 20; //状態ベクトルのサイズ
+const int vsize = 25; //状態ベクトルのサイズ
 
 struct SharedData
 {

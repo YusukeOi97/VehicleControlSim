@@ -11,14 +11,13 @@ Idx_g_max = 10;
 Idx_rho = 11;
 step = 20;
 
-Method = 'PP';
-DataPath = strcat('C:\Data\Dataset\KBM\', Method, 'cleaned\');
+DataPath = 'C:\Data\Dataset\KBM\roughDWAcleaned\';
 FolderInfo = dir(DataPath);
 Folderlist = {FolderInfo.name};
 Folderlist = Folderlist(1, 3 : end);
 
 for i = 1 : size(Folderlist, 2)
-    data_dir = strcat(DataPath, string(Folderlist(1, i)), '\', lower(Method), '_data.csv');
+    data_dir = strcat(DataPath, string(Folderlist(1, i)), '\dwa_data.csv');
     course_dir = strcat(DataPath, string(Folderlist(1, i)), '\course_data.csv');
     prm_dir = strcat(DataPath, string(Folderlist(1, i)), '\prm_data.csv');
     data = csvread(data_dir, 0, 0);
@@ -43,7 +42,7 @@ for i = 1 : size(Folderlist, 2)
 
     OutFolder = strcat(DataPath, extractBefore(string(Folderlist(1, i)), "p1"), 'p1lowerp2upper');
     mkdir(OutFolder);
-    csvwrite(strcat(OutFolder, '\', lower(Method), '_data.csv'), data);
+    csvwrite(strcat(OutFolder, '\dwa_data.csv'), data);
     csvwrite(strcat(OutFolder, '\course_data.csv'), course);
     csvwrite(strcat(OutFolder, '\prm_data.csv'), prm);
 end

@@ -13,7 +13,7 @@ public:
 	
 private:
 	//Parameter for speed control
-	double Kp = 5.0, Ki = 1.0, Kd = 1.0, e = 0.0, prev_e = 0.0, de = 0.0, ie = 0.0;
+	double Kp = 5.0, Ki = 0.1, Kd = 0.1, e = 0.0, prev_e = 0.0, de = 0.0, ie = 0.0;
 
 	//Parameter for steer control
 	double alpha;

@@ -87,26 +87,26 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 			InitState(init_tire_ang, Vel, Angvel, init_v_dot, init_theta_dot, Step);
 			for (int i = 1; i < DWAPreStep; i++)
 			{
-				//DBM
-				V_inv = 1 / (Vel + log(1 + exp(-2 * Vel)));
-				tire_ang[SmpCount][i] = tire_ang[SmpCount][i - 1] + Angvel * T_delta;
-				v_2dot = -a11 * v_dot * V_inv + a11 * theta[SmpCount][i - 1] + a12 * theta_dot * V_inv + b1 * tire_ang[SmpCount][i - 1] + (a12 - Vel * Vel) * rho[i - 1];
-				theta_2dot = -a21 * v_dot * V_inv + a21 * theta[SmpCount][i - 1] + a22 * theta_dot * V_inv + b2 * tire_ang[SmpCount][i - 1] + a22 * rho[i - 1];
-				v_dot = v_dot + v_2dot * T_delta;
-				theta_dot = theta_dot + theta_2dot * T_delta;
-				u[SmpCount][i] = u[SmpCount][i - 1] + Vel * T_delta;
-				v[SmpCount][i] = v[SmpCount][i - 1] + v_dot * T_delta;
-				theta[SmpCount][i] = theta[SmpCount][i - 1] + theta_dot * T_delta;
-
-				////KBM
-				//beta = atan(l_r * tan(tire_ang[SmpCount][i - 1]) / Wheelbase);
-				//u_dot = (vel[SmpCount] * cos(theta[SmpCount][i - 1] + beta)) / (1 - rho[i - 1] * v[SmpCount][i - 1]);
-				//u[SmpCount][i] = u[SmpCount][i - 1] + u_dot * T_delta;
-				//v_dot = vel[SmpCount] * sin(theta[SmpCount][i - 1] + beta);
-				//v[SmpCount][i] = v[SmpCount][i - 1] + v_dot * T_delta;
-				//theta_dot = vel[SmpCount] * sin(beta) / l_r - vel[SmpCount] * rho[i - 1] * cos(theta[SmpCount][i - 1] + beta) / (1 - rho[i - 1] * v[SmpCount][i - 1]);
-				//theta[SmpCount][i] = theta[SmpCount][i - 1] + theta_dot * T_delta;
+				////DBM
+				//V_inv = 1 / (Vel + log(1 + exp(-2 * Vel)));
 				//tire_ang[SmpCount][i] = tire_ang[SmpCount][i - 1] + Angvel * T_delta;
+				//v_2dot = -a11 * v_dot * V_inv + a11 * theta[SmpCount][i - 1] + a12 * theta_dot * V_inv + b1 * tire_ang[SmpCount][i - 1] + (a12 - Vel * Vel) * rho[i - 1];
+				//theta_2dot = -a21 * v_dot * V_inv + a21 * theta[SmpCount][i - 1] + a22 * theta_dot * V_inv + b2 * tire_ang[SmpCount][i - 1] + a22 * rho[i - 1];
+				//v_dot = v_dot + v_2dot * T_delta;
+				//theta_dot = theta_dot + theta_2dot * T_delta;
+				//u[SmpCount][i] = u[SmpCount][i - 1] + Vel * T_delta;
+				//v[SmpCount][i] = v[SmpCount][i - 1] + v_dot * T_delta;
+				//theta[SmpCount][i] = theta[SmpCount][i - 1] + theta_dot * T_delta;
+
+				//KBM
+				tire_ang[SmpCount][i] = tire_ang[SmpCount][i - 1] + Angvel * T_delta;
+				beta = atan(l_r * tan(tire_ang[SmpCount][i - 1]) / Wheelbase);
+				u_dot = (vel[SmpCount] * cos(theta[SmpCount][i - 1] + beta)) / (1 - rho[i - 1] * v[SmpCount][i - 1]);
+				u[SmpCount][i] = u[SmpCount][i - 1] + u_dot * T_delta;
+				v_dot = vel[SmpCount] * sin(theta[SmpCount][i - 1] + beta);
+				v[SmpCount][i] = v[SmpCount][i - 1] + v_dot * T_delta;
+				theta_dot = vel[SmpCount] * sin(beta) / l_r - vel[SmpCount] * rho[i - 1] * cos(theta[SmpCount][i - 1] + beta) / (1 - rho[i - 1] * v[SmpCount][i - 1]);
+				theta[SmpCount][i] = theta[SmpCount][i - 1] + theta_dot * T_delta;
 				if (u[SmpCount][i] > 120)
 				{
 					u[SmpCount][i] = 120;
