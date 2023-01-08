@@ -92,6 +92,7 @@ bool SetSharedData(MyProblem myProblem, DWORD size)
 		shareddata->v_ref[i] = myProblem.v_ref[i];
 		shareddata->v_max[i] = myProblem.v_max[i];
 		shareddata->v_min[i] = myProblem.v_min[i];
+		shareddata->v_error[i] = myProblem.v_error[i];
 	}
 
 	shareddata->noise_u = myProblem.noise.noise_u;
