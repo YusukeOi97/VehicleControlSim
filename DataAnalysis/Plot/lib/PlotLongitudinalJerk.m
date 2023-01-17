@@ -9,7 +9,7 @@ function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, I
     %daspect([10 5 50]);
     daspect([30 5 450]);
     colorbar;
-    caxis([0, 0.1]);
+    caxis([0, 1]);
     xlim([25 80]);
     %ylim([-1.5 1.5]);
     xlabel('$x$[m]', 'Interpreter', 'latex');

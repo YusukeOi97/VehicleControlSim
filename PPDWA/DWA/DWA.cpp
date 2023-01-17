@@ -38,6 +38,8 @@ DWA::DWA(Frenet frenet, LinearInterporater table, Prm prm)
 	K_vel = prm.K_vel;
 	K_theta = prm.K_theta;
 	K_angvel = prm.K_angvel;
+	K_ang = prm.K_ang;
+	K_f_v = prm.K_f_v;
 	u.resize(SmpNum);
 	v.resize(SmpNum);
 	theta.resize(SmpNum);
@@ -52,6 +54,8 @@ DWA::DWA(Frenet frenet, LinearInterporater table, Prm prm)
 	score_vel.resize(SmpNum);
 	score_theta.resize(SmpNum);
 	score_angvel.resize(SmpNum);
+	score_ang.resize(SmpNum);
+	score_f_v.resize(SmpNum);
 	score_total.resize(SmpNum);
 	WOCollision.resize(SmpNum);
 	for (int i = 0; i < SmpNum; i++)
@@ -80,11 +84,21 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 
 	//Trajectory calculation
 	SmpCount = 0;
+	//init_tire_ang = 0;
+	//if (init_tire_ang > 0.5)
+	//{
+	//	init_tire_ang = 0.5;
+	//}
+	//else if (init_tire_ang < - 0.5)
+	//{
+	//	init_tire_ang = - 0.5;
+	//}
 	for (double Angvel = min_angvel; Angvel <= max_angvel; Angvel = Angvel + delta_angvel)
 	{
 		for (double Vel = min_vel; Vel <= max_vel; Vel = Vel + delta_vel)
 		{
 			InitState(init_tire_ang, Vel, Angvel, init_v_dot, init_theta_dot, Step);
+			//InitState(0, Vel, Angvel, init_v_dot, init_theta_dot, Step);
 			for (int i = 1; i < DWAPreStep; i++)
 			{
 				////DBM
@@ -107,10 +121,6 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 				v[SmpCount][i] = v[SmpCount][i - 1] + v_dot * T_delta;
 				theta_dot = vel[SmpCount] * sin(beta) / l_r - vel[SmpCount] * rho[i - 1] * cos(theta[SmpCount][i - 1] + beta) / (1 - rho[i - 1] * v[SmpCount][i - 1]);
 				theta[SmpCount][i] = theta[SmpCount][i - 1] + theta_dot * T_delta;
-				if (u[SmpCount][i] > 120)
-				{
-					u[SmpCount][i] = 120;
-				}
 			}
 
 			for (int i = 0; i < DWAPreStep; i++)
@@ -122,10 +132,12 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 			for (int i = 0; i < DWAPreStep; i++)
 			{
 				score_v[SmpCount] += abs(v_error[SmpCount][i]);
+				score_ang[SmpCount] += abs(tire_ang[SmpCount][i]);
 			}
 			score_vel[SmpCount] = abs(vel[SmpCount] - vel_ref);
 			score_theta[SmpCount] = abs(theta[SmpCount][DWAPreStep - 1]);
-			score_angvel[SmpCount] = abs(Angvel - Opt_angvel);
+			score_angvel[SmpCount] = abs(Angvel);
+			score_f_v[SmpCount] = abs(v_error[SmpCount][DWAPreStep - 1]);
 
 			//Collision check
 			WOCollision[SmpCount] = Check(); //collision -> false, not -> true
@@ -137,6 +149,8 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 	Max_score_vel = *std::max_element(score_vel.begin(), score_vel.end() - SmpNum + SmpCount);
 	Max_score_theta = *std::max_element(score_theta.begin(), score_theta.end() - SmpNum + SmpCount);
 	Max_score_angvel = *std::max_element(score_angvel.begin(), score_angvel.end() - SmpNum + SmpCount);
+	Max_score_ang = *std::max_element(score_ang.begin(), score_ang.end() - SmpNum + SmpCount);
+	Max_score_f_v = *std::max_element(score_f_v.begin(), score_f_v.end() - SmpNum + SmpCount);
 
 	if (Max_score_vel == 0) Max_score_vel = vel[SmpCount - 1];
 
@@ -149,8 +163,17 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 		score_vel[i] = score_vel[i] / Max_score_vel;
 		score_theta[i] = score_theta[i] / Max_score_theta;
 		score_angvel[i] = score_angvel[i] / Max_score_angvel;
-		score_total[i] = K_v * score_v[i] + K_theta * score_theta[i] + K_vel * score_vel[i] + K_angvel * score_angvel[i];
-
+		score_ang[i] = score_ang[i] / Max_score_ang;
+		score_f_v[i] = score_f_v[i] / Max_score_f_v;
+		if (AllCollision)
+		{
+			score_total[i] = 500 * score_v[i] + K_theta * score_theta[i] + K_vel * score_vel[i] + K_angvel * score_angvel[i] + K_ang * score_ang[i] + K_f_v * score_f_v[i];
+		}
+		else
+		{
+			score_total[i] = K_v * score_v[i] + K_theta * score_theta[i] + K_vel * score_vel[i] + K_angvel * score_angvel[i] + K_ang * score_ang[i] + K_f_v * score_f_v[i];
+		}
+		
 		if (WOCollision[i] || AllCollision)
 		{
 			if (score_total[i] < Val)
@@ -169,6 +192,7 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 	Opt_theta = theta[OptIdx];
 	ret[0] = vel[OptIdx];
 	ret[1] = init_tire_ang + angvel[OptIdx] * T_delta;
+	//ret[1] = angvel[OptIdx] * T_delta;
 	ret[2] = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart;
 }
 
@@ -192,6 +216,8 @@ void DWA::SetDW(double init_vel, double vel_ref)
 
 	min_angvel = Opt_angvel - range_angvel;
 	max_angvel = Opt_angvel + range_angvel;
+	//min_angvel = - range_angvel;
+	//max_angvel = range_angvel;
 	if (min_angvel < limit_min_angvel)
 	{
 		min_angvel = limit_min_angvel;
@@ -206,6 +232,12 @@ void DWA::SetDW(double init_vel, double vel_ref)
 
 void DWA::SetRho(int Step, double init_u, double init_vel)
 {
+#ifdef OA
+	for (int i = 0; i < DWAPreStep; i++)
+	{
+		rho[i] = 0;
+	}
+#else
 	for (int i = 0; i < DWAPreStep; i++)
 	{
 		if (Step == 1)
@@ -217,6 +249,7 @@ void DWA::SetRho(int Step, double init_u, double init_vel)
 			rho[i] = table.GetLinearInterporation(0, Pre_u[i], 4);
 		}
 	}
+#endif // OA	
 }
 
 void DWA::InitState(double init_tire_ang, double init_vel, double init_angvel, double init_v_dot, double init_theta_dot, int Step)

@@ -24,7 +24,7 @@ public:
 	//DWA
 	int smp_vel, smp_angvel;
 	double limit_vel, limit_angvel, range_vel, range_angvel;
-	double K_v, K_vel, K_theta, K_angvel;
+	double K_v, K_vel, K_theta, K_angvel, K_ang, K_f_v;
 
 	void Load_Prm(RTCLib::CSVLoader& prm, int n);
 
@@ -75,6 +75,8 @@ inline void Prm::Load_Prm(RTCLib::CSVLoader& prm, int n)
 	K_vel = prm[n][prm.GetColOf("K_vel")];
 	K_theta = prm[n][prm.GetColOf("K_theta")];
 	K_angvel = prm[n][prm.GetColOf("K_angvel")];
+	K_ang = prm[n][prm.GetColOf("K_ang")];
+	K_f_v = prm[n][prm.GetColOf("K_f_v")];
 	delta_u = prm[n][prm.GetColOf("delta_u")];
 	delta_v = prm[n][prm.GetColOf("delta_v")];
 	delta_theta = prm[n][prm.GetColOf("delta_theta")];

@@ -39,10 +39,10 @@ private:
 
 	//Evaluation function
 	int SmpNum, SmpCount, OptIdx, SkipCount = 1;
-	std::vector<double> score_v, score_vel, score_theta, score_angvel, score_total;
+	std::vector<double> score_v, score_vel, score_theta, score_angvel, score_ang, score_f_v, score_total;
 	std::vector<bool> WOCollision;
-	double Max_score_v, Max_score_vel, Max_score_theta, Max_score_angvel; //For normalization
-	double K_v, K_vel, K_theta, K_angvel, Val;
+	double Max_score_v, Max_score_vel, Max_score_theta, Max_score_angvel, Max_score_ang, Max_score_f_v; //For normalization
+	double K_v, K_vel, K_theta, K_angvel, K_ang, K_f_v, Val;
 	bool AllCollision;
 
 	//Other parameter

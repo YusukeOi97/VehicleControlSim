@@ -9,7 +9,7 @@ function PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
     %daspect([10 5 50]);
     daspect([30 5 450]);
     colorbar;
-    caxis([0, 30]);
+    caxis([0, 3]);
     xlim([25 80]);
     %ylim([-1.5 1.5]);
     xlabel('$x$[m]', 'Interpreter', 'latex');
@@ -55,7 +55,7 @@ function PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
                     hold on
                 end
             else
-                if data(i + 1, Idx_suc) == 1 
+                if data(i + 1, Idx_suc) == 1 && data(i + 1, Idx_vel) == 4
                     figure(1);
                     scatter(x, y, [], average_latjerk, 'filled');
                     hold on

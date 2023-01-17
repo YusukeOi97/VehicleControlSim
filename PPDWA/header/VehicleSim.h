@@ -25,6 +25,7 @@ private:
 	double pre_B_y, pre_B_theta;
 	double input_vel, input_delta, vel_ref;
 	int SimStep;
+	std::vector<double> v_dot, theta_dot, v_2dot, vel;
 	std::vector<SidePoint> side;
 	double ret[3]; //0:vel, 1:delta, 2:time
 

@@ -6,7 +6,11 @@ Vehicle_Sim::Vehicle_Sim(Frenet frenet, LinearInterporater table, Prm prm)
 	this->frenet = frenet;
 	this->prm = prm;
 	SimStep = prm.PPDWASimStep;
-	side.resize(this->SimStep);
+	v_dot.resize(SimStep);
+	theta_dot.resize(SimStep);
+	v_2dot.resize(SimStep);
+	vel.resize(SimStep);
+	side.resize(SimStep);
 }
 
 void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, int Idx)
@@ -30,6 +34,7 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, int Idx)
 	B_y_dot = 0;
 	B_yaw_dot = 0;
 	logdata.v_dot = B_y_dot + logdata.vel * logdata.theta;
+	v_dot[0] = logdata.v_dot;
 	logdata.theta_dot = B_yaw_dot - logdata.rho * logdata.vel;
 	vel_ref = logdata.vel;
 
@@ -41,8 +46,8 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, int Idx)
 	logdata.y_pp[0] = B_y;
 	logdata.yaw_pp[0] = B_yaw;
 	double beta;
-	double pre_beta = atan(prm.l_r * tan(B_delta) / prm.Wheelbase);
-	double beta_dot = 0;
+	//double pre_beta = atan(prm.l_r * tan(B_delta) / prm.Wheelbase);
+	//double beta_dot = 0;
 
 	for (int i = 1; i < SimStep; i++)
 	{
@@ -74,12 +79,32 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, int Idx)
 
 		logdata.total_time += ret[2];
 		logdata.acc[i] = (B_vel - B_pre_vel) / prm.T_delta;
-		beta_dot = (beta - pre_beta) / prm.T_delta;
-		pre_beta = beta;
-		B_y_2dot = logdata.acc[i] * sin(beta) + B_vel * beta_dot * cos(beta);
+		vel[i] = B_vel;
+		//beta_dot = (beta - pre_beta) / prm.T_delta;
+		//pre_beta = beta;
+		//B_y_2dot = logdata.acc[i] * sin(beta) + B_vel * beta_dot * cos(beta);
+		//logdata.lateral_G[i] = B_y_2dot;
+	}
+	for (size_t j = 0; j < logdata.x_dwa.size(); j++)
+	{
+		frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_pp[j], logdata.y_pp[j], logdata.yaw_pp[j], logdata.u_pp[j], logdata.v_pp[j], logdata.theta_pp[j], frenet.Cache_f);
+	}
+	for (int i = 1; i < SimStep; i++)
+	{
+		v_dot[i] = (logdata.v_pp[i] - logdata.v_pp[i - 1]) / prm.T_delta;
+		theta_dot[i] = (logdata.theta_pp[i] - logdata.theta_pp[i - 1]) / prm.T_delta;
+	}
+	for (int i = 1; i < SimStep; i++)
+	{
+		v_2dot[i] = (v_dot[i] - v_dot[i - 1]) / prm.T_delta;
+	}
+	for (int i = 1; i < SimStep; i++)
+	{
+		//車両挙動を計算(DBM)
+		B_y_2dot = v_2dot[i] - vel[i] * theta_dot[i] - logdata.acc[i] * logdata.theta_pp[i];
 		logdata.lateral_G[i] = B_y_2dot;
 	}
-	for (int i = 2; i < SimStep - 1; i++)
+	for (int i = 6; i < SimStep - 1; i++)
 	{
 		logdata.lateral_jerk[i] = (logdata.lateral_G[i + 1] - logdata.lateral_G[i - 1]) / (2 * prm.T_delta);
 		logdata.longitudinal_jerk[i] = (logdata.acc[i + 1] - logdata.acc[i - 1]) / (2 * prm.T_delta);
@@ -87,8 +112,8 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, int Idx)
 		logdata.average_longitudinal_jerk += abs(logdata.longitudinal_jerk[i]);
 	}
 	logdata.average_time = logdata.total_time / SimStep;
-	logdata.average_lateral_jerk = logdata.average_lateral_jerk / (SimStep - 4);
-	logdata.average_longitudinal_jerk = logdata.average_longitudinal_jerk / (SimStep - 4);
+	logdata.average_lateral_jerk = logdata.average_lateral_jerk / (SimStep - 8);
+	logdata.average_longitudinal_jerk = logdata.average_longitudinal_jerk / (SimStep - 8);
 }
 
 void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata, int Idx) 
@@ -111,6 +136,7 @@ void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata, int Idx)
 	B_y_dot = 0;
 	B_yaw_dot = 0;
 	logdata.v_dot = B_y_dot + logdata.vel * logdata.theta;
+	v_dot[0] = logdata.v_dot;
 	logdata.theta_dot = B_yaw_dot - logdata.rho * logdata.vel;
 	vel_ref = logdata.vel;
 
@@ -124,8 +150,8 @@ void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata, int Idx)
 	logdata.y_dwa[0] = B_y;
 	logdata.yaw_dwa[0] = B_yaw;
 	double beta;
-	double pre_beta = atan(prm.l_r * tan(B_delta) / prm.Wheelbase);
-	double beta_dot = 0;
+	//double pre_beta = atan(prm.l_r * tan(B_delta) / prm.Wheelbase);
+	//double beta_dot = 0;
 
 	for (int i = 1; i < SimStep; i++) 
 	{
@@ -158,12 +184,32 @@ void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata, int Idx)
 
 		logdata.total_time += ret[2];
 		logdata.acc[i] = (B_vel - B_pre_vel) / prm.T_delta;
-		beta_dot = (beta - pre_beta) / prm.T_delta;
-		pre_beta = beta;
-		B_y_2dot = logdata.acc[i] * sin(beta) + B_vel * beta_dot * cos(beta);
+		vel[i] = B_vel;
+		//beta_dot = (beta - pre_beta) / prm.T_delta;
+		//pre_beta = beta;
+		//B_y_2dot = logdata.acc[i] * sin(beta) + B_vel * beta_dot * cos(beta);
+		//logdata.lateral_G[i] = B_y_2dot;
+	}
+	for (size_t j = 0; j < logdata.x_dwa.size(); j++)
+	{
+		frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_dwa[j], logdata.y_dwa[j], logdata.yaw_dwa[j], logdata.u_dwa[j], logdata.v_dwa[j], logdata.theta_dwa[j], frenet.Cache_f);
+	}
+	for (int i = 1; i < SimStep; i++)
+	{
+		v_dot[i] = (logdata.v_dwa[i] - logdata.v_dwa[i - 1]) / prm.T_delta;
+		theta_dot[i] = (logdata.theta_dwa[i] - logdata.theta_dwa[i - 1]) / prm.T_delta;
+	}
+	for (int i = 1; i < SimStep; i++)
+	{
+		v_2dot[i] = (v_dot[i] - v_dot[i - 1]) / prm.T_delta;
+	}
+	for (int i = 1; i < SimStep; i++)
+	{
+		//車両挙動を計算(DBM)
+		B_y_2dot = v_2dot[i] - vel[i] * theta_dot[i] - logdata.acc[i] * logdata.theta_dwa[i];
 		logdata.lateral_G[i] = B_y_2dot;
 	}
-	for (int i = 2; i < SimStep - 1; i++)
+	for (int i = 6; i < SimStep - 1; i++)
 	{
 		logdata.lateral_jerk[i] = (logdata.lateral_G[i + 1] - logdata.lateral_G[i - 1]) / (2 * prm.T_delta);
 		logdata.longitudinal_jerk[i] = (logdata.acc[i + 1] - logdata.acc[i - 1]) / (2 * prm.T_delta);
@@ -171,8 +217,8 @@ void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata, int Idx)
 		logdata.average_longitudinal_jerk += abs(logdata.longitudinal_jerk[i]);
 	}
 	logdata.average_time = logdata.total_time / SimStep; //平均の処理時間
-	logdata.average_lateral_jerk = logdata.average_lateral_jerk / (SimStep - 4);
-	logdata.average_longitudinal_jerk = logdata.average_longitudinal_jerk / (SimStep - 4);
+	logdata.average_lateral_jerk = logdata.average_lateral_jerk / (SimStep - 8);
+	logdata.average_longitudinal_jerk = logdata.average_longitudinal_jerk / (SimStep - 8);
 	logdata.collision_probability = double(logdata.collision_count) / logdata.total_count; //サンプルの衝突確率
 }
 

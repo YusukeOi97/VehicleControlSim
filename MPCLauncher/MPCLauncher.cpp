@@ -174,22 +174,6 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	OutData_Course(logger_Course, course);
 	InitSetting(course, prm);
 
-#ifdef OneShotTest
-
-	logdata.SetInit_OneSim();
-	frenet.Cache_g = frenet.frenetlib.GetGlobal(logdata.u, logdata.v, logdata.theta, logdata.x, logdata.y, logdata.yaw, frenet.Cache_g);
-	InitState(logdata.u, logdata.v, logdata.theta, logdata.vel, logdata.delta);
-	shareddata->noise_count = 0;
-	system(path);
-
-	if (!ReadSharedMemory(SHARED_MEMORY_SIZE))
-	{
-		std::cout << "共有メモリの読み取りに失敗しました。\n";
-	}
-
-	logger_MPC.PrintData();
-
-#else
 	//Loop
 	//uのループ
 	for (logdata.u = U_start; logdata.x < U_end; logdata.u = logdata.u + prm.delta_u)
@@ -289,8 +273,6 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 			}
 		}
 	}
-#endif // test
-
 	UnInitializeSharedMemory();
 }
 
