@@ -1,4 +1,4 @@
-function PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_Pre, Step, Skipcount, Method, sptr, InitialState)
+function PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_Pre, Step, Skipcount, Method, sptr, InitialState, GraphSetting)
     for i = 1 : 2
         figure(i)
         plot(constdata(:, 7), constdata(:, 8), 'k');
@@ -7,10 +7,9 @@ function PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err
         hold on
         plot(constdata(:, 3), constdata(:, 4), '--k'); 
         hold on
-        daspect([10 5 50]);
-        %daspect([30 5 450]);
-        xlim([25 80]);
-        %ylim([-1.5 1.5]);
+        daspect(GraphSetting.daspect);
+        xlim(GraphSetting.xlim);
+        ylim(GraphSetting.ylim);
         xlabel('$x$[m]', 'Interpreter', 'latex');
         ylabel('$y$[m]', 'Interpreter', 'latex');
         box off
@@ -19,8 +18,8 @@ function PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err
 
     f1 = figure(1);
     f2 = figure(2);
-    f1.Position = [700 400 600 150]; %[left bottom width height]
-    f2.Position = [700 100 600 250];
+    f1.Position = GraphSetting.position1; %[left bottom width height]
+    f2.Position = GraphSetting.position2;
     x = zeros(Step, 1);
     y = zeros(Step, 1);
     if sptr

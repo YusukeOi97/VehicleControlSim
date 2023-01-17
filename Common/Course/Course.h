@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <math.h>
+#include <setting.h>
 
 struct CourseSetting
 {
@@ -29,9 +30,15 @@ struct CourseSetting
 	double cycle;
 	double delta_sine = 0.3;
 
-//Setting of constraints
+//Setting of constraints sin‚ÌŽž1.2
+#ifdef OA
 	double v_min_const = -1.5;
 	double v_max_const = 1.5;
+#else
+	double v_min_const = -1.2;
+	double v_max_const = 1.2;
+#endif // OA
+	
 };
 
 class GenCourse

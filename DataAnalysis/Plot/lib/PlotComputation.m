@@ -1,4 +1,4 @@
-function PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method)
+function PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method, GraphSetting)
     for i = 1 : 2
         figure(i)
         plot(constdata(:, 7) - 25, constdata(:, 8), 'k');
@@ -7,12 +7,11 @@ function PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
         hold on
         plot(constdata(:, 3) - 25, constdata(:, 4), '--k'); 
         hold on
-        %daspect([10 5 50]);
-        daspect([30 5 450]);
+        daspect(GraphSetting.daspect);
         colorbar;
-        caxis([0.0, 50]);
-        xlim([0 55]);
-        %ylim([-1.5 1.5]);
+        caxis(GraphSetting.caxis_ct);
+        xlim(GraphSetting.xlim);
+        ylim(GraphSetting.ylim);
         xlabel('$x$[m]', 'Interpreter', 'latex');
         ylabel('$y$[m]', 'Interpreter', 'latex');
         box off
@@ -21,8 +20,8 @@ function PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
 
     f1 = figure(1);
     f2 = figure(2);
-    f1.Position = [700 400 600 250]; %[left bottom width height]
-    f2.Position = [700 100 600 250];
+    f1.Position = GraphSetting.position1; %[left bottom width height]
+    f2.Position = GraphSetting.position2;
     for i = 1 : size(data, 1) - 1
         if data(i, Idx_x) == data(i + 1, Idx_x) && data(i, Idx_y) == data(i + 1, Idx_y) && data(i, Idx_yaw) == data(i + 1, Idx_yaw) && data(i, Idx_vel) == data(i + 1, Idx_vel)
         else

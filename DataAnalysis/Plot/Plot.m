@@ -6,8 +6,10 @@ addpath('lib');
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
 WhichAnalyze = "p";
-number = 1;
-Data_path = "C:\Data\PaperData1\roughDWA\";
+number = 5;
+Data_path = "C:\Data\IPM\PaperData1\";
+%%%%oa or sine of intersection
+env = "oa";
 %%%%IPM or SQP or DWA or PP
 Method = "DWA";
 %%%specific initial point trajectory
@@ -42,6 +44,40 @@ else
     Skipcount = 300;
 end
 
+if env == "oa"
+    GraphSetting.xlim = [0 55];
+    GraphSetting.ylim = [-1.5 1.5];
+    GraphSetting.daspect = [10 5 50];
+    %GraphSetting.daspect = [30 5 450];
+    GraphSetting.caxis_ct = [0 50];
+    GraphSetting.caxis_latj = [0 3];
+    GraphSetting.caxis_lonj = [0 1];
+    GraphSetting.caxis_cr = [0 1.0];
+    GraphSetting.position1 = [700 400 600 110];
+    GraphSetting.position2 = [700 100 600 250];
+elseif env == "sine"
+    GraphSetting.xlim = [-30 30];
+    GraphSetting.ylim = [-10 40];
+    %GraphSetting.daspect = [10 5 50];
+    GraphSetting.daspect = [3 5 450];
+    GraphSetting.caxis_ct = [0 50];
+    GraphSetting.caxis_latj = [0 3];
+    GraphSetting.caxis_lonj = [0 1];
+    GraphSetting.caxis_cr = [0 1.0];
+else
+    GraphSetting.xlim = [0 55];
+    GraphSetting.ylim = [-1.5 1.5];
+    %GraphSetting.daspect = [10 5 50];
+    GraphSetting.daspect = [30 5 450];
+    GraphSetting.caxis_ct = [0 50];
+    GraphSetting.caxis_latj = [0 3];
+    GraphSetting.caxis_lonj = [0 1];
+    GraphSetting.caxis_cr = [0 1.0];
+end
+
+
+
+
 FolderInfo = dir(Data_path);
 Folderlist = {FolderInfo.name};
 Folderlist = Folderlist(1, 3:end); %. .. を削除
@@ -58,13 +94,13 @@ data = csvread(data_name, 1, 0);
 constdata = csvread(const_name, 1, 0);
 
 if WhichAnalyze == "t"
-    PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_Pre, Step, Skipcount, Method, sptr, InitialState);
+    PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_Pre, Step, Skipcount, Method, sptr, InitialState, GraphSetting);
 elseif WhichAnalyze == "c"
-    PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method);
+    PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method, GraphSetting);
 elseif WhichAnalyze == "lat"
-    PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_latjerk, Method);
+    PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_latjerk, Method, GraphSetting);
 elseif WhichAnalyze == "lon"
-    PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method);
+    PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method, GraphSetting);
 elseif WhichAnalyze == "p"
-    PlotColProbability(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method);
+    PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting);
 end

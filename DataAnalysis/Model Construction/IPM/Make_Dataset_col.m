@@ -7,8 +7,8 @@ Kappa_array = 1;
 interval = 10; %分割数
 constraint = zeros(2 * interval, 1);
 first = true;
-Step = 20;
-Delta_T = 0.1;
+Step = 70;
+Delta_T = 0.03;
 Idx_u = 5;
 Idx_v = 6;
 Idx_theta = 7;
@@ -20,10 +20,10 @@ Idx_c_kappa = 11;
 
 Idx_err_mpc = 18;
 Idx_suc_mpc = 19;
-Num_validation = 1500; %検証用のサンプル数
+Num_validation = 100; %検証用のサンプル数
 
 
-DataPath = 'C:\Data\Dataset\KBM\';
+DataPath = 'C:\Data\IPM\';
 
 Method = 'SQP';
 

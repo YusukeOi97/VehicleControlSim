@@ -93,6 +93,7 @@ bool SetSharedData(MyProblem myProblem, DWORD size)
 		shareddata->v_max[i] = myProblem.v_max[i];
 		shareddata->v_min[i] = myProblem.v_min[i];
 		shareddata->v_error[i] = myProblem.v_error[i];
+		shareddata->lateral_G[i] = myProblem.lateral_G[i];
 	}
 
 	shareddata->noise_u = myProblem.noise.noise_u;
@@ -190,7 +191,7 @@ int main()
 		std::future<bool> ftr = prms.get_future();
 		std::thread Thread(Opt, std::ref(myProblem), myProblem.noise_count, i, myProblem.sim_step, std::move(prms));
 
-		std::future_status timeresult = ftr.wait_for(std::chrono::seconds(15));
+		std::future_status timeresult = ftr.wait_for(std::chrono::milliseconds(120));
 		if (timeresult != std::future_status::timeout)
 		{
 			printf("not timeout    (u, v, theta, vel) = (%.1f, %.1f, %.1f, %.1f)\n", myProblem.u[0], myProblem.v[0], myProblem.theta[0], myProblem.vel[0]);

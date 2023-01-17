@@ -176,17 +176,24 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 
 	//Loop
 	//uのループ
+	logdata.x = 0;
 	for (logdata.u = U_start; logdata.x < U_end; logdata.u = logdata.u + prm.delta_u)
 	{
 		//vの上下限取得
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
 		constraint.get_min_max(logdata.u + prm.dist_front, prm.v_max_front, prm.v_min_front);
-		double v_min = max(prm.v_min, prm.v_min_front) + prm.width / 1.4;
-		double v_max = min(prm.v_max, prm.v_max_front) - prm.width / 1.4;
-		double delta_v = (v_max - v_min) / 3;
+		double v_min = max(prm.v_min, prm.v_min_front) + prm.width / 1.6;
+		double v_max = min(prm.v_max, prm.v_max_front) - prm.width / 1.6;
+#ifdef OA
+		int count = 3;
+#else
+		int count = 2;
+#endif // OA
+
+		double delta_v = (v_max - v_min) / count;
 
 		//vのループ
-		for (int v = 0; v <= 3; v = v + 1)
+		for (int v = 0; v <= count; v = v + 1)
 		{
 			logdata.v = v_min + v * delta_v;
 			//thetaのループ
@@ -315,8 +322,8 @@ int main()
 	//double dist[1] = { 13 }; // 13 16 19
 	//int pos1[2] = { 1, 0 };
 
-	double a[2] = { 1.3, 2.5 };
-	double width[3] = { 1.4, 1.1, 0.8 }; //0.5 0.7 0.9
+	double a[1] = { 2.5 };
+	double width[3] = { 1.1, 0.8, 0.5 };
 	double dist[2] = { 13, 19 }; // 13 16 19
 	double U_start = 25;
 	double U_end = 76;
@@ -352,8 +359,8 @@ int main()
 #ifdef SINE
 	double ampl[3] = { 20, 30, 40 };
 	double cycle[1] = { 80 };
-	double U_start = 2;
-	double U_end = 30;
+	double U_start = 7;
+	double U_end = 27;
 
 	for (size_t i = 0; i < sizeof(cycle) / sizeof(cycle[0]); i++)
 	{

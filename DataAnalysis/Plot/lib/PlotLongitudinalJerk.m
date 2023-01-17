@@ -1,4 +1,4 @@
-function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method)
+function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method, GraphSetting)
     figure(1)
     plot(constdata(:, 7), constdata(:, 8), 'k');
     hold on
@@ -6,12 +6,11 @@ function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, I
     hold on
     plot(constdata(:, 3), constdata(:, 4), '--k'); 
     hold on
-    %daspect([10 5 50]);
-    daspect([30 5 450]);
+    daspect(GraphSetting.daspect);
     colorbar;
-    caxis([0, 1]);
-    xlim([25 80]);
-    %ylim([-1.5 1.5]);
+    caxis(GraphSetting.caxis_lonj);
+    xlim(GraphSetting.xlim);
+    ylim(GraphSetting.ylim);
     xlabel('$x$[m]', 'Interpreter', 'latex');
     ylabel('$y$[m]', 'Interpreter', 'latex');
     box off
