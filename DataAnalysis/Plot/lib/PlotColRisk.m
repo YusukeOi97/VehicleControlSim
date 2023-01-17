@@ -1,4 +1,4 @@
-function PlotColProbability(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method)
+function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting)
     figure(1)
     plot(constdata(:, 7) - 25, constdata(:, 8), 'k');
     hold on
@@ -6,12 +6,11 @@ function PlotColProbability(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx
     hold on
     plot(constdata(:, 3) - 25, constdata(:, 4), '--k'); 
     hold on
-    %daspect([10 5 50]);
-    daspect([30 5 450]);
+    daspect(GraphSetting.daspect);
     colorbar;
-    caxis([0.0, 1.0]);
-    xlim([0 55]);
-    %ylim([-1.5 1.5]);
+    caxis(GraphSetting.caxis_cr);
+    xlim(GraphSetting.xlim);
+    ylim(GraphSetting.ylim);
     xlabel('$x$[m]', 'Interpreter', 'latex');
     ylabel('$y$[m]', 'Interpreter', 'latex');
     box off
@@ -20,9 +19,9 @@ function PlotColProbability(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx
     collision = 0;
     count = 0;
     f1 = figure(1);
-    f1.Position = [700 400 600 250]; %[left bottom width height]
+    f1.Position = GraphSetting.position1; %[left bottom width height]
     for i = 1 : size(data, 1) - 1
-        if data(i, Idx_x) == data(i + 1, Idx_x) && data(i, Idx_y) == data(i + 1, Idx_y) && data(i, Idx_yaw) == data(i + 1, Idx_yaw) && data(i, Idx_vel) == data(i + 1, Idx_vel)
+        if data(i, Idx_x) == data(i + 1, Idx_x) && data(i, Idx_y) == data(i + 1, Idx_y)% && data(i, Idx_yaw) == data(i + 1, Idx_yaw) && data(i, Idx_vel) == data(i + 1, Idx_vel)
             if Method == "IPM" || Method == "SQP"
                 if data(i + 1, Idx_err) ~= 0 || data(i + 1, Idx_suc) ~=1
                     collision = collision + 1;
@@ -37,28 +36,28 @@ function PlotColProbability(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx
             collision = collision / count;
             x = data(i, Idx_x) - 25;
             y = data(i, Idx_y);
-            yaw = data(i, Idx_yaw);
-            vel = data(i, Idx_vel);
-            th_yaw = 0.1;
-            if yaw < -th_yaw
-                y = y - 0.16;
-            elseif yaw > -th_yaw && yaw < 0
-                y = y - 0.08;
-            elseif yaw == 0
-            elseif yaw > 0 && yaw < th_yaw
-                y = y + 0.08;
-            else
-                y = y + 0.16;
-            end
-            delta = 0.5;
-            if vel == 4
-            elseif vel == 6
-                x = x + delta;
-            elseif vel == 8
-                x = x + delta * 2;
-            else
-                x = x + delta * 3;
-            end
+%             yaw = data(i, Idx_yaw);
+%             vel = data(i, Idx_vel);
+%             th_yaw = 0.1;
+%             if yaw < -th_yaw
+%                 y = y - 0.16;
+%             elseif yaw > -th_yaw && yaw < 0
+%                 y = y - 0.08;
+%             elseif yaw == 0
+%             elseif yaw > 0 && yaw < th_yaw
+%                 y = y + 0.08;
+%             else
+%                 y = y + 0.16;
+%             end
+%             delta = 0.5;
+%             if vel == 4
+%             elseif vel == 6
+%                 x = x + delta;
+%             elseif vel == 8
+%                 x = x + delta * 2;
+%             else
+%                 x = x + delta * 3;
+%             end
             scatter(x, y, [], collision, 'filled');
             hold on
 

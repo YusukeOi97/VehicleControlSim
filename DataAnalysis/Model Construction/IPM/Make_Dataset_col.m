@@ -7,9 +7,6 @@ Kappa_array = 1;
 interval = 10; %分割数
 constraint = zeros(2 * interval, 1);
 first = true;
-InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
-vel_max = 7;
-theta_ = 70;
 Step = 70;
 Delta_T = 0.03;
 Idx_u = 5;
@@ -23,10 +20,10 @@ Idx_c_kappa = 11;
 
 Idx_err_mpc = 18;
 Idx_suc_mpc = 19;
-Num_validation = 1500; %検証用のサンプル数
+Num_validation = 100; %検証用のサンプル数
 
 
-DataPath = 'C:\Data\Dataset\';
+DataPath = 'C:\Data\IPM\';
 
 Method = 'SQPcp';
 
