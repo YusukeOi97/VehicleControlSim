@@ -21,12 +21,12 @@ Idx_c_kappa = 11;
 Idx_cal = 17;
 Idx_err_mpc = 18;
 Idx_suc_mpc = 19;
-Num_validation = 300; %検証用のサンプル数
+Num_validation = 1000; %検証用のサンプル数
 
 
-DataPath = 'C:\Data\IPM\';
+DataPath = 'C:\Data\PaperData\IPM\';
 
-Method = 'new';
+Method = 'PaperDatact';
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
@@ -45,9 +45,12 @@ for i = 1 : length(Folderlist(1, :))
     %出力 
     ColOut = 1;
     for j = 2 : DataSize
+        if data(j, Idx_cal) > 0.0262 && data(j, Idx_cal) < 0.028
+            p = 0;
+        end
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
-            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.05
+            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.042
             else
                 out(1, ColOut) = data(j, Idx_cal) * 1000; %cal(ipm)
                 ColOut = ColOut + 1;
@@ -72,7 +75,7 @@ for i = 1 : length(Folderlist(1, :))
     for j = 2 : DataSize
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
-            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.05
+            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.042
             else
                 %v, yaw, vel
                 in(1, ColIn) = data(j, Idx_v);
@@ -102,8 +105,6 @@ for i = 1 : length(Folderlist(1, :))
                     for k = 1 : interval
                         const_x = data(j, Idx_u) + k * prediction / interval;
                         ret = LinearInterporater_const(const_x, course_data, Idx_c_u, Idx_c_ymax, Idx_c_ymin);
-    %                     constraint(2 * k, 1) = ret.y_max;
-    %                     constraint(2 * k - 1, 1) = ret.y_min;
                          constraint(interval + k, 1) = ret.y_max;
                          constraint(k, 1) = ret.y_min;
                     end
@@ -231,7 +232,7 @@ MATRIX_OUTPUT(idx, :) = [];
 % rng("default")
 % Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "OptimizeHyperparameters", params, "HyperparameterOptimizationOptions", struct("AcquisitionFunctionName", "expected-improvement-plus", "MaxObjectiveEvaluations", 30));
 
-Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-4, "LayerSizes", [150 150 130 130 110])
+Mdl = fitrnet(MATRIX_INPUT, MATRIX_OUTPUT, "Standardize", true, "Lambda", 1e-4, "LayerSizes", [200 200 200 200 150])
 %lambda dwa:[60 60 60]1e-4 roughdwa:[60 60 60]1e-3
 testMSE = loss(Mdl, INPUT_VALIDATION, OUTPUT_VALIDATION)
 OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);

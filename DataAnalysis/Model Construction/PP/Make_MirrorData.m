@@ -11,8 +11,8 @@ Idx_g_max = 10;
 Idx_rho = 11;
 step = 20;
 
-Method = 'PP';
-DataPath = strcat('C:\Data\Dataset\KBM\', Method, 'cleaned\');
+Method = 'DWA';
+DataPath = strcat('C:\Data\PaperData\rough', Method, 'cleaned\');
 FolderInfo = dir(DataPath);
 Folderlist = {FolderInfo.name};
 Folderlist = Folderlist(1, 3 : end);

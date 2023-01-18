@@ -4,14 +4,12 @@ addpath("C:\VehicleControlSim\DataAnalysis\Model Construction\func\");
 
 Kappa_array = 1;
 
-interval = 10; %分割数
+interval = 25; %分割数
 constraint = zeros(2 * interval, 1);
 first = true;
 InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
-vel_max = 7;
-theta_ = 70;
-Step = 20;
-Delta_T = 0.1;
+Step = 25;
+Delta_T = 0.08;
 Idx_u = 5;
 Idx_v = 6;
 Idx_theta = 7;
@@ -23,10 +21,10 @@ Idx_c_kappa = 11;
 
 Idx_col_dwa = 10;
 Idx_col_pp = 10;
-Num_validation = 1500; %検証用のサンプル数
+Num_validation = 1000; %検証用のサンプル数
 
 
-DataPath = 'C:\Data\Dataset\KBM\';
+DataPath = 'C:\Data\PaperData\';
 
 Method = 'DWA';
 

@@ -4,14 +4,12 @@ addpath("C:\VehicleControlSim\DataAnalysis\Model Construction\func\");
 
 Kappa_array = 1;
 
-interval = 10; %分割数
+interval = 25; %分割数
 constraint = zeros(2 * interval, 1);
 first = true;
 InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
-vel_max = 7;
-theta_ = 70;
-Step = 20;
-Delta_T = 0.1;
+Step = 25;
+Delta_T = 0.08;
 Idx_u = 5;
 Idx_v = 6;
 Idx_theta = 7;
@@ -24,10 +22,10 @@ Idx_c_kappa = 11;
 Idx_col_dwa = 10;
 Idx_col_pp = 10;
 Idx_cal_pp = 9;
-Num_validation = 1500; %検証用のサンプル数
+Num_validation = 1000; %検証用のサンプル数
 
 
-DataPath = 'C:\Data\Dataset\KBM\';
+DataPath = 'C:\Data\PaperData\';
 
 Method = 'PP';
 
@@ -42,13 +40,8 @@ for i = 1 : length(Folderlist(1, :))
     pp_data = csvread(dir, 0, 0);
     course_dir = strcat(DataPath, Method, 'cleaned\', string(Folderlist(1, i)), '\course_data.csv');
     course_data = csvread(course_dir, 0, 0);
-    
-%     %pp
-%     pp_dir = strcat(Data_path, 'DWAPPcleaned\', string(Folderlist_ipm(1, i)), '\pp_data.csv');
-%     pp_data = csvread(pp_dir, 0, 0);
 
     DataSize = size(pp_data, 1);
-    
 
     %出力
     %collision probabilityの計算
@@ -101,8 +94,6 @@ for i = 1 : length(Folderlist(1, :))
                 for k = 1 : interval
                     const_x = pp_data(j, Idx_u) + k * prediction / interval;
                     ret = LinearInterporater_const(const_x, course_data, Idx_c_u, Idx_c_ymax, Idx_c_ymin);
-%                     constraint(2 * k, 1) = ret.y_max;
-%                     constraint(2 * k - 1, 1) = ret.y_min;
                      constraint(interval + k, 1) = ret.y_max;
                      constraint(k, 1) = ret.y_min;
                 end

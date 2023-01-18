@@ -1,9 +1,9 @@
 clear;
 close all;
 
-Method = 'KBM\IPMcr';
-Data_path = strcat('C:\Data\Dataset\', Method, '\');
-OutData_path = 'C:\Data\Dataset\';
+Method = 'SQP\PaperDatact';
+Data_path = strcat('C:\Data\PaperData\', Method, '\');
+OutData_path = 'C:\Data\PaperData\';
 
 FolderInfo = dir(Data_path);
 Folderlist = {FolderInfo.name};

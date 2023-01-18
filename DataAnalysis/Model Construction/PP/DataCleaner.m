@@ -1,10 +1,10 @@
 clear;
 close all;
 
-PPon = false;
-Method = 'DWA';
-DataPath = strcat('C:\Data\Dataset\KBM\', Method, '\');
-OutDataPath = 'C:\Data\Dataset\KBM\';
+PPon = true;
+Method = 'roughDWA';
+DataPath = strcat('C:\Data\PaperData\', Method, '\');
+OutDataPath = 'C:\Data\PaperData\';
 
 FolderInfo = dir(DataPath);
 Folderlist = {FolderInfo.name};

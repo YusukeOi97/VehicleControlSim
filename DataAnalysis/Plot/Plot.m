@@ -6,12 +6,12 @@ addpath('lib');
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
 WhichAnalyze = "p";
-number = 5;
-Data_path = "C:\Data\IPM\PaperData1\";
+number = 1;
+Data_path = "C:\Data\PaperData1\DWA\";
 %%%%oa or sine of intersection
 env = "oa";
 %%%%IPM or SQP or DWA or PP
-Method = "DWA";
+Method = "PP";
 %%%specific initial point trajectory
 sptr = false;
 InitialState = [29 -0.6 0.0 10];
@@ -45,15 +45,15 @@ else
 end
 
 if env == "oa"
-    GraphSetting.xlim = [0 55];
-    GraphSetting.ylim = [-1.5 1.5];
+    GraphSetting.xlim = [-1 55];
+    GraphSetting.ylim = [-1.7 1.7];
     GraphSetting.daspect = [10 5 50];
     %GraphSetting.daspect = [30 5 450];
     GraphSetting.caxis_ct = [0 50];
     GraphSetting.caxis_latj = [0 3];
     GraphSetting.caxis_lonj = [0 1];
     GraphSetting.caxis_cr = [0 1.0];
-    GraphSetting.position1 = [700 400 600 110];
+    GraphSetting.position1 = [700 400 600 130];
     GraphSetting.position2 = [700 100 600 250];
 elseif env == "sine"
     GraphSetting.xlim = [-30 30];

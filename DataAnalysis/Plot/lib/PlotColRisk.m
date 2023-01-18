@@ -1,20 +1,20 @@
 function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting)
     figure(1)
-    plot(constdata(:, 7) - 25, constdata(:, 8), 'k');
+    plot(constdata(:, 7) - 25, constdata(:, 8), 'b');
     hold on
-    plot(constdata(:, 9) - 25, constdata(:, 10), 'k'); 
+    plot(constdata(:, 9) - 25, constdata(:, 10), 'b'); 
     hold on
-    plot(constdata(:, 3) - 25, constdata(:, 4), '--k'); 
+    plot(constdata(:, 3) - 25, constdata(:, 4), '--b'); 
     hold on
     daspect(GraphSetting.daspect);
     colorbar;
     caxis(GraphSetting.caxis_cr);
     xlim(GraphSetting.xlim);
     ylim(GraphSetting.ylim);
-    xlabel('$x$[m]', 'Interpreter', 'latex');
-    ylabel('$y$[m]', 'Interpreter', 'latex');
+    xlabel('$x$[m]', 'FontSize', 12, 'Interpreter', 'latex');
+    ylabel('$y$[m]', 'FontSize', 12, 'Interpreter', 'latex');
     box off
-    set(gca, 'LooseInset', get(gca, 'TightInset'));
+    set(gca, 'LooseInset', get(gca, 'TightInset'), 'FontSize', 11);
 
     collision = 0;
     count = 0;
@@ -32,6 +32,10 @@ function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, I
                 end
             end
             count = count + 1;
+   
+            if i == size(data, 1) - 1
+                scatter(data(i, Idx_x) - 25, data(i, Idx_y), [], collision / count, 'filled');
+            end
         else
             collision = collision / count;
             x = data(i, Idx_x) - 25;

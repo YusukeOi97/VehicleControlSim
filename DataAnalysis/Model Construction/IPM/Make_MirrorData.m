@@ -11,9 +11,9 @@ Idx_g_max_x = 9;
 Idx_g_min = 8;
 Idx_g_max = 10;
 Idx_rho = 11;
-step = 20;
+step = 25;
 
-DataPath = 'C:\Data\Dataset\KBM\IPMcrcleaned\';
+DataPath = 'C:\Data\PaperData\SQP\PaperDatactcleaned\';
 FolderInfo = dir(DataPath);
 Folderlist = {FolderInfo.name};
 Folderlist = Folderlist(1, 3 : end);
