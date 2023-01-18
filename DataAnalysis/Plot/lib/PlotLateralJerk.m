@@ -1,20 +1,20 @@
 function PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_latjerk, Method, GraphSetting)
     figure(1)
-    plot(constdata(:, 7) - 25, constdata(:, 8), 'k');
+    plot(constdata(:, 7) - 25, constdata(:, 8), 'b');
     hold on
-    plot(constdata(:, 9) - 25, constdata(:, 10), 'k'); 
+    plot(constdata(:, 9) - 25, constdata(:, 10), 'b'); 
     hold on
-    plot(constdata(:, 3) - 25, constdata(:, 4), '--k'); 
+    plot(constdata(:, 3) - 25, constdata(:, 4), '--b'); 
     hold on
     daspect(GraphSetting.daspect);
     colorbar;
     caxis(GraphSetting.caxis_latj);
     xlim(GraphSetting.xlim);
     ylim(GraphSetting.ylim);
-    xlabel('$x$[m]', 'Interpreter', 'latex');
-    ylabel('$y$[m]', 'Interpreter', 'latex');
+    xlabel('$x$[m]', 'FontSize', 12, 'Interpreter', 'latex');
+    ylabel('$y$[m]', 'FontSize', 12, 'Interpreter', 'latex');
     box off
-    set(gca, 'LooseInset', get(gca, 'TightInset'));
+    set(gca, 'LooseInset', get(gca, 'TightInset'), 'FontSize', 11);
 
     f1 = figure(1);
     f1.Position = GraphSetting.position1; %[left bottom width height]

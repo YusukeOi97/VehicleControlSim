@@ -5,9 +5,9 @@ addpath('lib');
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
-WhichAnalyze = "p";
-number = 5;
-Data_path = "C:\Data\IPM\PaperData1\";
+WhichAnalyze = "c";
+number = 1;
+Data_path = "C:\Data\SQP\PaperData\";
 %%%%oa or sine of intersection
 env = "oa";
 %%%%IPM or SQP or DWA or PP
@@ -46,16 +46,26 @@ else
 end
 
 if env == "oa"
-    GraphSetting.xlim = [0 55];
-    GraphSetting.ylim = [-1.5 1.5];
+    GraphSetting.xlim = [-1 55];
+    GraphSetting.ylim = [-1.7 1.7];
     GraphSetting.daspect = [10 5 50];
     %GraphSetting.daspect = [30 5 450];
     GraphSetting.caxis_ct = [0 50];
     GraphSetting.caxis_latj = [0 3];
     GraphSetting.caxis_lonj = [0 1];
     GraphSetting.caxis_cr = [0 1.0];
-    GraphSetting.position1 = [700 400 600 110];
-    GraphSetting.position2 = [700 100 600 250];
+    GraphSetting.graphposition1 = [700 400 600 130];
+    GraphSetting.graphposition2 = [700 100 600 250];
+    %%%normal x = 53 - 25
+    obstacle1center = [28 1.8];
+    %%% + 13
+    obstacle2center = [41 -1.8];
+    width = 1.8;
+    length = 5.0;
+    GraphSetting.obstacle1 = polyshape([obstacle1center(1, 1)-length/2 obstacle1center(1, 1)+length/2 obstacle1center(1, 1)+length/2 obstacle1center(1, 1)-length/2], ...
+        [obstacle1center(1, 2)-width/2 obstacle1center(1, 2)-width/2 obstacle1center(1, 2)+width/2 obstacle1center(1, 2)+width/2]);
+    GraphSetting.obstacle2 = polyshape([obstacle2center(1, 1)-length/2 obstacle2center(1, 1)+length/2 obstacle2center(1, 1)+length/2 obstacle2center(1, 1)-length/2], ...
+        [obstacle2center(1, 2)-width/2 obstacle2center(1, 2)-width/2 obstacle2center(1, 2)+width/2 obstacle2center(1, 2)+width/2]);
 elseif env == "sine"
     GraphSetting.xlim = [-30 30];
     GraphSetting.ylim = [-10 40];

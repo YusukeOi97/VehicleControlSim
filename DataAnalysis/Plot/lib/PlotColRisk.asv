@@ -15,8 +15,7 @@ function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, I
     ylabel('$y$[m]', 'FontSize', 12, 'Interpreter', 'latex');
     box off
     set(gca, 'LooseInset', get(gca, 'TightInset'), 'FontSize', 11);
-    plot(GraphSetting.obstacle1, 'FaceColor', [0.8 0.8 0.8]);
-    plot(GraphSetting.obstacle2, 'FaceColor', [0.8 0.8 0.8]);
+    plot(GraphSetting.obstacle1, 'FaceColor', 'gray')
 
     collision = 0;
     count = 0;

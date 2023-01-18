@@ -1,27 +1,54 @@
 function PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method, GraphSetting)
     for i = 1 : 2
         figure(i)
-        plot(constdata(:, 7) - 25, constdata(:, 8), 'k');
+        plot(constdata(:, 7) - 25, constdata(:, 8), 'b');
         hold on
-        plot(constdata(:, 9) - 25, constdata(:, 10), 'k'); 
+        plot(constdata(:, 9) - 25, constdata(:, 10), 'b'); 
         hold on
-        plot(constdata(:, 3) - 25, constdata(:, 4), '--k'); 
+        plot(constdata(:, 3) - 25, constdata(:, 4), '--b'); 
         hold on
         daspect(GraphSetting.daspect);
         colorbar;
         caxis(GraphSetting.caxis_ct);
         xlim(GraphSetting.xlim);
         ylim(GraphSetting.ylim);
-        xlabel('$x$[m]', 'Interpreter', 'latex');
-        ylabel('$y$[m]', 'Interpreter', 'latex');
+        xlabel('$x$[m]', 'FontSize', 12, 'Interpreter', 'latex');
+        ylabel('$y$[m]', 'FontSize', 12, 'Interpreter', 'latex');
         box off
-        set(gca, 'LooseInset', get(gca, 'TightInset'));
+        set(gca, 'LooseInset', get(gca, 'TightInset'), 'FontSize', 11);
+        plot(GraphSetting.obstacle1, 'FaceColor', [0.6 0.6 0.6]);
+        hold on
+        plot(GraphSetting.obstacle2, 'FaceColor', [0.6 0.6 0.6]);
+        hold on
     end
 
     f1 = figure(1);
     f2 = figure(2);
-    f1.Position = GraphSetting.position1; %[left bottom width height]
-    f2.Position = GraphSetting.position2;
+    f1.Position = GraphSetting.graphposition1; %[left bottom width height]
+    f2.Position = GraphSetting.graphposition2;
+    
+    if Method == "IPM" || Method == "SQP"
+        if data(1, Idx_err) == 0 && data(1, Idx_suc) == 1 
+            figure(1);
+            scatter(data(1, Idx_x) - 25, data(1, Idx_y), [], data(1, Idx_comp) * 1e3, 'filled');
+            hold on
+        else
+            figure(2);
+            scatter(data(1, Idx_x) - 25, data(1, Idx_y), [], data(1, Idx_comp) * 1e3, 'filled');
+            hold on
+        end
+    else
+        if data(0, Idx_suc) ~= -1 
+            figure(1);
+            scatter(data(1, Idx_x) - 25, data(1, Idx_y), [], data(1, Idx_comp) * 1e3, 'filled');
+            hold on
+        else
+            figure(2);            
+            scatter(data(1, Idx_x) - 25, data(1, Idx_y), [], data(1, Idx_comp) * 1e3, 'filled');
+            hold on
+        end
+    end
+
     for i = 1 : size(data, 1) - 1
         if data(i, Idx_x) == data(i + 1, Idx_x) && data(i, Idx_y) == data(i + 1, Idx_y) && data(i, Idx_yaw) == data(i + 1, Idx_yaw) && data(i, Idx_vel) == data(i + 1, Idx_vel)
         else
