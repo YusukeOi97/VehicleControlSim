@@ -7,7 +7,7 @@ addpath('lib');
 %%%%Col prob -> p
 WhichAnalyze = "c";
 number = 1;
-Data_path = "C:\Data\SQP\PaperData\";
+Data_path = "C:\Data\IPM\PaperDatact\";
 %%%%oa or sine of intersection
 env = "oa";
 %%%%IPM or SQP or DWA or PP
@@ -107,11 +107,11 @@ constdata = csvread(const_name, 1, 0);
 if WhichAnalyze == "t"
     PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_Pre, Step, Skipcount, Method, sptr, InitialState, GraphSetting);
 elseif WhichAnalyze == "c"
-    PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method, GraphSetting);
+    PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method, GraphSetting, env);
 elseif WhichAnalyze == "lat"
-    PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_latjerk, Method, GraphSetting);
+    PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_latjerk, Method, GraphSetting, env);
 elseif WhichAnalyze == "lon"
-    PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method, GraphSetting);
+    PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method, GraphSetting, env);
 elseif WhichAnalyze == "p"
-    PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting);
+    PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting, env);
 end

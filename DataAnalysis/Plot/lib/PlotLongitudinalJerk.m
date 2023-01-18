@@ -1,4 +1,4 @@
-function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method, GraphSetting)
+function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method, GraphSetting, env)
     figure(1)
     plot(constdata(:, 7), constdata(:, 8), 'b');
     hold on
@@ -15,6 +15,12 @@ function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, I
     ylabel('$y$[m]', 'FontSize', 12, 'Interpreter', 'latex');
     box off
     set(gca, 'LooseInset', get(gca, 'TightInset'), 'FontSize', 11);
+    if env == "oa"
+        plot(GraphSetting.obstacle1, 'FaceColor', [0.6 0.6 0.6]);
+        hold on
+        plot(GraphSetting.obstacle2, 'FaceColor', [0.6 0.6 0.6]);
+        hold on
+    end
 
     f1 = figure(1);
     f1.Position = [700 400 600 250]; %[left bottom width height]
