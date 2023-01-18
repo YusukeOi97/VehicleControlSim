@@ -1,4 +1,4 @@
-function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting)
+function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting, env)
     figure(1)
     plot(constdata(:, 7) - 25, constdata(:, 8), 'b');
     hold on
@@ -15,11 +15,17 @@ function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, I
     ylabel('$y$[m]', 'FontSize', 12, 'Interpreter', 'latex');
     box off
     set(gca, 'LooseInset', get(gca, 'TightInset'), 'FontSize', 11);
+    if env == "oa"
+        plot(GraphSetting.obstacle1, 'FaceColor', [0.6 0.6 0.6]);
+        hold on
+        plot(GraphSetting.obstacle2, 'FaceColor', [0.6 0.6 0.6]);
+        hold on
+    end
 
     collision = 0;
     count = 0;
     f1 = figure(1);
-    f1.Position = GraphSetting.position1; %[left bottom width height]
+    f1.Position = GraphSetting.graphposition1; %[left bottom width height]
     for i = 1 : size(data, 1) - 1
         if data(i, Idx_x) == data(i + 1, Idx_x) && data(i, Idx_y) == data(i + 1, Idx_y)% && data(i, Idx_yaw) == data(i + 1, Idx_yaw) && data(i, Idx_vel) == data(i + 1, Idx_vel)
             if Method == "IPM" || Method == "SQP"
@@ -32,7 +38,7 @@ function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, I
                 end
             end
             count = count + 1;
-   
+
             if i == size(data, 1) - 1
                 scatter(data(i, Idx_x) - 25, data(i, Idx_y), [], collision / count, 'filled');
             end
@@ -40,8 +46,8 @@ function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, I
             collision = collision / count;
             x = data(i, Idx_x) - 25;
             y = data(i, Idx_y);
-%             yaw = data(i, Idx_yaw);
-%             vel = data(i, Idx_vel);
+            yaw = data(i, Idx_yaw);
+            vel = data(i, Idx_vel);
 %             th_yaw = 0.1;
 %             if yaw < -th_yaw
 %                 y = y - 0.16;

@@ -53,8 +53,18 @@ if env == "oa"
     GraphSetting.caxis_latj = [0 3];
     GraphSetting.caxis_lonj = [0 1];
     GraphSetting.caxis_cr = [0 1.0];
-    GraphSetting.position1 = [700 400 600 130];
-    GraphSetting.position2 = [700 100 600 250];
+    GraphSetting.graphposition1 = [700 400 600 130];
+    GraphSetting.graphposition2 = [700 100 600 250];
+    %%%normal x = 53 - 25
+    obstacle1center = [28 1.8];
+    %%% + 13
+    obstacle2center = [41 -1.8];
+    width = 1.8;
+    length = 5.0;
+    GraphSetting.obstacle1 = polyshape([obstacle1center(1, 1)-length/2 obstacle1center(1, 1)+length/2 obstacle1center(1, 1)+length/2 obstacle1center(1, 1)-length/2], ...
+        [obstacle1center(1, 2)-width/2 obstacle1center(1, 2)-width/2 obstacle1center(1, 2)+width/2 obstacle1center(1, 2)+width/2]);
+    GraphSetting.obstacle2 = polyshape([obstacle2center(1, 1)-length/2 obstacle2center(1, 1)+length/2 obstacle2center(1, 1)+length/2 obstacle2center(1, 1)-length/2], ...
+        [obstacle2center(1, 2)-width/2 obstacle2center(1, 2)-width/2 obstacle2center(1, 2)+width/2 obstacle2center(1, 2)+width/2]);
 elseif env == "sine"
     GraphSetting.xlim = [-30 30];
     GraphSetting.ylim = [-10 40];
@@ -96,11 +106,11 @@ constdata = csvread(const_name, 1, 0);
 if WhichAnalyze == "t"
     PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_Pre, Step, Skipcount, Method, sptr, InitialState, GraphSetting);
 elseif WhichAnalyze == "c"
-    PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method, GraphSetting);
+    PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method, GraphSetting, env);
 elseif WhichAnalyze == "lat"
-    PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_latjerk, Method, GraphSetting);
+    PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_latjerk, Method, GraphSetting, env);
 elseif WhichAnalyze == "lon"
-    PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method, GraphSetting);
+    PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method, GraphSetting, env);
 elseif WhichAnalyze == "p"
-    PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting);
+    PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting, env);
 end
