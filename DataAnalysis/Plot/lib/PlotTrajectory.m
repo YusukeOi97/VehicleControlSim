@@ -18,8 +18,8 @@ function PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err
 
     f1 = figure(1);
     f2 = figure(2);
-    f1.Position = GraphSetting.position1; %[left bottom width height]
-    f2.Position = GraphSetting.position2;
+    f1.Position = GraphSetting.graphposition1; %[left bottom width height]
+    f2.Position = GraphSetting.graphposition2;
     x = zeros(Step, 1);
     y = zeros(Step, 1);
     if sptr

@@ -129,7 +129,7 @@ int main()
 
 #ifdef OA
 	double a[1] = { 2.5 };
-	double width[3] = { 1.1, 0.9, 0.7 }; //0.5 0.7 0.9
+	double width[3] = { 1.1, 0.8, 0.5 }; //0.5 0.7 0.9
 	double dist[2] = { 13, 19 }; // 13 16 19
 	double u_start = 25;
 	double x_end = 76;

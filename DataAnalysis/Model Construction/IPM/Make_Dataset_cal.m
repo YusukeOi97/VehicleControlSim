@@ -44,6 +44,8 @@ for i = 1 : length(Folderlist(1, :))
 
     %o—Í 
     ColOut = 1;
+    total_time = 0;
+    count = 0;
     for j = 2 : DataSize
         if data(j, Idx_cal) > 0.0262 && data(j, Idx_cal) < 0.028
             p = 0;
@@ -55,8 +57,11 @@ for i = 1 : length(Folderlist(1, :))
                 out(1, ColOut) = data(j, Idx_cal) * 1000; %cal(ipm)
                 ColOut = ColOut + 1;
             end
+            total_time = total_time + data(j, Idx_cal);
+            count = count + 1;
         end
     end
+    total_time / count
 
     %“ü—Í
     %‹È—¦‚ðâ‘Î’l•\Œ»

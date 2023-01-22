@@ -5,16 +5,16 @@ addpath('lib');
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
-WhichAnalyze = "c";
-number = 27;
-Data_path = "C:\Data\0122\";
+WhichAnalyze = "l";
+number = 1;
+Data_path = "C:\Data\0121\roughDWA\";
 %%%%oa or sine of intersection
 env = "oa";
 %%%%IPM or SQP or DWA or PP
 Method = "DWA";
 %%%specific initial point trajectory
 sptr = false;
-InitialState = [25 -0.2 0.06 4.0];
+InitialState = [29 -0.6 0.0 10];
 
 if Method == "IPM" || Method == "SQP"
     Idx_x = 2;
@@ -41,7 +41,7 @@ else
     Idx_lonjerk = 12;
     Idx_Pre = 12;
     Step = 25;
-    Skipcount = 100;
+    Skipcount = 300;
 end
 
 if env == "oa"

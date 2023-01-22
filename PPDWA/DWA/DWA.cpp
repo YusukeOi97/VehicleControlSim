@@ -167,7 +167,7 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 		score_f_v[i] = score_f_v[i] / Max_score_f_v;
 		if (AllCollision)
 		{
-			score_total[i] = 500 * score_v[i] + K_theta * score_theta[i] + K_vel * score_vel[i] + K_angvel * score_angvel[i] + K_ang * score_ang[i] + K_f_v * score_f_v[i];
+			score_total[i] = K_v * score_v[i] + K_theta * score_theta[i] + K_vel * score_vel[i] + K_angvel * score_angvel[i] + K_ang * score_ang[i] + K_f_v * score_f_v[i];
 		}
 		else
 		{

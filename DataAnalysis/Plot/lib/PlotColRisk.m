@@ -27,7 +27,7 @@ function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, I
     f1 = figure(1);
     f1.Position = GraphSetting.graphposition1; %[left bottom width height]
     for i = 1 : size(data, 1) - 1
-        if data(i, Idx_x) == data(i + 1, Idx_x) && data(i, Idx_y) == data(i + 1, Idx_y)% && data(i, Idx_yaw) == data(i + 1, Idx_yaw) && data(i, Idx_vel) == data(i + 1, Idx_vel)
+        if data(i, Idx_x) == data(i + 1, Idx_x) && data(i, Idx_y) == data(i + 1, Idx_y) && data(i, Idx_yaw) == data(i + 1, Idx_yaw) && data(i, Idx_vel) == data(i + 1, Idx_vel)
             if Method == "IPM" || Method == "SQP"
                 if data(i + 1, Idx_err) ~= 0 || data(i + 1, Idx_suc) ~=1
                     collision = collision + 1;
@@ -48,26 +48,26 @@ function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, I
             y = data(i, Idx_y);
             yaw = data(i, Idx_yaw);
             vel = data(i, Idx_vel);
-%             th_yaw = 0.1;
-%             if yaw < -th_yaw
-%                 y = y - 0.16;
-%             elseif yaw > -th_yaw && yaw < 0
-%                 y = y - 0.08;
-%             elseif yaw == 0
-%             elseif yaw > 0 && yaw < th_yaw
-%                 y = y + 0.08;
-%             else
-%                 y = y + 0.16;
-%             end
-%             delta = 0.5;
-%             if vel == 4
-%             elseif vel == 6
-%                 x = x + delta;
-%             elseif vel == 8
-%                 x = x + delta * 2;
-%             else
-%                 x = x + delta * 3;
-%             end
+            th_yaw = 0.1;
+            if yaw < -th_yaw
+                y = y - 0.16;
+            elseif yaw > -th_yaw && yaw < 0
+                y = y - 0.08;
+            elseif yaw == 0
+            elseif yaw > 0 && yaw < th_yaw
+                y = y + 0.08;
+            else
+                y = y + 0.16;
+            end
+            delta = 0.5;
+            if vel == 4
+            elseif vel == 6
+                x = x + delta;
+            elseif vel == 8
+                x = x + delta * 2;
+            else
+                x = x + delta * 3;
+            end
             scatter(x, y, [], collision, 'filled');
             hold on
 

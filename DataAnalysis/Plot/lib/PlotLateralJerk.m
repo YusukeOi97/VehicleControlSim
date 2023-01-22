@@ -23,7 +23,7 @@ function PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
     end
 
     f1 = figure(1);
-    f1.Position = GraphSetting.position1; %[left bottom width height]
+    f1.Position = GraphSetting.graphposition1; %[left bottom width height]
     for i = 1 : size(data, 1) - 1
         if data(i, Idx_x) == data(i + 1, Idx_x) && data(i, Idx_y) == data(i + 1, Idx_y) && data(i, Idx_yaw) == data(i + 1, Idx_yaw) && data(i, Idx_vel) == data(i + 1, Idx_vel)
         else
@@ -55,13 +55,11 @@ function PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
 
             if Method == "IPM" || Method == "SQP"
                 if data(i + 1, Idx_err) == 0 && data(i + 1, Idx_suc) == 1 && data(i+1, Idx_vel) ==4
-                    figure(1);
                     scatter(x - 25, y, [], average_latjerk, 'filled');
                     hold on
                 end
             else
                 if data(i + 1, Idx_suc) == 1 
-                    figure(1);
                     scatter(x - 25, y, [], average_latjerk, 'filled');
                     hold on
                 end

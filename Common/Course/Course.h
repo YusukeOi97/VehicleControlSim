@@ -9,12 +9,13 @@ struct CourseSetting
 {
 	double start_x = 0.0;
 	double start_y = 0.0;
-	double delta = 2.0; //Change of x
+	double delta = 0.2; //Change of x
+	//double delta = 1; //Change of x
 
 //Obstacle avoidance
 #define twoobstacle //One obstacle -> offCTwo ->on
 	//Change of x near obstacles
-	double delta_ob = 0.1;
+	double delta_ob = 0.2;
 	//Sigmoid parameter
 	double a;
 	//First obstacle
@@ -63,15 +64,16 @@ private:
 
 inline GenCourse::GenCourse()
 {
+	int Size = 800;
 	ret.resize(2);
 	course.resize(CPrmNum);
 	for (size_t i = 0; i < ret.size(); i++)
 	{
-		ret[i].resize(400);
+		ret[i].resize(Size);
 	}
 	for (size_t i = 0; i < course.size(); i++)
 	{
-		course[i].resize(400);
+		course[i].resize(Size);
 	}
 }
 

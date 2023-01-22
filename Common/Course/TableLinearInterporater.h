@@ -115,7 +115,8 @@ public:
 		{	// end or after end
 			ret = c_data[y_index][rows];
 		}
-		else {
+		else
+		{
 			// middle
 			prev_x = c_data[x_index][i - 1];
 			prev_val = c_data[y_index][i - 1];

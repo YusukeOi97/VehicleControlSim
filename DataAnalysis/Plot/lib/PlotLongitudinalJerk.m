@@ -1,10 +1,10 @@
 function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method, GraphSetting, env)
     figure(1)
-    plot(constdata(:, 7), constdata(:, 8), 'b');
+    plot(constdata(:, 7) - 25, constdata(:, 8), 'b');
     hold on
-    plot(constdata(:, 9), constdata(:, 10), 'b'); 
+    plot(constdata(:, 9) - 25, constdata(:, 10), 'b'); 
     hold on
-    plot(constdata(:, 3), constdata(:, 4), '--b'); 
+    plot(constdata(:, 3) - 25, constdata(:, 4), '--b'); 
     hold on
     daspect(GraphSetting.daspect);
     colorbar;
@@ -28,7 +28,7 @@ function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, I
         if data(i, Idx_x) == data(i + 1, Idx_x) && data(i, Idx_y) == data(i + 1, Idx_y) && data(i, Idx_yaw) == data(i + 1, Idx_yaw) && data(i, Idx_vel) == data(i + 1, Idx_vel)
         else
             average_lonjerk = data(i + 1, Idx_lonjerk);
-            x = data(i + 1, Idx_x);
+            x = data(i + 1, Idx_x) - 25;
             y = data(i + 1, Idx_y);
             yaw = data(i + 1, Idx_yaw);
             vel = data(i + 1, Idx_vel);
@@ -54,13 +54,11 @@ function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, I
             end
             if Method == "IPM" || Method == "SQP"
                 if data(i + 1, Idx_err) == 0 && data(i + 1, Idx_suc) == 1 
-                    figure(1);
                     scatter(x, y, [], average_lonjerk, 'filled');
                     hold on
                 end
             else
                 if data(i + 1, Idx_suc) == 1 
-                    figure(1);
                     scatter(x, y, [], average_lonjerk, 'filled');
                     hold on
                 end
