@@ -5,16 +5,17 @@ addpath('lib');
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
-WhichAnalyze = "c";
-number = 27;
-Data_path = "C:\Data\0122\";
+WhichAnalyze = "t";
+number = 3;
+Data_path = "C:\Data\IPM\0122\";
+%Data_path = "C:\Data\SQP\PaperDatact\";
 %%%%oa or sine of intersection
-env = "oa";
+env = "intersection";
 %%%%IPM or SQP or DWA or PP
 Method = "DWA";
 %%%specific initial point trajectory
 sptr = false;
-InitialState = [25 -0.2 0.06 4.0];
+InitialState = [45 0.62 0.12 10];
 
 if Method == "IPM" || Method == "SQP"
     Idx_x = 2;
@@ -28,7 +29,7 @@ if Method == "IPM" || Method == "SQP"
     Idx_lonjerk = 26;
     Idx_Pre = 26;
     Step = 25;
-    Skipcount = 10;
+    Skipcount = 1;
 else
     Idx_x = 2;
     Idx_y = 3;
@@ -49,7 +50,7 @@ if env == "oa"
     GraphSetting.ylim = [-1.7 1.7];
     %GraphSetting.daspect = [10 5 50];
     GraphSetting.daspect = [30 5 450];
-    GraphSetting.caxis_ct = [0 50];
+    GraphSetting.caxis_ct = [0 60];
     GraphSetting.caxis_latj = [0 3];
     GraphSetting.caxis_lonj = [0 1];
     GraphSetting.caxis_cr = [0 1.0];
@@ -67,23 +68,27 @@ if env == "oa"
     GraphSetting.obstacle2 = polyshape([obstacle2center(1, 1)-length/2 obstacle2center(1, 1)+length/2 obstacle2center(1, 1)+length/2 obstacle2center(1, 1)-length/2], ...
         [obstacle2center(1, 2)-width/2 obstacle2center(1, 2)-width/2 obstacle2center(1, 2)+width/2 obstacle2center(1, 2)+width/2]);
 elseif env == "sine"
-    GraphSetting.xlim = [-30 30];
-    GraphSetting.ylim = [-10 40];
+    GraphSetting.xlim = [-25 5];
+    GraphSetting.ylim = [-10 30];
     %GraphSetting.daspect = [10 5 50];
     GraphSetting.daspect = [3 5 450];
     GraphSetting.caxis_ct = [0 50];
     GraphSetting.caxis_latj = [0 3];
     GraphSetting.caxis_lonj = [0 1];
     GraphSetting.caxis_cr = [0 1.0];
+    GraphSetting.graphposition1 = [700 100 600 250];
+    GraphSetting.graphposition2 = [700 100 600 250];
 else
-    GraphSetting.xlim = [0 55];
-    GraphSetting.ylim = [-1.5 1.5];
+    GraphSetting.xlim = [-25 5];
+    GraphSetting.ylim = [-5 20];
     %GraphSetting.daspect = [10 5 50];
     GraphSetting.daspect = [30 5 450];
     GraphSetting.caxis_ct = [0 50];
     GraphSetting.caxis_latj = [0 3];
     GraphSetting.caxis_lonj = [0 1];
     GraphSetting.caxis_cr = [0 1.0];
+    GraphSetting.graphposition1 = [700 100 1000 400];
+    GraphSetting.graphposition2 = [700 100 600 250];
 end
 
 
@@ -105,7 +110,7 @@ data = csvread(data_name, 1, 0);
 constdata = csvread(const_name, 1, 0);
 
 if WhichAnalyze == "t"
-    PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_Pre, Step, Skipcount, Method, sptr, InitialState, GraphSetting);
+    PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Idx_Pre, Step, Skipcount, Method, sptr, InitialState, GraphSetting, env);
 elseif WhichAnalyze == "c"
     PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method, GraphSetting, env);
 elseif WhichAnalyze == "lat"

@@ -177,8 +177,14 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	//Loop
 	//uÇÃÉãÅ[Év
 	logdata.x = 0;
+#ifdef INTERSECTION
+	for (logdata.u = U_start; logdata.u < U_end; logdata.u = logdata.u + prm.delta_u)
+	{
+#else
 	for (logdata.u = U_start; logdata.x < U_end; logdata.u = logdata.u + prm.delta_u)
 	{
+#endif // !SINE
+
 		//vÇÃè„â∫å¿éÊìæ
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
 		constraint.get_min_max(logdata.u + prm.dist_front, prm.v_max_front, prm.v_min_front);
@@ -280,6 +286,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 			}
 		}
 	}
+
 	UnInitializeSharedMemory();
 }
 
@@ -297,9 +304,9 @@ void SetFrenet(std::vector<std::vector<double>>& course, CourseSetting setting, 
 	double temp_theta;
 	for (size_t i = 0; i < course[0].size(); i++)
 	{
-#ifdef SINE
+#ifndef OA
 		frenet.Cache_f = frenet.frenetlib.GetFrenet(course[0][i], course[1][i], 0.0, course[2][i], course[3][i], temp_theta, frenet.Cache_f); //u, vÇéÊìæ
-#endif // SINE
+#endif // OA
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[4][i], 0.0, course[6][i], course[7][i], temp_theta, frenet.Cache_g); //êßñÒy_minÇfrenet->global
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[5][i], 0.0, course[8][i], course[9][i], temp_theta, frenet.Cache_g); //êßñÒy_maxÇfrenet->global
 	}
@@ -318,7 +325,7 @@ int main()
 
 #ifdef OA
 	//double a[1] = { 2.5 };
-	//double width[1] = { 0.7 }; //0.5 0.7 0.9
+	//double width[1] = { 1.1 }; //0.5 0.7 0.9
 	//double dist[1] = { 13 }; // 13 16 19
 	//int pos1[2] = { 1, 0 };
 
@@ -380,5 +387,26 @@ int main()
 		}
 	}
 #endif // SINE
+
+#ifdef INTERSECTION
+	double R[3] = { 4, 8, 12 };
+	double U_start = 1;
+	double U_end = 40;
+
+	for (size_t i = 0; i < sizeof(R) / sizeof(R[0]); i++)
+	{
+		setting.R = R[i];
+		gencourse.GetSetting(setting);
+		course = gencourse.Gen_INTERSECTION();
+		SetFrenet(course, setting, frenet);
+
+		if (count >= skip)
+		{
+			Launch(course, setting, frenet, U_start, U_end, count - skip);
+		}
+		count++;
+	}
+#endif // INTERSECTION
+
 	return 0;
 }

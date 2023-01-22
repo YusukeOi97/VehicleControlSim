@@ -196,7 +196,7 @@ void MyProblem::SetV(double current_v)
 	System_NUOPT* m = ((System_NUOPT*)model.get());
 	for (int i = 0; i < vel_ref.size(); ++i) {
 		m->vel_ref[i] = current_v;
-		m->vel_max[i] = current_v + 5.0;
+		m->vel_max[i] = current_v + 1.0;
 	}
 }
 

@@ -38,8 +38,13 @@ std::string CreateLogFileName(std::string str, std::string outdata, CourseSettin
 #ifdef SINE
 	std::string cycle = std::format("{}", setting.cycle);
 	std::string ampl = std::format("{}", setting.ampl);
-	std::string foldername = time + "cycle" + cycle + "ampl" + ampl;
+	std::string foldername = time + "cycle" + cycle + "ampl" + ampl + "p1";
 #endif // SINE
+#ifdef INTERSECTION
+	std::string R = std::format("{}", setting.R);
+	std::string foldername = time + "R" + R + "p1";
+#endif // INTERSECTION
+
 
 	temp_filename += "\\" + foldername + "\\" + outdata + str;
 	temp_filename += ".csv";
