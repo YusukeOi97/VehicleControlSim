@@ -24,9 +24,10 @@ Idx_suc_mpc = 19;
 Num_validation = 300; %ŒŸØ—p‚ÌƒTƒ“ƒvƒ‹”
 
 
-DataPath = 'C:\Data\IPM\';
+DataPath = 'C:\Data\IPM\0119\';
+%DataPath = 'C:\Data\SQP\';
 
-Method = 'new';
+Method = 'temp';
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
@@ -47,7 +48,7 @@ for i = 1 : length(Folderlist(1, :))
     for j = 2 : DataSize
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
-            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.05
+            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.040
             else
                 out(1, ColOut) = data(j, Idx_cal) * 1000; %cal(ipm)
                 ColOut = ColOut + 1;
@@ -72,7 +73,7 @@ for i = 1 : length(Folderlist(1, :))
     for j = 2 : DataSize
         if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
         else
-            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.05
+            if data(j, Idx_err_mpc) ~= 0 || data(j, Idx_suc_mpc) ~= 1 || data(j, Idx_cal) > 0.04
             else
                 %v, yaw, vel
                 in(1, ColIn) = data(j, Idx_v);
@@ -247,7 +248,7 @@ OUTPUT_PREDICTED = predict(Mdl, INPUT_VALIDATION);
 % squares = predictionError.^2;
 % rmse = sqrt(mean(squares))
 
-histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [20 60], 'YBinLimits', [20 60]);
+histogram2(OUTPUT_PREDICTED, OUTPUT_VALIDATION, [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [20 50], 'YBinLimits', [20 50]);
 axis equal
 colorbar
 ax = gca;

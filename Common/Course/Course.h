@@ -30,6 +30,11 @@ struct CourseSetting
 	double cycle;
 	double delta_sine = 0.3;
 
+//Intersection
+	double straight_dist = 20;
+	double delta_curve = 2; //[deg]
+	double R; //radius of curvature
+
 //Setting of constraints sin‚ÌŽž1.2
 #ifdef OA
 	double v_min_const = -1.5;
@@ -48,6 +53,7 @@ public:
 	void GetSetting(CourseSetting setting);
 	std::vector<std::vector<double>> Gen_SOA(); //static obstacle avoidance
 	std:: vector<std::vector<double>> Gen_SINE();
+	std::vector<std::vector<double>> Gen_INTERSECTION();
 
 private:
 	int CPrmNum = 12; //Number of parameters 0x(road center), 1y(road center), 2u(reference path), 3v(reference path), 4v_min, 5v_max, 6x_min, 7y_min, 8x_max, 9y_max, 10rho
@@ -228,4 +234,36 @@ inline void GenCourse::sine_curve()
 			i++;
 		}
 	}
+}
+
+inline std::vector<std::vector<double>> GenCourse::Gen_INTERSECTION()
+{
+	int count;
+	for (int i = 0; course[0][i] < csetting.straight_dist; i++)
+	{
+		course[0][i + 1] = course[0][i] + csetting.delta;
+		course[1][i + 1] = course[1][i];
+		count = i;
+	}
+
+	for (double angle = -M_PI / 2; angle <= 0.001; angle = angle + csetting.delta_curve * M_PI / 180)
+	{
+		course[0][count] = csetting.straight_dist + csetting.R * cos(angle);
+		course[1][count] = csetting.R * (1 + sin(angle));
+		count++;
+	}
+
+	for (size_t i = count; i < course[0].size(); i++)
+	{
+		course[0][i] = course[0][i - 1];
+		course[1][i] = course[1][i - 1] + csetting.delta;
+	}
+
+	for (size_t i = 0; i < course[0].size(); i++)
+	{
+		course[4][i] = csetting.v_min_const;
+		course[5][i] = csetting.v_max_const;
+	}
+
+	return course;
 }

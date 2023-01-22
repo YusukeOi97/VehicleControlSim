@@ -295,8 +295,8 @@ System_NUOPT::System_NUOPT()
 		//	smp_line(__LINE__, __FILE__); v_rear_r[k + 1] == v[k + 1] + dist_rear * sin(theta[k + 1] + M_PI + theta_rear);
 		//}
 
-		smp_line(__LINE__, __FILE__); acc[Idx] >= -3, Idx;
-		smp_line(__LINE__, __FILE__); acc[Idx] <= 3.3, Idx;
+		smp_line(__LINE__, __FILE__); acc[Idx] >= -2, Idx;
+		smp_line(__LINE__, __FILE__); acc[Idx] <= 2, Idx;
 		smp_line(__LINE__, __FILE__); vel[Idx] >= 0, Idx;
 		smp_line(__LINE__, __FILE__); vel[Idx] <= vel_max[Idx], Idx;
 		smp_line(__LINE__, __FILE__); v_front_r[Idx] >= v_front_min[Idx], Idx;

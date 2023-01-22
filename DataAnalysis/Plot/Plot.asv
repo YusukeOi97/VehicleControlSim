@@ -5,8 +5,8 @@ addpath('lib');
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
-WhichAnalyze = "t";
-number = 3;
+WhichAnalyze = "c";
+number = 1;
 Data_path = "C:\Data\IPM\0122\";
 %Data_path = "C:\Data\SQP\PaperDatact\";
 %%%%oa or sine of intersection
@@ -29,7 +29,7 @@ if Method == "IPM" || Method == "SQP"
     Idx_latjerk = 25;
     Idx_lonjerk = 26;
     Idx_Pre = 26;
-    Step = 25;
+    Step = 30;
     Skipcount = 1;
 else
     Idx_x = 2;
@@ -69,8 +69,8 @@ if env == "oa"
     GraphSetting.obstacle2 = polyshape([obstacle2center(1, 1)-length/2 obstacle2center(1, 1)+length/2 obstacle2center(1, 1)+length/2 obstacle2center(1, 1)-length/2], ...
         [obstacle2center(1, 2)-width/2 obstacle2center(1, 2)-width/2 obstacle2center(1, 2)+width/2 obstacle2center(1, 2)+width/2]);
 elseif env == "sine"
-    GraphSetting.xlim = [-25 5];
-    GraphSetting.ylim = [-10 30];
+    GraphSetting.xlim = [-30 30];
+    GraphSetting.ylim = [-10 40];
     %GraphSetting.daspect = [10 5 50];
     GraphSetting.daspect = [3 5 450];
     GraphSetting.caxis_ct = [0 50];
@@ -80,8 +80,8 @@ elseif env == "sine"
     GraphSetting.graphposition1 = [700 100 600 250];
     GraphSetting.graphposition2 = [700 100 600 250];
 else
-    GraphSetting.xlim = [-25 5];
-    GraphSetting.ylim = [-5 20];
+    GraphSetting.xlim = [-10 40];
+    GraphSetting.ylim = [-10 40];
     %GraphSetting.daspect = [10 5 50];
     GraphSetting.daspect = [30 5 450];
     GraphSetting.caxis_ct = [0 50];
@@ -111,7 +111,7 @@ data = csvread(data_name, 1, 0);
 constdata = csvread(const_name, 1, 0);
 
 if WhichAnalyze == "t"
-    PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Idx_Pre, Step, Skipcount, Method, sptr, InitialState, GraphSetting, env);
+    PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Idx_Pre, Step, Skipcount, Method, sptr, InitialState, GraphSetting);
 elseif WhichAnalyze == "c"
     PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method, GraphSetting, env);
 elseif WhichAnalyze == "lat"

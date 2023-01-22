@@ -33,6 +33,10 @@ std::string CreateLogFileName(std::string str, std::string method, CourseSetting
 	std::string ampl = std::format("{}", setting.ampl);
 	std::string foldername = time + "cycle" + cycle + "ampl" + ampl;
 #endif // SINE
+#ifdef INTERSECTION
+	std::string R = std::format("{}", setting.R);
+	std::string foldername = time + "R" + R + "p1";
+#endif // INTERSECTION
 
 	temp_filename += "\\" + foldername + "\\" + method + str;
 	temp_filename += ".csv";

@@ -109,13 +109,14 @@ public:
 
 		if (i == 0)
 		{	// start or before start
-			ret = c_data[x_index][0];
+			ret = c_data[y_index][0];
 		}
 		else if (i == rows)
 		{	// end or after end
-			ret = c_data[x_index][rows];
+			ret = c_data[y_index][rows];
 		}
-		else {
+		else
+		{
 			// middle
 			prev_x = c_data[x_index][i - 1];
 			prev_val = c_data[y_index][i - 1];
