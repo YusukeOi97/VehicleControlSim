@@ -310,8 +310,8 @@ System_NUOPT::System_NUOPT()
 		smp_line(__LINE__, __FILE__); delta[Idx] >= -1.0472, Idx;
 		//smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 0.5, Idx;
 		//smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -0.5, Idx;
-		smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 3, Idx;
-		smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -3, Idx;
+		smp_line(__LINE__, __FILE__); delta_dot[Idx] <= 10, Idx;
+		smp_line(__LINE__, __FILE__); delta_dot[Idx] >= -10, Idx;
 
 
 		smp_line(__LINE__, __FILE__); Objective obj(type = minimize, name = "obj"); this->obj.setEntity(obj); obj.entryOutput();
