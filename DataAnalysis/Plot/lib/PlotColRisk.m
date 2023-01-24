@@ -1,4 +1,4 @@
-function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting, env)
+function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting, env, Pickup)
     figure(1)
     if env == "oa"
         plot(constdata(:, 7) - 25, constdata(:, 8), 'b');
@@ -39,12 +39,10 @@ function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, I
 
     collision = 0;
     count = 0;
-    if env == "oa"
-        f1 = figure(1);
-        %f2 = figure(2);
-        f1.Position = GraphSetting.graphposition1; %[left bottom width height]
-        %f2.Position = GraphSetting.graphposition2;
-    end
+
+    f1 = figure(1);
+    f1.Position = GraphSetting.graphposition1; %[left bottom width height]
+
     for i = 1 : size(data, 1) - 1
         if data(i, Idx_x) == data(i + 1, Idx_x) && data(i, Idx_y) == data(i + 1, Idx_y) && data(i, Idx_yaw) == data(i + 1, Idx_yaw) && data(i, Idx_vel) == data(i + 1, Idx_vel)
             if Method == "IPM" || Method == "SQP"
@@ -58,38 +56,45 @@ function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, I
             end
             count = count + 1;
 
-            if i == size(data, 1) - 1
-                scatter(data(i, Idx_x) - 25, data(i, Idx_y), [], collision / count, 'filled');
-            end
+%             if i == size(data, 1) - 1
+%                 scatter(data(i, Idx_x) - 25, data(i, Idx_y), [], collision / count, 'filled');
+%             end
         else
             collision = collision / count;
             x = data(i, Idx_x) - 25;
             y = data(i, Idx_y);
             yaw = data(i, Idx_yaw);
             vel = data(i, Idx_vel);
-            th_yaw = 0.1;
-            if yaw < -th_yaw
-                y = y - 0.16;
-            elseif yaw > -th_yaw && yaw < 0
-                y = y - 0.08;
-            elseif yaw == 0
-            elseif yaw > 0 && yaw < th_yaw
-                y = y + 0.08;
+            if Pickup.flag
+                if yaw == Pickup.yaw && vel == Pickup.vel
+                    scatter(x, y, [], collision, 'filled');
+                    hold on
+                end
             else
-                y = y + 0.16;
+                th_yaw = 0.1;
+                if yaw < -th_yaw
+                    y = y - 0.16;
+                elseif yaw > -th_yaw && yaw < 0
+                    y = y - 0.08;
+                elseif yaw == 0
+                elseif yaw > 0 && yaw < th_yaw
+                    y = y + 0.08;
+                else
+                    y = y + 0.16;
+                end
+                delta = 0.5;
+                if vel == 4
+                elseif vel == 6
+                    x = x + delta;
+                elseif vel == 8
+                    x = x + delta * 2;
+                else
+                    x = x + delta * 3;
+                end
+                scatter(x, y, [], collision, 'filled');
+                hold on
             end
-            delta = 0.5;
-            if vel == 4
-            elseif vel == 6
-                x = x + delta;
-            elseif vel == 8
-                x = x + delta * 2;
-            else
-                x = x + delta * 3;
-            end
-            scatter(x, y, [], collision, 'filled');
-            hold on
-
+            
             collision = 0;
             count = 0;
 

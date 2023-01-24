@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include <header/Frenetcoordinate.h>
+#include <Course/Frenetcoordinate.h>
 #include <Optimization/MyOptimization.h>
 #include <future>
 #include <thread>
@@ -160,7 +160,7 @@ int main()
 	getconstraint constraint(vsize);
 
 	frenet.frenetlib.LoadPath(shareddata->course[0], shareddata->course[1], csize, true);
-	table.GetCourse(shareddata->course, csize);
+	table.GetCourse(shareddata->course);
 	constraint.Init_Course(table);
 	myProblem.InitState(shareddata);
 	double vel_ref = shareddata->init_vel;

@@ -8,7 +8,7 @@
 #include "SystemInterface.h"
 #include "nuopt_exception.h"
 #include "throw_exception.h"
-#include <header/Data.h>
+#include <Data/Data.h>
 
 extern void solout();
 extern void clearSolout();

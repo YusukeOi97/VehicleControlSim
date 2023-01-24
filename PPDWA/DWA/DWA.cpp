@@ -2,7 +2,8 @@
 
 DWA::DWA(Frenet frenet, LinearInterporater table, Prm prm)
 {
-	this->table = table;
+	this->table1 = table;
+	this->table2 = table;
 	this->frenet = frenet;
 	DWAPreStep = prm.DWAPreStep;
 	T_delta = prm.T_delta;
@@ -37,8 +38,9 @@ DWA::DWA(Frenet frenet, LinearInterporater table, Prm prm)
 	K_v = prm.K_v;
 	K_vel = prm.K_vel;
 	K_theta = prm.K_theta;
-	K_angvel = prm.K_angvel;
 	K_ang = prm.K_ang;
+	K_acc = prm.K_acc;
+	K_angvel = prm.K_angvel;
 	K_f_v = prm.K_f_v;
 	u.resize(SmpNum);
 	v.resize(SmpNum);
@@ -93,6 +95,7 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 	//{
 	//	init_tire_ang = - 0.5;
 	//}
+	double minustime = 0;
 	for (double Angvel = min_angvel; Angvel <= max_angvel; Angvel = Angvel + delta_angvel)
 	{
 		for (double Vel = min_vel; Vel <= max_vel; Vel = Vel + delta_vel)
@@ -123,11 +126,15 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 				theta[SmpCount][i] = theta[SmpCount][i - 1] + theta_dot * T_delta;
 			}
 
+			QueryPerformanceFrequency(&freq_);
+			QueryPerformanceCounter(&start_);
 			for (int i = 0; i < DWAPreStep; i++)
 			{
-				v_ref[i] = table.GetLinearInterporation(0, u[SmpCount][i], 3);
+				v_ref[i] = table1.GetLinearInterporation(0, u[SmpCount][i], 3);
 				v_error[SmpCount][i] = v[SmpCount][i] - v_ref[i];
 			}
+			QueryPerformanceCounter(&end_);
+			minustime += (double)(end_.QuadPart - start_.QuadPart) / freq_.QuadPart;
 
 			for (int i = 0; i < DWAPreStep; i++)
 			{
@@ -145,16 +152,16 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 		}
 	}
 
-	Max_score_v = *std::max_element(score_v.begin(), score_v.end() - SmpNum + SmpCount);
-	Max_score_vel = *std::max_element(score_vel.begin(), score_vel.end() - SmpNum + SmpCount);
-	Max_score_theta = *std::max_element(score_theta.begin(), score_theta.end() - SmpNum + SmpCount);
-	Max_score_angvel = *std::max_element(score_angvel.begin(), score_angvel.end() - SmpNum + SmpCount);
-	Max_score_ang = *std::max_element(score_ang.begin(), score_ang.end() - SmpNum + SmpCount);
-	Max_score_f_v = *std::max_element(score_f_v.begin(), score_f_v.end() - SmpNum + SmpCount);
+	AllCollision = AllColCheck(WOCollision);
+
+	Max_score_v = CalcMaxScore(score_v);
+	Max_score_vel = CalcMaxScore(score_vel);
+	Max_score_theta = CalcMaxScore(score_theta);
+	Max_score_ang = CalcMaxScore(score_ang);
+	Max_score_angvel = CalcMaxScore(score_angvel);
+	Max_score_f_v = CalcMaxScore(score_f_v);
 
 	if (Max_score_vel == 0) Max_score_vel = vel[SmpCount - 1];
-
-	AllCollision = AllColCheck(WOCollision);
 
 	//Normalization, Evaluation
 	for (int i = 0; i < SmpCount; i++)
@@ -167,7 +174,7 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 		score_f_v[i] = score_f_v[i] / Max_score_f_v;
 		if (AllCollision)
 		{
-			score_total[i] = K_v * score_v[i] + K_theta * score_theta[i] + K_vel * score_vel[i] + K_angvel * score_angvel[i] + K_ang * score_ang[i] + K_f_v * score_f_v[i];
+			score_total[i] = 100 * score_v[i] + K_theta * score_theta[i] + 0 * score_vel[i] + K_angvel * score_angvel[i] + K_ang * score_ang[i] + K_f_v * score_f_v[i];
 		}
 		else
 		{
@@ -183,6 +190,26 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 			}
 		}
 	}
+
+	if (abs(angvel[OptIdx]) < 0.0001 && abs(init_v) > 0.5)
+	{
+		Val = 10000;
+		//Normalization, Evaluation
+		for (int i = 0; i < SmpCount; i++)
+		{
+			score_total[i] = 300 * score_v[i] + K_theta * score_theta[i] + K_vel * score_vel[i] + K_angvel * score_angvel[i] + K_ang * score_ang[i] + K_f_v * score_f_v[i];
+
+			if (WOCollision[i] || AllCollision)
+			{
+				if (score_total[i] < Val)
+				{
+					Val = score_total[i];
+					OptIdx = i;
+				}
+			}
+		}
+	}
+
 	QueryPerformanceCounter(&end);
 
 	SetPreState();
@@ -193,7 +220,7 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 	ret[0] = vel[OptIdx];
 	ret[1] = init_tire_ang + angvel[OptIdx] * T_delta;
 	//ret[1] = angvel[OptIdx] * T_delta;
-	ret[2] = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart;
+	ret[2] = (double)(end.QuadPart - start.QuadPart) / freq.QuadPart - minustime;
 }
 
 void DWA::SetDW(double init_vel, double vel_ref)
@@ -270,6 +297,29 @@ void DWA::InitState(double init_tire_ang, double init_vel, double init_angvel, d
 		v_dot = (init_v - Pre_v) / T_delta;
 		theta_dot = (init_theta - Pre_theta) / T_delta;
 	}
+}
+
+double DWA::CalcMaxScore(std::vector<double> score)
+{
+	double Max_score = -100;
+	for (int i = 0; i < SmpCount; i++)
+	{
+		if (AllCollision)
+		{
+			if (score[i] > Max_score)
+			{
+				Max_score = score[i];
+			}
+		}
+		else
+		{
+			if (WOCollision[i] && score[i] > Max_score)
+			{
+				Max_score = score[i];
+			}
+		}
+	}
+	return Max_score;
 }
 
 //åç∑îªíËóp
@@ -419,13 +469,11 @@ bool DWA::SideCheck(std::string Side, std::vector<SidePoint> sidepoint)
 	{
 		for (int i = 0; i < DWAPreStep; i = i + SkipCount)
 		{
-			v_const = table.GetLinearInterporation(0, sidepoint[i].u, 1);
+			v_const = table2.GetLinearInterporation(0, sidepoint[i].u, 1);
 
-			//maxÇà·îΩÇµÇΩÇÁbreak
 			if (v_const < sidepoint[i].v)
 			{
 				ret =  false;
-				break;
 			}
 		}
 	}
@@ -433,13 +481,11 @@ bool DWA::SideCheck(std::string Side, std::vector<SidePoint> sidepoint)
 	{
 		for (int i = 0; i < DWAPreStep; i = i + SkipCount)
 		{
-			v_const = table.GetLinearInterporation(0, sidepoint[i].u, 2);
+			v_const = table2.GetLinearInterporation(0, sidepoint[i].u, 2);
 
-			//minÇà·îΩÇµÇΩÇÁbreak
 			if (sidepoint[i].v < v_const)
 			{
 				ret =  false;
-				break;
 			}
 		}
 	}

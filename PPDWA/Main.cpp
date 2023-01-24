@@ -1,4 +1,5 @@
 #include <Course/Course.h>
+#include <Course/GetConstraint.h>
 #include <PrmLoader/MyParameters.h>
 #include <DataLogger/SaveLog.h>
 #include <DataLogger/CopyParam.h>
@@ -10,7 +11,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	RTCLib::CSVLoader CSV_prm("C:\\VehicleControlSim\\Common\\Prm_Setting\\parameter.csv", 1);
 	Prm prm;
 	prm.Load_Prm(CSV_prm, 0);
-	LogData logdata(prm.MPCPreStep);
+	LogData_PPDWA logdata(prm.MPCPreStep);
 
 	//線形補間用
 	LinearInterporater table;
@@ -25,17 +26,22 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	//結果を出力するcsv
 	DataLogger logger_PP;
 	DataLogger logger_DWA;
-	DataLogger logger_Course;
-	//パラメータファイルコピー
-	SaveParam saveparam;
-	logger_PP.Open(CreateLogFileName("data", "pp_", setting));
-	logger_DWA.Open(CreateLogFileName("data", "dwa_", setting));
-	logger_Course.Open(CreateLogFileName("data", "course_", setting));
-	saveparam.save_prm(CreateLogFileName("data", "prm_", setting));
+	DataLogger logger_Course_PP;
+	DataLogger logger_Course_DWA;
+	SaveParam saveparam_PP;
+	SaveParam saveparam_DWA;
+	logger_PP.Open(CreateLogFileName("data", "pp_", setting, 3));
+	logger_DWA.Open(CreateLogFileName("data", "dwa_", setting, 2));
+	logger_Course_PP.Open(CreateLogFileName("data", "course_", setting, 3));
+	logger_Course_DWA.Open(CreateLogFileName("data", "course_", setting, 2));
+	saveparam_PP.save_prm(CreateLogFileName("data", "prm_", setting, 3));
+	saveparam_DWA.save_prm(CreateLogFileName("data", "prm_", setting, 2));
+	
 	//ログの保存
-	SetData_PP(logger_PP, constraint, logdata, prm.PPDWASimStep);
-	SetData_DWA(logger_DWA, constraint, logdata, prm.PPDWASimStep);
-	OutData_Course(logger_Course, course);
+	SetData_PP(logger_PP, logdata, prm.PPDWASimStep);
+	SetData_DWA(logger_DWA, logdata, prm.PPDWASimStep);
+	OutData_Course(logger_Course_PP, course);
+	OutData_Course(logger_Course_DWA, course);
 
 	//Loop
 	//uのループ

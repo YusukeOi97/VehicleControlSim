@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <stdexcept>
+#include <Data/Data.h>
 
 //目標点を探索するために使用
 struct Points_search
@@ -44,7 +45,7 @@ public:
 		i_prev_index_pp = 0;
 	}
 
-	void GetCourse(double course[][400], int csize)
+	void GetCourse(double course[][csize])
 	{
 		c_data.resize(7);
 		for (size_t i = 0; i < c_data.size(); i++)

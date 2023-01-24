@@ -9,7 +9,7 @@ class PP
 {
 public:
 	PP(LinearInterporater table, Prm prm);
-	void calc_inp(double x, double y, double yaw, double vel, double vel_ref, double ret[]);
+	void calc_inp(double x, double y, double yaw, double vel, double delta, double vel_ref, double ret[]);
 	
 private:
 	//Parameter for speed control

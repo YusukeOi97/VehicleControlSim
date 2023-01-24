@@ -32,10 +32,10 @@
     <ClInclude Include="Optimization\NUOPT.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="header\Data.h">
+    <ClInclude Include="..\Common\NoiseMake\NoiseMake.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\NoiseMake\NoiseMake.h">
+    <ClInclude Include="..\Common\Data\Data.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

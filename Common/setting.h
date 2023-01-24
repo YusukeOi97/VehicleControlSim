@@ -1,8 +1,5 @@
 #pragma once
 
-//#define OA
+#define OA
 //#define SINE
-#define INTERSECTION
-
-//テスト用
-//#define OneShotTest
+//#define INTERSECTION

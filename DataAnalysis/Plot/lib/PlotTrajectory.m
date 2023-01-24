@@ -84,7 +84,7 @@ function PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err
         end
     else
         for i = 1 :Skipcount: size(data, 1)
-            if data(i, Idx_cal) > 0.04
+            if data(i, Idx_cal) < 1
                 for j = 1 : Step
                     x(j, 1) = data(i, j + Idx_Pre);
                     y(j, 1) = data(i, j + Idx_Pre + Step);

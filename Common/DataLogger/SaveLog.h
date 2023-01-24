@@ -2,7 +2,7 @@
 #include <DataLogger/DataLogger.hpp>
 #include <time.h>
 #include <direct.h>
-#include <header/Data.h>
+#include <Data/Data.h>
 #include <setting.h>
 #include <format>
 
@@ -18,14 +18,24 @@ std::string CreateLogFileName(std::string str, std::string outdata, CourseSettin
 	std::string day = buf1;
 	std::string time = buf2;
 	std::string dire_path = "C:\\Data\\";
+
 	if (method == 0)
 	{
 		dire_path += "SQP\\" + day; //パス
 	}
-	else
+	else if (method == 1)
 	{
-		dire_path += "IPM\\" + day; //パス
+		dire_path += "IPM\\" + day;
 	}
+	else if (method == 2)
+	{
+		dire_path += "DWA\\" + day;
+	}
+	else if (method == 3)
+	{
+		dire_path += "PP\\" + day;
+	}
+
 	std::string temp_csv = ".csv"; //拡張子
 	std::string temp_filename = dire_path; 
 	
@@ -59,7 +69,7 @@ std::string CreateLogFileName(std::string str, std::string outdata, CourseSettin
 	return temp_filename;
 }
 
-void SetData_MPC(DataLogger& logger, LogData& logdata, SharedData* shareddata)
+void SetData_MPC(DataLogger& logger, LogData_MPC& logdata, SharedData* shareddata)
 {
 	logger.push_back<int>("1sample_count", logdata.sample_count);
 	logger.push_back<double>("2start_x", logdata.x);
@@ -129,6 +139,107 @@ void SetData_MPC(DataLogger& logger, LogData& logdata, SharedData* shareddata)
 	{
 		data_name = "acc[" + std::to_string(i) + "]";
 		logger.push_back(data_name, shareddata->acc[i]);
+	}
+	logger.PrintHeader();
+}
+
+void SetData_PP(DataLogger& logger, LogData_PPDWA& logdata, int step)
+{
+	logger.push_back<int>("1sample_count", logdata.sample_count);
+	logger.push_back<double>("2start_x", logdata.x);
+	logger.push_back<double>("3start_y", logdata.y);
+	logger.push_back<double>("4start_yaw", logdata.yaw);
+	logger.push_back<double>("5start_u", logdata.u);
+	logger.push_back<double>("6start_v", logdata.v);
+	logger.push_back<double>("7start_theta", logdata.theta);
+	logger.push_back<double>("8vel", logdata.vel);
+	logger.push_back<double>("9average_time", logdata.average_time);
+	logger.push_back<int>("10collision", logdata.collision);
+	logger.push_back<double>("11average_lateral_jerk", logdata.average_lateral_jerk);
+	logger.push_back<double>("12average_longitudinal_jerk", logdata.average_longitudinal_jerk);
+
+	//将来挙動の結果を出力
+	std::string data_name;
+	for (int i = 0; i < step; i++)
+	{
+		data_name = "x[" + std::to_string(i) + "]";
+		logger.push_back(data_name, logdata.x_pp.at(i));
+	}
+	for (int i = 0; i < step; i++)
+	{
+		data_name = "y[" + std::to_string(i) + "]";
+		logger.push_back(data_name, logdata.y_pp.at(i));
+	}
+	for (int i = 0; i < step; i++)
+	{
+		data_name = "yaw[" + std::to_string(i) + "]";
+		logger.push_back(data_name, logdata.yaw_pp.at(i));
+	}
+	for (int i = 0; i < step; i++)
+	{
+		data_name = "u[" + std::to_string(i) + "]";
+		logger.push_back(data_name, logdata.u_pp.at(i));
+	}
+	for (int i = 0; i < step; i++)
+	{
+		data_name = "v[" + std::to_string(i) + "]";
+		logger.push_back(data_name, logdata.v_pp.at(i));
+	}
+	for (int i = 0; i < step; i++)
+	{
+		data_name = "theta[" + std::to_string(i) + "]";
+		logger.push_back(data_name, logdata.theta_pp.at(i));
+	}
+	logger.PrintHeader();
+}
+
+void SetData_DWA(DataLogger& logger, LogData_PPDWA& logdata, int step)
+{
+	logger.push_back<int>("1sample_count", logdata.sample_count);
+	logger.push_back<double>("2x", logdata.x);
+	logger.push_back<double>("3y", logdata.y);
+	logger.push_back<double>("4yaw", logdata.yaw);
+	logger.push_back<double>("5u", logdata.u);
+	logger.push_back<double>("6v", logdata.v);
+	logger.push_back<double>("7theta", logdata.theta);
+	logger.push_back<double>("8speed", logdata.vel);
+	logger.push_back<double>("9average_time", logdata.average_time);
+	logger.push_back<int>("10collision", logdata.collision);
+	logger.push_back<double>("11average_lateral_jerk", logdata.average_lateral_jerk);
+	logger.push_back<double>("12average_longitudinal_jerk", logdata.average_longitudinal_jerk);
+	//logger.push_back<double>("14sample_collision_probability", logdata.collision_probability);
+
+	//将来挙動の結果を出力
+	std::string data_name;
+	for (int i = 0; i < step; i++)
+	{
+		data_name = "x[" + std::to_string(i) + "]";
+		logger.push_back(data_name, logdata.x_dwa.at(i));
+	}
+	for (int i = 0; i < step; i++)
+	{
+		data_name = "y[" + std::to_string(i) + "]";
+		logger.push_back(data_name, logdata.y_dwa.at(i));
+	}
+	for (int i = 0; i < step; i++)
+	{
+		data_name = "yaw[" + std::to_string(i) + "]";
+		logger.push_back(data_name, logdata.yaw_dwa.at(i));
+	}
+	for (int i = 0; i < step; i++)
+	{
+		data_name = "u[" + std::to_string(i) + "]";
+		logger.push_back(data_name, logdata.u_dwa.at(i));
+	}
+	for (int i = 0; i < step; i++)
+	{
+		data_name = "v[" + std::to_string(i) + "]";
+		logger.push_back(data_name, logdata.v_dwa.at(i));
+	}
+	for (int i = 0; i < step; i++)
+	{
+		data_name = "theta[" + std::to_string(i) + "]";
+		logger.push_back(data_name, logdata.theta_dwa.at(i));
 	}
 	logger.PrintHeader();
 }

@@ -32,9 +32,6 @@
     <ClInclude Include="DWA\DWA.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="header\Data.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="header\VehicleSim.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -56,7 +53,10 @@
     <ClInclude Include="..\Common\setting.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="DataLogger\SaveLog.h">
+    <ClInclude Include="..\Common\Data\Data.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\DataLogger\SaveLog.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

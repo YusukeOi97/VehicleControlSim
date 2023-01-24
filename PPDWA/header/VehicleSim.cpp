@@ -13,7 +13,7 @@ Vehicle_Sim::Vehicle_Sim(Frenet frenet, LinearInterporater table, Prm prm)
 	side.resize(SimStep);
 }
 
-void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, int Idx)
+void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData_PPDWA& logdata, int Idx)
 {
 	if (Idx == 0)
 	{
@@ -52,7 +52,7 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, int Idx)
 	for (int i = 1; i < SimStep; i++)
 	{
 		//ŽÔ—¼‚Ö‚Ì“ü—Í‚ðŒvŽZ
-		pp.calc_inp(logdata.x_pp[i - 1], logdata.y_pp[i - 1], logdata.yaw_pp[i - 1], B_vel, vel_ref, ret);
+		pp.calc_inp(logdata.x_pp[i - 1], logdata.y_pp[i - 1], logdata.yaw_pp[i - 1], B_vel, B_delta, vel_ref, ret);
 
 		////ŽÔ—¼‹““®‚ðŒvŽZ(DBM)
 		//B_pre_vel = B_vel;
@@ -116,7 +116,7 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata, int Idx)
 	logdata.average_longitudinal_jerk = logdata.average_longitudinal_jerk / (SimStep - 8);
 }
 
-void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata, int Idx) 
+void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData_PPDWA& logdata, int Idx) 
 {
 	if (Idx == 0)
 	{

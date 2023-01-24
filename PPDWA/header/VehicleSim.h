@@ -1,5 +1,5 @@
 #pragma once
-#include <header/Data.h>
+#include <Data/Data.h>
 #include <PP/PP.h>
 #include <DWA/DWA.h>
 #include <NoiseMake/NoiseMake.h>
@@ -9,8 +9,8 @@ class Vehicle_Sim
 {
 public:
 	Vehicle_Sim(Frenet frenet, LinearInterporater table, Prm prm);
-	void Sim_PP_Basecoordinate(PP PP, LogData& logdata, int Idx);
-	void Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata, int Idx);
+	void Sim_PP_Basecoordinate(PP PP, LogData_PPDWA& logdata, int Idx);
+	void Sim_DWA_Basecoordinate(DWA dwa, LogData_PPDWA& logdata, int Idx);
 
 	bool Check(std::vector<double> x, std::vector<double> y, std::vector<double> yaw);
 

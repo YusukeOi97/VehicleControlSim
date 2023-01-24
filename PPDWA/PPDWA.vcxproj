@@ -168,12 +168,12 @@
   <ItemGroup>
     <ClInclude Include="..\Common\Course\Course.h" />
     <ClInclude Include="..\Common\DataLogger\CopyParam.h" />
+    <ClInclude Include="..\Common\DataLogger\SaveLog.h" />
+    <ClInclude Include="..\Common\Data\Data.h" />
     <ClInclude Include="..\Common\NoiseMake\NoiseMake.h" />
     <ClInclude Include="..\Common\PrmLoader\MyParameters.h" />
     <ClInclude Include="..\Common\setting.h" />
-    <ClInclude Include="DataLogger\SaveLog.h" />
     <ClInclude Include="DWA\DWA.h" />
-    <ClInclude Include="header\Data.h" />
     <ClInclude Include="header\VehicleSim.h" />
     <ClInclude Include="PP\PP.h" />
   </ItemGroup>

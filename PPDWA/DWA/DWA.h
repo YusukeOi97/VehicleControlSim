@@ -39,10 +39,10 @@ private:
 
 	//Evaluation function
 	int SmpNum, SmpCount, OptIdx, SkipCount = 1;
-	std::vector<double> score_v, score_vel, score_theta, score_angvel, score_ang, score_f_v, score_total;
+	std::vector<double> score_v, score_vel, score_theta, score_ang, score_acc, score_angvel, score_f_v, score_total;
 	std::vector<bool> WOCollision;
-	double Max_score_v, Max_score_vel, Max_score_theta, Max_score_angvel, Max_score_ang, Max_score_f_v; //For normalization
-	double K_v, K_vel, K_theta, K_angvel, K_ang, K_f_v, Val;
+	double Max_score_v, Max_score_vel, Max_score_theta, Max_score_ang, Max_score_acc, Max_score_angvel, Max_score_f_v; //For normalization
+	double K_v, K_vel, K_theta, K_ang, K_acc, K_angvel, K_f_v, Val;
 	bool AllCollision;
 
 	//Other parameter
@@ -51,13 +51,15 @@ private:
 
 	//To measure calculation time
 	LARGE_INTEGER freq, start, end;
+	LARGE_INTEGER freq_, start_, end_;
 
 	Frenet frenet;
-	LinearInterporater table;
+	LinearInterporater table1, table2;
 
 	void SetDW(double init_vel, double vel_ref);
 	void SetRho(int Step, double init_u, double init_vel);
 	void InitState(double init_tire_ang, double init_vel, double init_angvel, double v_dot, double theta_dot, int Step);
+	double CalcMaxScore(std::vector<double> score);
 	bool Check();
 	bool AllColCheck(std::vector<bool> collision);
 	void SetPreState();
