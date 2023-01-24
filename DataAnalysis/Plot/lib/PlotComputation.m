@@ -96,27 +96,29 @@ function PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
             else
                 x = x + delta * 3;
             end
-            if Method == "IPM" || Method == "SQP"
-                if data(i + 1, Idx_err) == 0 && data(i + 1, Idx_suc) == 1% && data(i + 1, Idx_comp) > 0.04
-                    %figure(1);
-                    scatter(x, y, [], elapsed_time, 'filled');
-                    hold on
+            %if yaw == 0.12 && vel == 4
+                if Method == "IPM" || Method == "SQP"
+                    if data(i + 1, Idx_err) == 0 && data(i + 1, Idx_suc) == 1% && data(i + 1, Idx_comp) > 0.04
+                        %figure(1);
+                        scatter(x, y, [], elapsed_time, 'filled');
+                        hold on
+                    else
+    %                     figure(2);
+    %                     scatter(x, y, [], elapsed_time, 'filled');
+    %                     hold on
+                    end
                 else
-%                     figure(2);
-%                     scatter(x, y, [], elapsed_time, 'filled');
-%                     hold on
+                    if data(i + 1, Idx_suc) ~= -1 
+                        %figure(1);
+                        scatter(x, y, [], elapsed_time, 'filled');
+                        hold on
+                    else
+    %                     figure(2);
+    %                     scatter(x, y, [], elapsed_time, 'filled');
+    %                     hold on
+                    end
                 end
-            else
-                if data(i + 1, Idx_suc) ~= -1 
-                    %figure(1);
-                    scatter(x, y, [], elapsed_time, 'filled');
-                    hold on
-                else
-%                     figure(2);
-%                     scatter(x, y, [], elapsed_time, 'filled');
-%                     hold on
-                end
-            end
+            %end
         end
     end
 end

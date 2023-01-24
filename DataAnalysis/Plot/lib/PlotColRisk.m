@@ -58,37 +58,39 @@ function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, I
             end
             count = count + 1;
 
-            if i == size(data, 1) - 1
-                scatter(data(i, Idx_x) - 25, data(i, Idx_y), [], collision / count, 'filled');
-            end
+%             if i == size(data, 1) - 1
+%                 scatter(data(i, Idx_x) - 25, data(i, Idx_y), [], collision / count, 'filled');
+%             end
         else
             collision = collision / count;
             x = data(i, Idx_x) - 25;
             y = data(i, Idx_y);
             yaw = data(i, Idx_yaw);
             vel = data(i, Idx_vel);
-            th_yaw = 0.1;
-            if yaw < -th_yaw
-                y = y - 0.16;
-            elseif yaw > -th_yaw && yaw < 0
-                y = y - 0.08;
-            elseif yaw == 0
-            elseif yaw > 0 && yaw < th_yaw
-                y = y + 0.08;
-            else
-                y = y + 0.16;
+%             th_yaw = 0.1;
+%             if yaw < -th_yaw
+%                 y = y - 0.16;
+%             elseif yaw > -th_yaw && yaw < 0
+%                 y = y - 0.08;
+%             elseif yaw == 0
+%             elseif yaw > 0 && yaw < th_yaw
+%                 y = y + 0.08;
+%             else
+%                 y = y + 0.16;
+%             end
+%             delta = 0.5;
+%             if vel == 4
+%             elseif vel == 6
+%                 x = x + delta;
+%             elseif vel == 8
+%                 x = x + delta * 2;
+%             else
+%                 x = x + delta * 3;
+%             end
+            if yaw == 0 && vel == 8
+                scatter(x, y, [], collision, 'filled');
+                hold on
             end
-            delta = 0.5;
-            if vel == 4
-            elseif vel == 6
-                x = x + delta;
-            elseif vel == 8
-                x = x + delta * 2;
-            else
-                x = x + delta * 3;
-            end
-            scatter(x, y, [], collision, 'filled');
-            hold on
 
             collision = 0;
             count = 0;

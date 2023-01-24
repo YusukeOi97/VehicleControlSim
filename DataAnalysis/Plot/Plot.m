@@ -5,18 +5,18 @@ addpath('lib');
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col prob -> p
-WhichAnalyze = "t";
-number = 3;
-Data_path = "C:\Data\IPM\0122\";
+WhichAnalyze = "c";
+number = 4;
+Data_path = "C:\Data\SQP\0124\";
 %Data_path = "C:\Data\SQP\PaperDatact\";
 %%%%oa or sine of intersection
-env = "intersection";
+env = "oa";
 %%%%IPM or SQP or DWA or PP
 Method = "IPM";
 
 %%%specific initial point trajectory
-sptr = false;
-InitialState = [45 0.62 0.12 10];
+sptr = true;
+InitialState = [45 -0.2 0 8];
 
 if Method == "IPM" || Method == "SQP"
     Idx_x = 2;
@@ -49,14 +49,14 @@ end
 if env == "oa"
     GraphSetting.xlim = [-1 55];
     GraphSetting.ylim = [-1.7 1.7];
-    %GraphSetting.daspect = [10 5 50];
-    GraphSetting.daspect = [30 5 450];
-    GraphSetting.caxis_ct = [0 60];
-    GraphSetting.caxis_latj = [0 3];
-    GraphSetting.caxis_lonj = [0 1];
+    GraphSetting.daspect = [10 5 50];
+    %GraphSetting.daspect = [30 5 450];
+    GraphSetting.caxis_ct = [20 60];
+    GraphSetting.caxis_latj = [0 2];
+    GraphSetting.caxis_lonj = [0 2];
     GraphSetting.caxis_cr = [0 1.0];
-    %GraphSetting.graphposition1 = [700 400 600 130];
-    GraphSetting.graphposition1 = [700 100 600 250];
+    GraphSetting.graphposition1 = [700 400 600 130];
+    %GraphSetting.graphposition1 = [700 100 600 250];
     GraphSetting.graphposition2 = [700 100 600 250];
     %%%normal x = 53 - 25
     obstacle1center = [28 1.8];

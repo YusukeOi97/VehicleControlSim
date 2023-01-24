@@ -1,11 +1,11 @@
 function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method, GraphSetting, env)
     figure(1)
     if env == "oa"
-        plot(constdata(:, 7), constdata(:, 8), 'b');
+        plot(constdata(:, 7) - 25, constdata(:, 8), 'b');
         hold on
-        plot(constdata(:, 9), constdata(:, 10), 'b'); 
+        plot(constdata(:, 9) - 25, constdata(:, 10), 'b'); 
         hold on
-        plot(constdata(:, 3), constdata(:, 4), '--b'); 
+        plot(constdata(:, 3) - 25, constdata(:, 4), '--b'); 
         hold on
         colorbar;
         caxis(GraphSetting.caxis_lonj);
@@ -51,37 +51,39 @@ function PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, I
             y = data(i + 1, Idx_y);
             yaw = data(i + 1, Idx_yaw);
             vel = data(i + 1, Idx_vel);
-            th_yaw = 0.1;
-            if yaw < -th_yaw
-                y = y - 0.16;
-            elseif yaw > -th_yaw && yaw < 0
-                y = y - 0.08;
-            elseif yaw == 0
-            elseif yaw > 0 && yaw < th_yaw
-                y = y + 0.08;
-            else
-                y = y + 0.16;
-            end
-            delta = 0.5;
-            if vel == 4
-            elseif vel == 6
-                x = x + delta;
-            elseif vel == 8
-                x = x + delta * 2;
-            else
-                x = x + delta * 3;
-            end
-            if Method == "IPM" || Method == "SQP"
-                if data(i + 1, Idx_err) == 0 && data(i + 1, Idx_suc) == 1 
-                    figure(1);
-                    scatter(x, y, [], average_lonjerk, 'filled');
-                    hold on
-                end
-            else
-                if data(i + 1, Idx_suc) == 1 
-                    figure(1);
-                    scatter(x, y, [], average_lonjerk, 'filled');
-                    hold on
+%             th_yaw = 0.1;
+%             if yaw < -th_yaw
+%                 y = y - 0.16;
+%             elseif yaw > -th_yaw && yaw < 0
+%                 y = y - 0.08;
+%             elseif yaw == 0
+%             elseif yaw > 0 && yaw < th_yaw
+%                 y = y + 0.08;
+%             else
+%                 y = y + 0.16;
+%             end
+%             delta = 0.5;
+%             if vel == 4
+%             elseif vel == 6
+%                 x = x + delta;
+%             elseif vel == 8
+%                 x = x + delta * 2;
+%             else
+%                 x = x + delta * 3;
+%             end
+            if yaw == 0 && vel == 8
+                if Method == "IPM" || Method == "SQP"
+                    if data(i + 1, Idx_err) == 0 && data(i + 1, Idx_suc) == 1 
+                        figure(1);
+                        scatter(x - 25, y, [], average_lonjerk, 'filled');
+                        hold on
+                    end
+                else
+                    if data(i + 1, Idx_suc) == 1 
+                        figure(1);
+                        scatter(x - 25, y, [], average_lonjerk, 'filled');
+                        hold on
+                    end
                 end
             end
         end
