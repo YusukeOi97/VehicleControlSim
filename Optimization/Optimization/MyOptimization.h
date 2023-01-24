@@ -1,5 +1,5 @@
 #pragma once
-#include <header/Data.h>
+#include <Data/Data.h>
 #include <Course/GetConstraint.h>
 #include <NoiseMake/NoiseMake.h>
 #include <setting.h>
@@ -25,7 +25,7 @@ public:
 	Noise noise;
 
 	// ŠÖ”‚Ì’è‹`
-	MyProblem(SharedData* shareddata);
+	MyProblem(struct SharedData* shareddata);
 	~MyProblem();
 	void Solve(int noise_count, int i, int step);
 	void GetOptResult();

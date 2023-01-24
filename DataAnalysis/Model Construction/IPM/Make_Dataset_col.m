@@ -25,7 +25,7 @@ Num_validation = 100; %åüèÿópÇÃÉTÉìÉvÉãêî
 
 DataPath = 'C:\Data\IPM\';
 
-Method = 'SQPcp';
+Method = 'SQP';
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
@@ -60,8 +60,8 @@ for i = 1 : length(Folderlist(1, :))
     u = zeros(Step, 1);
 
     ColIn = 1;
-    for j = 2 : DataSize
-        if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
+    for j = 1 : DataSize - 1
+        if data(j, Idx_u) == data(j + 1, Idx_u) && data(j, Idx_v) == data(j + 1, Idx_v) && data(j, Idx_theta) == data(j + 1, Idx_theta) && data(j, Idx_vel) == data(j + 1, Idx_vel)
         else
             %v, yaw, vel
             in(1, ColIn) = data(j, Idx_v);
@@ -203,9 +203,9 @@ MATRIX_OUTPUT = MATRIX_OUTPUT.';
 
 idx = randperm(size(MATRIX_INPUT, 1), Num_validation);
 INPUT_VALIDATION = MATRIX_INPUT(idx, :);
-%MATRIX_INPUT(idx, :) = [];
+MATRIX_INPUT(idx, :) = [];
 OUTPUT_VALIDATION = MATRIX_OUTPUT(idx, :);
-%MATRIX_OUTPUT(idx, :) = [];
+MATRIX_OUTPUT(idx, :) = [];
 
 % params = hyperparameters("fitrnet", MATRIX_INPUT, MATRIX_OUTPUT);
 % for ii = 1 : length(params)

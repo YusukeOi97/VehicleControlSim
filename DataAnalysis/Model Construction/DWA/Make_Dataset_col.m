@@ -4,14 +4,12 @@ addpath("C:\VehicleControlSim\DataAnalysis\Model Construction\func\");
 
 Kappa_array = 1;
 
-interval = 10; %分割数
+interval = 25; %分割数
 constraint = zeros(2 * interval, 1);
 first = true;
 InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
-vel_max = 7;
-theta_ = 70;
-Step = 70;
-Delta_T = 0.03;
+Step = 25;
+Delta_T = 0.08;
 Idx_u = 5;
 Idx_v = 6;
 Idx_theta = 7;
@@ -23,12 +21,12 @@ Idx_c_kappa = 11;
 
 Idx_col_dwa = 10;
 Idx_col_pp = 10;
-Num_validation = 1500; %検証用のサンプル数
+Num_validation = 1000; %検証用のサンプル数
 
 
-DataPath = 'C:\Data\Dataset\';
+DataPath = 'C:\Data\PaperData\';
 
-Method = 'roughDWA';
+Method = 'DWA';
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
@@ -51,7 +49,7 @@ for i = 1 : length(Folderlist(1, :))
 
     %出力
     %collision probabilityの計算
-    out = CalColProb(data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_col_dwa); %col(dwa)
+    out = CalColRisk(data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_col_dwa); %col(dwa)
 %     out = [out; CalColProb(pp_data, Idx_col_pp)]; %col(pp)
     
 
@@ -70,8 +68,8 @@ for i = 1 : length(Folderlist(1, :))
     u = zeros(Step, 1);
 
     ColIn = 1;
-    for j = 2 : DataSize
-        if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
+    for j = 1 : DataSize - 1
+        if data(j, Idx_u) == data(j + 1, Idx_u) && data(j, Idx_v) == data(j + 1, Idx_v) && data(j, Idx_theta) == data(j + 1, Idx_theta) && data(j, Idx_vel) == data(j + 1, Idx_vel)
         else
             %v, yaw, vel
             in(1, ColIn) = data(j, Idx_v);

@@ -4,19 +4,26 @@ addpath('lib');
 
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
-%%%%Col prob -> p
-WhichAnalyze = "c";
-number = 4;
-Data_path = "C:\Data\SQP\0124\";
-%Data_path = "C:\Data\SQP\PaperDatact\";
+%%%%Col risk -> r
+Output = "c";
+number = 5;
+%Data_path = "C:\Data\DWA\0123\DWA\";
+Data_path = "C:\Data\DWA\0124\";
+
 %%%%oa or sine of intersection
 env = "oa";
+
 %%%%IPM or SQP or DWA or PP
-Method = "IPM";
+Method = "DWA";
+
+%%%pickup
+Pickup.flag = false;
+Pickup.yaw = 0.12;
+Pickup.vel = 4;
 
 %%%specific initial point trajectory
-sptr = true;
-InitialState = [45 -0.2 0 8];
+sptr = false;
+InitialState = [25 0.6 0.12 4];
 
 if Method == "IPM" || Method == "SQP"
     Idx_x = 2;
@@ -42,8 +49,8 @@ else
     Idx_latjerk = 11;
     Idx_lonjerk = 12;
     Idx_Pre = 12;
-    Step = 70;
-    Skipcount = 5;
+    Step = 25;
+    Skipcount = 100;
 end
 
 if env == "oa"
@@ -51,8 +58,8 @@ if env == "oa"
     GraphSetting.ylim = [-1.7 1.7];
     GraphSetting.daspect = [10 5 50];
     %GraphSetting.daspect = [30 5 450];
-    GraphSetting.caxis_ct = [20 60];
-    GraphSetting.caxis_latj = [0 2];
+    GraphSetting.caxis_ct = [0 0.5];
+    GraphSetting.caxis_latj = [0 3];
     GraphSetting.caxis_lonj = [0 2];
     GraphSetting.caxis_cr = [0 1.0];
     GraphSetting.graphposition1 = [700 400 600 130];
@@ -110,14 +117,14 @@ const_name = strcat(Data_path, string(Folderlist(1, number)), "\course_data.csv"
 data = csvread(data_name, 1, 0);
 constdata = csvread(const_name, 1, 0);
 
-if WhichAnalyze == "t"
+if Output == "t"
     PlotTrajectory(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Idx_Pre, Step, Skipcount, Method, sptr, InitialState, GraphSetting, env);
-elseif WhichAnalyze == "c"
-    PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method, GraphSetting, env);
-elseif WhichAnalyze == "lat"
-    PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_latjerk, Method, GraphSetting, env);
-elseif WhichAnalyze == "lon"
-    PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method, GraphSetting, env);
-elseif WhichAnalyze == "p"
-    PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting, env);
+elseif Output == "c"
+    PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_comp, Method, GraphSetting, env, Pickup);
+elseif Output == "lat"
+    PlotLateralJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_latjerk, Method, GraphSetting, env, Pickup);
+elseif Output == "lon"
+    PlotLongitudinalJerk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Idx_lonjerk, Method, GraphSetting, env, Pickup);
+elseif Output == "r"
+    PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, Idx_suc, Method, GraphSetting, env, Pickup);
 end

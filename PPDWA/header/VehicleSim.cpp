@@ -6,21 +6,35 @@ Vehicle_Sim::Vehicle_Sim(Frenet frenet, LinearInterporater table, Prm prm)
 	this->frenet = frenet;
 	this->prm = prm;
 	SimStep = prm.PPDWASimStep;
-	side.resize(this->SimStep);
+	v_dot.resize(SimStep);
+	theta_dot.resize(SimStep);
+	v_2dot.resize(SimStep);
+	vel.resize(SimStep);
+	side.resize(SimStep);
 }
 
-void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata)
+void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData_PPDWA& logdata, int Idx)
 {
-	noise.Make();
-	B_x = logdata.x + noise.noise_u;
-	B_y = logdata.y + noise.noise_v;
-	B_yaw = logdata.yaw + noise.noise_theta;
+	if (Idx == 0)
+	{
+		B_x = logdata.x;
+		B_y = logdata.y;
+		B_yaw = logdata.yaw;
+	}
+	else
+	{
+		noise.Make();
+		B_x = logdata.x + noise.noise_u;
+		B_y = logdata.y + noise.noise_v;
+		B_yaw = logdata.yaw + noise.noise_theta;
+	}
 	B_vel = logdata.vel;
 	B_delta = 0;
 	B_beta = atan(prm.l_r * tan(B_delta) / prm.Wheelbase);
 	B_y_dot = 0;
 	B_yaw_dot = 0;
 	logdata.v_dot = B_y_dot + logdata.vel * logdata.theta;
+	v_dot[0] = logdata.v_dot;
 	logdata.theta_dot = B_yaw_dot - logdata.rho * logdata.vel;
 	vel_ref = logdata.vel;
 
@@ -31,31 +45,66 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata)
 	logdata.x_pp[0] = B_x;
 	logdata.y_pp[0] = B_y;
 	logdata.yaw_pp[0] = B_yaw;
+	double beta;
+	//double pre_beta = atan(prm.l_r * tan(B_delta) / prm.Wheelbase);
+	//double beta_dot = 0;
 
 	for (int i = 1; i < SimStep; i++)
 	{
 		//ŽÔ—¼‚Ö‚Ì“ü—Í‚ðŒvŽZ
-		pp.calc_inp(logdata.x_pp[i - 1], logdata.y_pp[i - 1], logdata.yaw_pp[i - 1], B_vel, vel_ref, ret);
+		pp.calc_inp(logdata.x_pp[i - 1], logdata.y_pp[i - 1], logdata.yaw_pp[i - 1], B_vel, B_delta, vel_ref, ret);
 
-		//ŽÔ—¼‹““®‚ðŒvŽZ(DBM)
+		////ŽÔ—¼‹““®‚ðŒvŽZ(DBM)
+		//B_pre_vel = B_vel;
+		//B_vel = ret[0];
+		//B_delta = ret[1];
+		//B_y_2dot = -prm.a11 * B_y_dot / B_vel + (prm.a12 / B_vel - B_vel) * B_yaw_dot + prm.b1 * B_delta;
+		//B_yaw_2dot = -prm.a21 * B_y_dot / B_vel + prm.a22 / B_vel * B_yaw_dot + prm.b2 * B_delta;
+		//B_y_dot = B_y_dot + B_y_2dot * prm.T_delta;
+		//B_yaw_dot = B_yaw_dot + B_yaw_2dot * prm.T_delta;
+		//B_y = B_y + B_y_dot * prm.T_delta;
+		//B_yaw = B_yaw + B_yaw_dot * prm.T_delta;
+		//logdata.x_pp[i] = logdata.x_pp[i - 1] + B_vel * prm.T_delta * cos(B_yaw) - B_y_dot * prm.T_delta * sin(B_yaw);
+		//logdata.y_pp[i] = logdata.y_pp[i - 1] + B_vel * prm.T_delta * sin(B_yaw) + B_y_dot * prm.T_delta * cos(B_yaw);
+		//logdata.yaw_pp[i] = B_yaw;
+
+		//ŽÔ—¼‹““®‚ðŒvŽZ(KBM)
 		B_pre_vel = B_vel;
 		B_vel = ret[0];
 		B_delta = ret[1];
-		B_y_2dot = -prm.a11 * B_y_dot / B_vel + (prm.a12 / B_vel - B_vel) * B_yaw_dot + prm.b1 * B_delta;
-		B_yaw_2dot = -prm.a21 * B_y_dot / B_vel + prm.a22 / B_vel * B_yaw_dot + prm.b2 * B_delta;
-		B_y_dot = B_y_dot + B_y_2dot * prm.T_delta;
-		B_yaw_dot = B_yaw_dot + B_yaw_2dot * prm.T_delta;
-		B_y = B_y + B_y_dot * prm.T_delta;
-		B_yaw = B_yaw + B_yaw_dot * prm.T_delta;
-		logdata.x_pp[i] = logdata.x_pp[i - 1] + B_vel * prm.T_delta * cos(B_yaw) - B_y_dot * prm.T_delta * sin(B_yaw);
-		logdata.y_pp[i] = logdata.y_pp[i - 1] + B_vel * prm.T_delta * sin(B_yaw) + B_y_dot * prm.T_delta * cos(B_yaw);
-		logdata.yaw_pp[i] = B_yaw;
+		beta = atan(prm.l_r * tan(B_delta) / prm.Wheelbase);
+		logdata.x_pp[i] = logdata.x_pp[i - 1] + B_vel * cos(logdata.yaw_pp[i - 1] + beta) * prm.T_delta;
+		logdata.y_pp[i] = logdata.y_pp[i - 1] + B_vel * sin(logdata.yaw_pp[i - 1] + beta) * prm.T_delta;
+		logdata.yaw_pp[i] = logdata.yaw_pp[i - 1] + B_vel * sin(beta) / prm.l_r * prm.T_delta;
 
 		logdata.total_time += ret[2];
-		logdata.lateral_G[i] = B_y_2dot;
 		logdata.acc[i] = (B_vel - B_pre_vel) / prm.T_delta;
+		vel[i] = B_vel;
+		//beta_dot = (beta - pre_beta) / prm.T_delta;
+		//pre_beta = beta;
+		//B_y_2dot = logdata.acc[i] * sin(beta) + B_vel * beta_dot * cos(beta);
+		//logdata.lateral_G[i] = B_y_2dot;
 	}
-	for (int i = 1; i < SimStep - 1; i++)
+	for (size_t j = 0; j < logdata.x_dwa.size(); j++)
+	{
+		frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_pp[j], logdata.y_pp[j], logdata.yaw_pp[j], logdata.u_pp[j], logdata.v_pp[j], logdata.theta_pp[j], frenet.Cache_f);
+	}
+	for (int i = 1; i < SimStep; i++)
+	{
+		v_dot[i] = (logdata.v_pp[i] - logdata.v_pp[i - 1]) / prm.T_delta;
+		theta_dot[i] = (logdata.theta_pp[i] - logdata.theta_pp[i - 1]) / prm.T_delta;
+	}
+	for (int i = 1; i < SimStep; i++)
+	{
+		v_2dot[i] = (v_dot[i] - v_dot[i - 1]) / prm.T_delta;
+	}
+	for (int i = 1; i < SimStep; i++)
+	{
+		//ŽÔ—¼‹““®‚ðŒvŽZ(DBM)
+		B_y_2dot = v_2dot[i] - vel[i] * theta_dot[i] - logdata.acc[i] * logdata.theta_pp[i];
+		logdata.lateral_G[i] = B_y_2dot;
+	}
+	for (int i = 6; i < SimStep - 1; i++)
 	{
 		logdata.lateral_jerk[i] = (logdata.lateral_G[i + 1] - logdata.lateral_G[i - 1]) / (2 * prm.T_delta);
 		logdata.longitudinal_jerk[i] = (logdata.acc[i + 1] - logdata.acc[i - 1]) / (2 * prm.T_delta);
@@ -63,21 +112,31 @@ void Vehicle_Sim::Sim_PP_Basecoordinate(PP pp, LogData& logdata)
 		logdata.average_longitudinal_jerk += abs(logdata.longitudinal_jerk[i]);
 	}
 	logdata.average_time = logdata.total_time / SimStep;
-	logdata.average_lateral_jerk = logdata.average_lateral_jerk / (SimStep - 2);
-	logdata.average_longitudinal_jerk = logdata.average_longitudinal_jerk / (SimStep - 2);
+	logdata.average_lateral_jerk = logdata.average_lateral_jerk / (SimStep - 8);
+	logdata.average_longitudinal_jerk = logdata.average_longitudinal_jerk / (SimStep - 8);
 }
 
-void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata) 
+void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData_PPDWA& logdata, int Idx) 
 {
-	noise.Make();
-	B_x = logdata.x + noise.noise_u;
-	B_y = logdata.y + noise.noise_v;
-	B_yaw = logdata.yaw + noise.noise_theta;
+	if (Idx == 0)
+	{
+		B_x = logdata.x;
+		B_y = logdata.y;
+		B_yaw = logdata.yaw;
+	}
+	else
+	{
+		noise.Make();
+		B_x = logdata.x + noise.noise_u;
+		B_y = logdata.y + noise.noise_v;
+		B_yaw = logdata.yaw + noise.noise_theta;
+	}
 	B_vel = logdata.vel;
 	B_delta = 0;
 	B_y_dot = 0;
 	B_yaw_dot = 0;
 	logdata.v_dot = B_y_dot + logdata.vel * logdata.theta;
+	v_dot[0] = logdata.v_dot;
 	logdata.theta_dot = B_yaw_dot - logdata.rho * logdata.vel;
 	vel_ref = logdata.vel;
 
@@ -90,32 +149,67 @@ void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata)
 	logdata.x_dwa[0] = B_x;
 	logdata.y_dwa[0] = B_y;
 	logdata.yaw_dwa[0] = B_yaw;
+	double beta;
+	//double pre_beta = atan(prm.l_r * tan(B_delta) / prm.Wheelbase);
+	//double beta_dot = 0;
 
 	for (int i = 1; i < SimStep; i++) 
 	{
 		dwa.Calc_inp(logdata.x_dwa[i - 1], logdata.y_dwa[i - 1], logdata.yaw_dwa[i - 1], B_vel, B_delta, vel_ref, logdata.v_dot, logdata.theta_dot, ret, i);
 		
-		//ŽÔ—¼‹““®‚ðŒvŽZ(DBM)
+		////ŽÔ—¼‹““®‚ðŒvŽZ(DBM)
+		//B_pre_vel = B_vel;
+		//B_vel = ret[0];
+		//B_delta = ret[1];
+		//V_inv = 1 / (B_vel + log(1 + exp(-2 * B_vel)));
+		//logdata.input_delta[i] = B_delta;
+		//B_y_2dot = -prm.a11 * B_y_dot * V_inv + (prm.a12 * V_inv - B_vel) * B_yaw_dot + prm.b1 * B_delta;
+		//B_yaw_2dot = -prm.a21 * B_y_dot * V_inv + prm.a22 * V_inv * B_yaw_dot + prm.b2 * B_delta;
+		//B_y_dot = B_y_dot + B_y_2dot * prm.T_delta;
+		//B_yaw_dot = B_yaw_dot + B_yaw_2dot * prm.T_delta;
+		//B_y = B_y + B_y_dot * prm.T_delta;
+		//B_yaw = B_yaw + B_yaw_dot * prm.T_delta;
+		//logdata.x_dwa[i] = logdata.x_dwa[i - 1] + B_vel * prm.T_delta * cos(B_yaw) - B_y_dot * prm.T_delta * sin(B_yaw);
+		//logdata.y_dwa[i] = logdata.y_dwa[i - 1] + B_vel * prm.T_delta * sin(B_yaw) + B_y_dot * prm.T_delta * cos(B_yaw);
+		//logdata.yaw_dwa[i] = B_yaw;
+
+		//ŽÔ—¼‹““®‚ðŒvŽZ(KBM)
 		B_pre_vel = B_vel;
 		B_vel = ret[0];
 		B_delta = ret[1];
-		V_inv = 1 / (B_vel + log(1 + exp(-2 * B_vel)));
-		logdata.input_delta[i] = B_delta;
-		B_y_2dot = -prm.a11 * B_y_dot * V_inv + (prm.a12 * V_inv - B_vel) * B_yaw_dot + prm.b1 * B_delta;
-		B_yaw_2dot = -prm.a21 * B_y_dot * V_inv + prm.a22 * V_inv * B_yaw_dot + prm.b2 * B_delta;
-		B_y_dot = B_y_dot + B_y_2dot * prm.T_delta;
-		B_yaw_dot = B_yaw_dot + B_yaw_2dot * prm.T_delta;
-		B_y = B_y + B_y_dot * prm.T_delta;
-		B_yaw = B_yaw + B_yaw_dot * prm.T_delta;
-		logdata.x_dwa[i] = logdata.x_dwa[i - 1] + B_vel * prm.T_delta * cos(B_yaw) - B_y_dot * prm.T_delta * sin(B_yaw);
-		logdata.y_dwa[i] = logdata.y_dwa[i - 1] + B_vel * prm.T_delta * sin(B_yaw) + B_y_dot * prm.T_delta * cos(B_yaw);
-		logdata.yaw_dwa[i] = B_yaw;
+		beta = atan(prm.l_r * tan(B_delta) / prm.Wheelbase);
+		logdata.x_dwa[i] = logdata.x_dwa[i - 1] + B_vel * cos(logdata.yaw_dwa[i - 1] + beta) * prm.T_delta;
+		logdata.y_dwa[i] = logdata.y_dwa[i - 1] + B_vel * sin(logdata.yaw_dwa[i - 1] + beta) * prm.T_delta;
+		logdata.yaw_dwa[i] = logdata.yaw_dwa[i - 1] + B_vel * sin(beta) / prm.l_r * prm.T_delta;
 
 		logdata.total_time += ret[2];
-		logdata.lateral_G[i] = B_y_2dot;
 		logdata.acc[i] = (B_vel - B_pre_vel) / prm.T_delta;
+		vel[i] = B_vel;
+		//beta_dot = (beta - pre_beta) / prm.T_delta;
+		//pre_beta = beta;
+		//B_y_2dot = logdata.acc[i] * sin(beta) + B_vel * beta_dot * cos(beta);
+		//logdata.lateral_G[i] = B_y_2dot;
 	}
-	for (int i = 1; i < SimStep - 1; i++)
+	for (size_t j = 0; j < logdata.x_dwa.size(); j++)
+	{
+		frenet.Cache_f = frenet.frenetlib.GetFrenet(logdata.x_dwa[j], logdata.y_dwa[j], logdata.yaw_dwa[j], logdata.u_dwa[j], logdata.v_dwa[j], logdata.theta_dwa[j], frenet.Cache_f);
+	}
+	for (int i = 1; i < SimStep; i++)
+	{
+		v_dot[i] = (logdata.v_dwa[i] - logdata.v_dwa[i - 1]) / prm.T_delta;
+		theta_dot[i] = (logdata.theta_dwa[i] - logdata.theta_dwa[i - 1]) / prm.T_delta;
+	}
+	for (int i = 1; i < SimStep; i++)
+	{
+		v_2dot[i] = (v_dot[i] - v_dot[i - 1]) / prm.T_delta;
+	}
+	for (int i = 1; i < SimStep; i++)
+	{
+		//ŽÔ—¼‹““®‚ðŒvŽZ(DBM)
+		B_y_2dot = v_2dot[i] - vel[i] * theta_dot[i] - logdata.acc[i] * logdata.theta_dwa[i];
+		logdata.lateral_G[i] = B_y_2dot;
+	}
+	for (int i = 6; i < SimStep - 1; i++)
 	{
 		logdata.lateral_jerk[i] = (logdata.lateral_G[i + 1] - logdata.lateral_G[i - 1]) / (2 * prm.T_delta);
 		logdata.longitudinal_jerk[i] = (logdata.acc[i + 1] - logdata.acc[i - 1]) / (2 * prm.T_delta);
@@ -123,8 +217,8 @@ void Vehicle_Sim::Sim_DWA_Basecoordinate(DWA dwa, LogData& logdata)
 		logdata.average_longitudinal_jerk += abs(logdata.longitudinal_jerk[i]);
 	}
 	logdata.average_time = logdata.total_time / SimStep; //•½‹Ï‚Ìˆ—ŽžŠÔ
-	logdata.average_lateral_jerk = logdata.average_lateral_jerk / (SimStep - 2);
-	logdata.average_longitudinal_jerk = logdata.average_longitudinal_jerk / (SimStep - 2);
+	logdata.average_lateral_jerk = logdata.average_lateral_jerk / (SimStep - 8);
+	logdata.average_longitudinal_jerk = logdata.average_longitudinal_jerk / (SimStep - 8);
 	logdata.collision_probability = double(logdata.collision_count) / logdata.total_count; //ƒTƒ“ƒvƒ‹‚ÌÕ“ËŠm—¦
 }
 

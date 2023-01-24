@@ -1,4 +1,5 @@
 #include <Course/Course.h>
+#include <Course/GetConstraint.h>
 #include <PrmLoader/MyParameters.h>
 #include <DataLogger/SaveLog.h>
 #include <DataLogger/CopyParam.h>
@@ -10,7 +11,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	RTCLib::CSVLoader CSV_prm("C:\\VehicleControlSim\\Common\\Prm_Setting\\parameter.csv", 1);
 	Prm prm;
 	prm.Load_Prm(CSV_prm, 0);
-	LogData logdata(prm.MPCPreStep);
+	LogData_PPDWA logdata(prm.MPCPreStep);
 
 	//線形補間用
 	LinearInterporater table;
@@ -25,41 +26,34 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	//結果を出力するcsv
 	DataLogger logger_PP;
 	DataLogger logger_DWA;
-	DataLogger logger_Course;
-	//パラメータファイルコピー
-	SaveParam saveparam;
-	logger_PP.Open(CreateLogFileName("data", "pp_", setting));
-	logger_DWA.Open(CreateLogFileName("data", "dwa_", setting));
-	logger_Course.Open(CreateLogFileName("data", "course_", setting));
-	saveparam.save_prm(CreateLogFileName("data", "prm_", setting));
+	DataLogger logger_Course_PP;
+	DataLogger logger_Course_DWA;
+	SaveParam saveparam_PP;
+	SaveParam saveparam_DWA;
+	logger_PP.Open(CreateLogFileName("data", "pp_", setting, 3));
+	logger_DWA.Open(CreateLogFileName("data", "dwa_", setting, 2));
+	logger_Course_PP.Open(CreateLogFileName("data", "course_", setting, 3));
+	logger_Course_DWA.Open(CreateLogFileName("data", "course_", setting, 2));
+	saveparam_PP.save_prm(CreateLogFileName("data", "prm_", setting, 3));
+	saveparam_DWA.save_prm(CreateLogFileName("data", "prm_", setting, 2));
+	
 	//ログの保存
-	SetData_PP(logger_PP, constraint, logdata, prm.PPDWASimStep);
-	SetData_DWA(logger_DWA, constraint, logdata, prm.PPDWASimStep);
-	OutData_Course(logger_Course, course);
+	SetData_PP(logger_PP, logdata, prm.PPDWASimStep);
+	SetData_DWA(logger_DWA, logdata, prm.PPDWASimStep);
+	OutData_Course(logger_Course_PP, course);
+	OutData_Course(logger_Course_DWA, course);
 
-#ifdef OneShotTest
-
-	////Pure Pursuit
-	//calc_b.Calc_behavior_base_pp(PP, logdata, parameter, logdata.vel);
-	//PP.Check(logdata, loadcsv, parameter.car_para, calc_d, parameter.step); //衝突判定，マージン計算
-	//logger_PP.PrintData();
-
-	////DWA
-	//calc_b.Sim_DWA_Basecoordinate(dwa, logdata, parameter, loadcsv);
-	//dwa.Check(logdata, loadcsv, parameter.car_para, calc_d, parameter.step);
-	//logger_DWA.PrintData();
-
-#else
 	//Loop
 	//uのループ
+	logdata.x = 0;
 	for (logdata.u = u_start; logdata.x < x_end; logdata.u = logdata.u + prm.delta_u)
 	{
 		//vの上下限取得
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
 		constraint.get_min_max(logdata.u + prm.dist_front, prm.v_max_front, prm.v_min_front);
 		constraint.get_rho(logdata.u, logdata.rho);
-		double v_min = max(prm.v_min, prm.v_min_front) + prm.width / 1.4;
-		double v_max = min(prm.v_max, prm.v_max_front) - prm.width / 1.4;
+		double v_min = max(prm.v_min, prm.v_min_front) + prm.width / 1.6;
+		double v_max = min(prm.v_max, prm.v_max_front) - prm.width / 1.6;
 		double delta_v = (v_max - v_min) / 3;
 
 		//vのループ
@@ -83,12 +77,12 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 						for (int i = 0; i < prm.NoiseNum; i++)
 						{
 							//PP
-							sim.Sim_PP_Basecoordinate(pp, logdata);
+							sim.Sim_PP_Basecoordinate(pp, logdata, i);
 							logdata.collision = sim.Check(logdata.x_pp, logdata.y_pp, logdata.yaw_pp);
 							logger_PP.PrintData();
 
 							//DWA
-							sim.Sim_DWA_Basecoordinate(dwa, logdata);
+							sim.Sim_DWA_Basecoordinate(dwa, logdata, i);
 							logdata.collision = sim.Check(logdata.x_dwa, logdata.y_dwa, logdata.yaw_dwa);
 							logger_DWA.PrintData();
 							for (size_t j = 0; j < logdata.x_dwa.size(); j++)
@@ -104,7 +98,6 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 			}
 		}
 	}
-#endif // test
 }
 
 void SetFrenet(std::vector<std::vector<double>>& course, CourseSetting setting, Frenet& frenet)
@@ -128,6 +121,7 @@ void SetFrenet(std::vector<std::vector<double>>& course, CourseSetting setting, 
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[5][i], 0.0, course[8][i], course[9][i], temp_theta, frenet.Cache_g); //制約y_maxをfrenet->global
 	}
 	frenet.Cache_f.initialized = false;
+	frenet.Cache_g.initialized = false;
 }
 
 int main()
@@ -135,22 +129,20 @@ int main()
 	CourseSetting setting;
 	GenCourse gencourse;
 	std::vector<std::vector<double>> course;
-	Frenet frenet;
 
-	int skip = 2;
+	int skip = 0;
 	int count = 0;
 
 #ifdef OA
-	double a[2] = { 1.3, 2.5 };
-	double width[4] = { 0.75, 0.9, 1.05, 1.3 }; //0.5 0.7 0.9 0.6 0.8 1.0
+	double a[1] = { 2.5 };
+	double width[3] = { 1.1, 0.8, 0.5 }; //0.5 0.7 0.9
 	double dist[2] = { 13, 19 }; // 13 16 19
-
-	//double a[2] = { 1.3, 2.5 };
-	//double width[3] = { 0.9, 1, 1.1 }; //0.5 0.7 0.9 0.6 0.8 1.0
-	//double dist[2] = { 13, 19 }; // 13 16 19
-
 	double u_start = 25;
-	double x_end = 80;
+	double x_end = 76;
+
+	//double a[1] = { 2.5 };
+	//double width[1] = { 1.1 }; //0.5 0.7 0.9 0.6 0.8 1.0
+	//double dist[1] = { 13 }; // 13 16 19
 
 	for (size_t i = 0; i < sizeof(a) / sizeof(a[0]); i++)
 	{
@@ -163,6 +155,8 @@ int main()
 
 			for (size_t k = 0; k < sizeof(dist) / sizeof(dist[0]); k++)
 			{
+				Frenet frenet;
+
 				setting.dist = dist[k];
 				setting.pos1 = "upper";
 				setting.pos2 = "lower";

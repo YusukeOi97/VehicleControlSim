@@ -4,14 +4,12 @@ addpath("C:\VehicleControlSim\DataAnalysis\Model Construction\func\");
 
 Kappa_array = 1;
 
-interval = 10; %分割数
+interval = 25; %分割数
 constraint = zeros(2 * interval, 1);
 first = true;
 InputNum = 2 * interval + 5; %v, theta, vel, rho, delta_rho
-vel_max = 7;
-theta_ = 70;
-Step = 70;
-Delta_T = 0.03;
+Step = 25;
+Delta_T = 0.08;
 Idx_u = 5;
 Idx_v = 6;
 Idx_theta = 7;
@@ -24,12 +22,12 @@ Idx_c_kappa = 11;
 Idx_col_dwa = 10;
 Idx_col_pp = 10;
 Idx_cal_pp = 9;
-Num_validation = 1500; %検証用のサンプル数
+Num_validation = 1000; %検証用のサンプル数
 
 
-DataPath = 'C:\Data\Dataset\';
+DataPath = 'C:\Data\PaperData\';
 
-Method = 'roughDWA';
+Method = 'PP';
 
 FolderInfo = dir(append(DataPath, Method, 'cleaned\'));
 Folderlist = {FolderInfo.name};
@@ -39,20 +37,15 @@ for i = 1 : length(Folderlist(1, :))
     
     %データ読み込み
     dir = strcat(DataPath, Method, 'cleaned\', string(Folderlist(1, i)), '\pp_data.csv');
-    data = csvread(dir, 0, 0);
+    pp_data = csvread(dir, 0, 0);
     course_dir = strcat(DataPath, Method, 'cleaned\', string(Folderlist(1, i)), '\course_data.csv');
     course_data = csvread(course_dir, 0, 0);
-    
-%     %pp
-%     pp_dir = strcat(Data_path, 'DWAPPcleaned\', string(Folderlist_ipm(1, i)), '\pp_data.csv');
-%     pp_data = csvread(pp_dir, 0, 0);
 
-    DataSize = size(data, 1);
-    
+    DataSize = size(pp_data, 1);
 
     %出力
     %collision probabilityの計算
-    out = CalColProb(data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_col_dwa); %col(dwa)
+    out = CalColRisk(pp_data, Idx_u, Idx_v, Idx_theta, Idx_vel, Idx_col_dwa); %col(dwa)
 %     out = [out; CalColProb(pp_data, Idx_col_pp)]; %col(pp)
 
 
@@ -70,20 +63,20 @@ for i = 1 : length(Folderlist(1, :))
     u = zeros(Step, 1);
 
     ColIn = 1;
-    for j = 2 : DataSize
-        if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
+    for j = 1 : DataSize - 1
+        if pp_data(j, Idx_u) == pp_data(j + 1, Idx_u) && pp_data(j, Idx_v) == pp_data(j + 1, Idx_v) && pp_data(j, Idx_theta) == pp_data(j + 1, Idx_theta) && pp_data(j, Idx_vel) == pp_data(j + 1, Idx_vel)
         else
             %v, yaw, vel
-            in(1, ColIn) = data(j, Idx_v);
-            in(2, ColIn) = data(j, Idx_theta);
-            in(3, ColIn) = data(j, Idx_vel);
+            in(1, ColIn) = pp_data(j, Idx_v);
+            in(2, ColIn) = pp_data(j, Idx_theta);
+            in(3, ColIn) = pp_data(j, Idx_vel);
 
 
 
             if Kappa_array
                 %曲率
                 for idx_pre = 1 : Step
-                    u(idx_pre, 1) = data(j, Idx_u) + data(j, Idx_vel) * Delta_T * (idx_pre - 1);
+                    u(idx_pre, 1) = pp_data(j, Idx_u) + pp_data(j, Idx_vel) * Delta_T * (idx_pre - 1);
                 end
                 for k = 1 : interval
                     kappa_array(k, 1) = LinearInterporater(u(Step / interval * k, 1), course_data, Idx_c_u, Idx_c_kappa);
@@ -97,12 +90,10 @@ for i = 1 : length(Folderlist(1, :))
     
     
                 %制約上下限
-                prediction = data(j, Idx_vel) * Step * Delta_T;
+                prediction = pp_data(j, Idx_vel) * Step * Delta_T;
                 for k = 1 : interval
-                    const_x = data(j, Idx_u) + k * prediction / interval;
+                    const_x = pp_data(j, Idx_u) + k * prediction / interval;
                     ret = LinearInterporater_const(const_x, course_data, Idx_c_u, Idx_c_ymax, Idx_c_ymin);
-%                     constraint(2 * k, 1) = ret.y_max;
-%                     constraint(2 * k - 1, 1) = ret.y_min;
                      constraint(interval + k, 1) = ret.y_max;
                      constraint(k, 1) = ret.y_min;
                 end
@@ -110,7 +101,7 @@ for i = 1 : length(Folderlist(1, :))
             else
                 %曲率
                 for idx_pre = 1 : Step
-                    u(idx_pre, 1) = data(j, Idx_u) + data(j, Idx_vel) * Delta_T * (idx_pre - 1);
+                    u(idx_pre, 1) = pp_data(j, Idx_u) + pp_data(j, Idx_vel) * Delta_T * (idx_pre - 1);
                 end
     
                 %予測区間の曲率の積分値の計算
@@ -166,9 +157,9 @@ for i = 1 : length(Folderlist(1, :))
     
     
                 %制約上下限
-                prediction = data(j, Idx_vel) * Step * Delta_T;
+                prediction = pp_data(j, Idx_vel) * Step * Delta_T;
                 for k = 1 : interval
-                    const_x = data(j, Idx_u) + k * prediction / interval;
+                    const_x = pp_data(j, Idx_u) + k * prediction / interval;
                     ret = LinearInterporater_const(const_x, course_data, Idx_c_u, Idx_c_ymax, Idx_c_ymin);
                     constraint(2 * k, 1) = ret.y_max;
                     constraint(2 * k - 1, 1) = ret.y_min;

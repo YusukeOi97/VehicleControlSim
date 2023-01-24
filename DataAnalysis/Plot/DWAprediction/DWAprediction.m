@@ -7,12 +7,12 @@ l_f = 1;
 WheelBase = l_r + l_f;
 
 %ControlSetting
-Delta_T = 0.03;
-PredictionStep = 25;
-DeltaVelMax = 3;
-DeltaDeltaVel = 0.005;
-VelMax = 0;
-deltaVel = 0.05;
+Delta_T = 0.08;
+PredictionStep = 8;
+DeltaVelMax = 2;
+DeltaDeltaVel = 0.05;
+VelMax = 0.72;
+deltaVel = 0.02;
 ref_vel = 4;
 K_y = 1;
 K_vel = 0.1;

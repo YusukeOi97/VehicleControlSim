@@ -153,7 +153,7 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	Prm prm;
 	prm.Load_Prm(CSV_prm, 0);
 
-	LogData logdata;
+	LogData_MPC logdata;
 	getconstraint constraint(prm.MPCPreStep);
 
 	//üŒ`•âŠÔ—p

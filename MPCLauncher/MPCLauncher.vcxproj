@@ -162,10 +162,10 @@
   <ItemGroup>
     <ClInclude Include="..\Common\Course\Course.h" />
     <ClInclude Include="..\Common\DataLogger\CopyParam.h" />
+    <ClInclude Include="..\Common\Data\Data.h" />
     <ClInclude Include="..\Common\PrmLoader\MyParameters.h" />
     <ClInclude Include="..\Common\setting.h" />
     <ClInclude Include="DataLogger\SaveLog.h" />
-    <ClInclude Include="header\Data.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

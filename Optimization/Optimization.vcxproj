@@ -171,8 +171,8 @@
     <ClCompile Include="Optimization\NUOPT.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\Data\Data.h" />
     <ClInclude Include="..\Common\NoiseMake\NoiseMake.h" />
-    <ClInclude Include="header\Data.h" />
     <ClInclude Include="Optimization\MyOptimization.h" />
     <ClInclude Include="Optimization\NUOPT.h" />
   </ItemGroup>
