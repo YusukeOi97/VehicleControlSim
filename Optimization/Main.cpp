@@ -191,7 +191,7 @@ int main()
 		std::future<bool> ftr = prms.get_future();
 		std::thread Thread(Opt, std::ref(myProblem), myProblem.noise_count, i, myProblem.sim_step, std::move(prms));
 
-		std::future_status timeresult = ftr.wait_for(std::chrono::milliseconds(120));
+		std::future_status timeresult = ftr.wait_for(std::chrono::milliseconds(500));
 		if (timeresult != std::future_status::timeout)
 		{
 			printf("not timeout    (u, v, theta, vel) = (%.1f, %.1f, %.1f, %.1f)\n", myProblem.u[0], myProblem.v[0], myProblem.theta[0], myProblem.vel[0]);
@@ -235,10 +235,6 @@ int main()
 		{
 			myProblem.UpdateState();
 		}
-		//if (myProblem.error_code != 0)
-		//{
-		//	i = i - 1;
-		//}
 	}
 
 	//‹OÕ‚ğGlobal‚É•ÏŠ·

@@ -5,7 +5,7 @@
 #include <DataLogger/CopyParam.h>
 #include <header/VehicleSim.h>
 
-void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Frenet frenet, double u_start, double x_end, int CourseNum)
+void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Frenet frenet, double u_start, double u_end, int CourseNum)
 {
 	//csv読み込み
 	RTCLib::CSVLoader CSV_prm("C:\\VehicleControlSim\\Common\\Prm_Setting\\parameter.csv", 1);
@@ -46,18 +46,29 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	//Loop
 	//uのループ
 	logdata.x = 0;
-	for (logdata.u = u_start; logdata.x < x_end; logdata.u = logdata.u + prm.delta_u)
+#ifdef INTERSECTION
+	for (logdata.u = u_start; logdata.u < u_end; logdata.u = logdata.u + prm.delta_u)
 	{
+#else
+	for (logdata.u = u_start; logdata.x < u_end; logdata.u = logdata.u + prm.delta_u)
+	{
+#endif // INTERSECTION
+
 		//vの上下限取得
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
 		constraint.get_min_max(logdata.u + prm.dist_front, prm.v_max_front, prm.v_min_front);
-		constraint.get_rho(logdata.u, logdata.rho);
 		double v_min = max(prm.v_min, prm.v_min_front) + prm.width / 1.6;
 		double v_max = min(prm.v_max, prm.v_max_front) - prm.width / 1.6;
-		double delta_v = (v_max - v_min) / 3;
+#ifdef OA
+		int count = 3;
+#else
+		int count = 2;
+#endif // OA
+
+		double delta_v = (v_max - v_min) / count;
 
 		//vのループ
-		for (int v = 0; v <= 3; v = v + 1)
+		for (int v = 0; v <= count; v = v + 1)
 		{
 			logdata.v = v_min + v * delta_v;
 			//thetaのループ
@@ -114,9 +125,9 @@ void SetFrenet(std::vector<std::vector<double>>& course, CourseSetting setting, 
 	double temp_theta;
 	for (size_t i = 0; i < course[0].size(); i++)
 	{
-#ifdef SINE
+#ifndef OA
 		frenet.Cache_f = frenet.frenetlib.GetFrenet(course[0][i], course[1][i], 0.0, course[2][i], course[3][i], temp_theta, frenet.Cache_f); //u, vを取得
-#endif // SINE
+#endif // OA
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[4][i], 0.0, course[6][i], course[7][i], temp_theta, frenet.Cache_g); //制約y_minをfrenet->global
 		frenet.Cache_g = frenet.frenetlib.GetGlobal(course[2][i], course[5][i], 0.0, course[8][i], course[9][i], temp_theta, frenet.Cache_g); //制約y_maxをfrenet->global
 	}
@@ -129,6 +140,7 @@ int main()
 	CourseSetting setting;
 	GenCourse gencourse;
 	std::vector<std::vector<double>> course;
+	Frenet frenet;
 
 	int skip = 0;
 	int count = 0;
@@ -155,8 +167,6 @@ int main()
 
 			for (size_t k = 0; k < sizeof(dist) / sizeof(dist[0]); k++)
 			{
-				Frenet frenet;
-
 				setting.dist = dist[k];
 				setting.pos1 = "upper";
 				setting.pos2 = "lower";
@@ -178,7 +188,7 @@ int main()
 	double ampl[3] = { 20, 30, 40 };
 	double cycle[1] = { 80 };
 	double u_start = 2;
-	double x_end = 30;
+	double u_end = 30;
 
 	for (size_t i = 0; i < sizeof(cycle) / sizeof(cycle[0]); i++)
 	{
@@ -193,11 +203,32 @@ int main()
 
 			if (count >= skip)
 			{
-				Launch(course, setting, frenet, u_start, x_end, count - skip);
+				Launch(course, setting, frenet, u_start, u_end, count - skip);
 			}
 			count++;
 		}
 	}
 #endif // SINE
+
+#ifdef INTERSECTION
+	double R[3] = { 4, 8, 12 };
+	double u_start = 1;
+	double u_end = 40;
+
+	for (size_t i = 0; i < sizeof(R) / sizeof(R[0]); i++)
+	{
+		setting.R = R[i];
+		gencourse.GetSetting(setting);
+		course = gencourse.Gen_INTERSECTION();
+		SetFrenet(course, setting, frenet);
+
+		if (count >= skip)
+		{
+			Launch(course, setting, frenet, u_start, u_end, count - skip);
+		}
+		count++;
+	}
+#endif // INTERSECTION
+
 	return 0;
 }

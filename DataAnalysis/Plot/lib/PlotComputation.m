@@ -78,7 +78,7 @@ function PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
                             hold on
                         end
                     else
-                        if data(i + 1, Idx_suc) ~= -1 
+                        if data(i + 1, Idx_suc) == 1 
                             scatter(x, y, [], elapsed_time, 'filled');
                             hold on
                         end
@@ -112,7 +112,7 @@ function PlotComputation(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_er
                         hold on
                     end
                 else
-                    if data(i + 1, Idx_suc) ~= -1 
+                    if data(i + 1, Idx_suc) == 1 
                         scatter(x, y, [], elapsed_time, 'filled');
                         hold on
                     end

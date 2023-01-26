@@ -17,16 +17,23 @@ Idx_c_u = 3;
 Idx_c_ymax = 6;
 Idx_c_ymin = 5;
 Idx_c_kappa = 11;
-Num_validation = 1000; %検証用のサンプル数
+Num_validation = 500; %検証用のサンプル数
 
-DataPath = "C:\Data\DWA\0124\";
+lambda = 0.1;
+Layer = [120 120 120 100 100 100 100];
+OutputRange = [20 60];
+Num_bin = [20 20];
+Clim = [0 80];
+
+DataPath = "C:\Data\PaperData\CleanedData\";
+%DataPath = "C:\Data\IPM\IPMcleaned\";
 
 %%% IPM or SQP or DWA or roughDWA or PP
-Method = "roughDWA";
+Method = "SQP";
 
 %%%%Computation -> c, Col risk -> r
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
-Output = "lat";
+Output = "c";
 
 if Method == "IPM" || Method == "SQP"
     Idx_cal = 17;
@@ -53,7 +60,7 @@ Folderlist = Folderlist(1, 3:end); %. .. を削除
 for i = 1 : length(Folderlist(1, :))
     
     %データ読み込み
-    dir = strcat(DataPath, Method, "cleaned\", string(Folderlist(1, i)), "\dwa_data.csv");
+    dir = strcat(DataPath, Method, "cleaned\", string(Folderlist(1, i)), "\data.csv");
     data = csvread(dir, 1, 0);
     course_dir = strcat(DataPath, Method, "cleaned\", string(Folderlist(1, i)), "\course_data.csv");
     course_data = csvread(course_dir, 1, 0);
@@ -275,7 +282,7 @@ for i = 1 : length(Folderlist(1, :))
             if data(j, Idx_u) == data(j - 1, Idx_u) && data(j, Idx_v) == data(j - 1, Idx_v) && data(j, Idx_theta) == data(j - 1, Idx_theta) && data(j, Idx_vel) == data(j - 1, Idx_vel)
             else
                 if Method == "IPM" || Method == "SQP"
-                                if data(j, Idx_err) ~= 0 || data(j, Idx_suc) ~= 1% || data(j, Idx_cal) > 0.042
+                                if data(j, Idx_err) ~= 0 || data(j, Idx_suc) ~= 1 || data(j, Idx_cal) > 0.042
                                 else
                                     %v, yaw, vel
                                     temp_in(1, ColIn) = data(j, Idx_v);
@@ -520,6 +527,7 @@ end
 
 InputData = InputData.';
 OutputData = OutputData.';
+%mean(OutputData, 1)
 
 idx = randperm(size(InputData, 1), Num_validation);
 InputValidation = InputData(idx, :);
@@ -558,7 +566,7 @@ OutputData(idx, :) = [];
 %options = trainingOptions('adam', 'Shuffle', 'every-epoch', 'Plots', 'training-progress', 'Verbose', false);
 %Mdl = trainNetwork(InputData, OutputData, layers, options);
 
-Mdl = fitrnet(InputData, OutputData, "Standardize", true, "Lambda", 1e-4, "LayerSizes", [120 120 120 120 100 100 100])
+Mdl = fitrnet(InputData, OutputData, "Standardize", true, "Lambda", lambda, "LayerSizes", Layer)
 %lambda dwa:[60 60 60]1e-4 roughdwa:[60 60 60]1e-3
 testMSE = loss(Mdl, InputValidation, OutputValidation)
 OutputPredicted = predict(Mdl, InputValidation);
@@ -576,13 +584,15 @@ mdl.Rsquared.Ordinary
 % end
 
 figure(1);
-histogram2(OutputPredicted(:, 1), OutputValidation(:, 1), [30 30], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 2], 'YBinLimits', [0 2]);
+histogram2(OutputPredicted(:, 1), OutputValidation(:, 1), Num_bin, 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', OutputRange, 'YBinLimits', OutputRange);
 axis equal
 colorbar
 ax = gca;
-ax.CLim = [0 80];
-xlabel("Predicted Value")
-ylabel("True Value")
+ax.CLim = Clim;
+xlabel("Predicted Value", 'FontSize', 12)
+ylabel("True Value", 'FontSize', 12)
+box off
+set(gca, 'LooseInset', get(gca, 'TightInset'), 'FontSize', 11);
 
 % figure(2);
 % histogram2(OutputPredicted(:, 2), OutputValidation(:, 2), [50 50], 'DisplayStyle', 'tile', 'ShowEmptyBins', 'On', 'XBinLimits', [0 1], 'YBinLimits', [0 1]);

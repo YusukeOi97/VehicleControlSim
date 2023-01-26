@@ -131,7 +131,7 @@ void InitState(double init_u, double init_v, double init_theta, double init_vel,
 	shareddata->first_success = false;
 }
 
-void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Frenet frenet, double U_start, double U_end, int CourseNum)
+void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Frenet frenet, double u_start, double u_end, int CourseNum)
 {
 	if (!CreateSharedMemory(SHARED_MEMORY_NAME, SHARED_MEMORY_SIZE))
 	{
@@ -178,12 +178,12 @@ void Launch(std::vector<std::vector<double>> course, CourseSetting setting, Fren
 	//u‚Ìƒ‹[ƒv
 	logdata.x = 0;
 #ifdef INTERSECTION
-	for (logdata.u = U_start; logdata.u < U_end; logdata.u = logdata.u + prm.delta_u)
+	for (logdata.u = u_start; logdata.u < u_end; logdata.u = logdata.u + prm.delta_u)
 	{
 #else
-	for (logdata.u = U_start; logdata.x < U_end; logdata.u = logdata.u + prm.delta_u)
+	for (logdata.u = u_start; logdata.x < u_end; logdata.u = logdata.u + prm.delta_u)
 	{
-#endif // !SINE
+#endif // INTERSECTION
 
 		//v‚Ìã‰ºŒÀæ“¾
 		constraint.get_min_max(logdata.u, prm.v_max, prm.v_min);
@@ -330,8 +330,8 @@ int main()
 	//int pos1[2] = { 1, 0 };
 
 	double a[1] = { 2.5 };
-	double width[3] = { 1.1, 0.8, 0.5 };
-	double dist[2] = { 13, 19 }; // 13 16 19
+	double width[4] = { 1.1, 0.9, 0.7, 0.5 };
+	double dist[3] = { 13, 16, 19 }; // 13 16 19
 	double U_start = 25;
 	double U_end = 76;
 
@@ -366,8 +366,8 @@ int main()
 #ifdef SINE
 	double ampl[3] = { 20, 30, 40 };
 	double cycle[1] = { 80 };
-	double U_start = 7;
-	double U_end = 27;
+	double u_start = 7;
+	double u_end = 27;
 
 	for (size_t i = 0; i < sizeof(cycle) / sizeof(cycle[0]); i++)
 	{
@@ -381,7 +381,7 @@ int main()
 
 			if (count >= skip)
 			{
-				Launch(course, setting, frenet, U_start, U_end, count - skip);
+				Launch(course, setting, frenet, u_start, u_end, count - skip);
 			}
 			count++;
 		}
@@ -390,8 +390,8 @@ int main()
 
 #ifdef INTERSECTION
 	double R[3] = { 4, 8, 12 };
-	double U_start = 1;
-	double U_end = 40;
+	double u_start = 1;
+	double u_end = 40;
 
 	for (size_t i = 0; i < sizeof(R) / sizeof(R[0]); i++)
 	{
@@ -402,7 +402,7 @@ int main()
 
 		if (count >= skip)
 		{
-			Launch(course, setting, frenet, U_start, U_end, count - skip);
+			Launch(course, setting, frenet, u_start, u_end, count - skip);
 		}
 		count++;
 	}

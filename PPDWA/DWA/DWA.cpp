@@ -134,7 +134,7 @@ void DWA::Calc_inp(double init_x, double init_y, double init_yaw, double init_ve
 				v_error[SmpCount][i] = v[SmpCount][i] - v_ref[i];
 			}
 			QueryPerformanceCounter(&end_);
-			minustime += (double)(end_.QuadPart - start_.QuadPart) / freq_.QuadPart;
+			//minustime += (double)(end_.QuadPart - start_.QuadPart) / freq_.QuadPart;
 
 			for (int i = 0; i < DWAPreStep; i++)
 			{
@@ -269,11 +269,11 @@ void DWA::SetRho(int Step, double init_u, double init_vel)
 	{
 		if (Step == 1)
 		{
-			rho[i] = table.GetLinearInterporation(0, init_u + i * init_vel * T_delta, 4);
+			rho[i] = table1.GetLinearInterporation(0, init_u + i * init_vel * T_delta, 4);
 		}
 		else
 		{
-			rho[i] = table.GetLinearInterporation(0, Pre_u[i], 4);
+			rho[i] = table1.GetLinearInterporation(0, Pre_u[i], 4);
 		}
 	}
 #endif // OA	

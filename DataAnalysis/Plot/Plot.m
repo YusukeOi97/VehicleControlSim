@@ -1,25 +1,27 @@
 close all;
 clear;
-addpath('lib');
+addpath("lib");
 
 %%%%Trajectory -> t, Computation -> c
 %%%%Lateral jerk -> lat, Longitudinaljerk -> lon
 %%%%Col risk -> r
-Output = "c";
-number = 5;
-%Data_path = "C:\Data\DWA\0123\DWA\";
-Data_path = "C:\Data\DWA\0124\";
+Output = "r";
+number = 19;
+%Data_path = "C:\Data\IPM\SQP\";
+%Data_path = "C:\Data\DWA\0124\roughDWAcleaned\";
+%Data_path = "C:\Data\PaperData\IPM\";
+Data_path = "C:\Data\PP\0125\";
 
-%%%%oa or sine of intersection
-env = "oa";
+%%%%oa or sine or intersection
+env = "intersection";
 
 %%%%IPM or SQP or DWA or PP
-Method = "DWA";
+Method = "PP";
 
 %%%pickup
 Pickup.flag = false;
-Pickup.yaw = 0.12;
-Pickup.vel = 4;
+Pickup.yaw = 0;
+Pickup.vel = 8;
 
 %%%specific initial point trajectory
 sptr = false;
@@ -58,7 +60,7 @@ if env == "oa"
     GraphSetting.ylim = [-1.7 1.7];
     GraphSetting.daspect = [10 5 50];
     %GraphSetting.daspect = [30 5 450];
-    GraphSetting.caxis_ct = [0 0.5];
+    GraphSetting.caxis_ct = [20 60];
     GraphSetting.caxis_latj = [0 3];
     GraphSetting.caxis_lonj = [0 2];
     GraphSetting.caxis_cr = [0 1.0];
@@ -88,7 +90,7 @@ elseif env == "sine"
     GraphSetting.graphposition2 = [700 100 600 250];
 else
     GraphSetting.xlim = [-25 5];
-    GraphSetting.ylim = [-5 20];
+    GraphSetting.ylim = [-5 15];
     %GraphSetting.daspect = [10 5 50];
     GraphSetting.daspect = [30 5 450];
     GraphSetting.caxis_ct = [0 50];

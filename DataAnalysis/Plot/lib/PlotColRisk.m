@@ -20,6 +20,10 @@ function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, I
         hold on
         plot(GraphSetting.obstacle2, 'FaceColor', [0.6 0.6 0.6]);
         hold on
+
+        f1 = figure(1);
+        f1.Position = GraphSetting.graphposition1; %[left bottom width height]
+
     else
         plot(constdata(:, 7) - 25, constdata(:, 8), 'b');
         hold on
@@ -39,10 +43,6 @@ function PlotColRisk(data, constdata, Idx_x, Idx_y, Idx_yaw, Idx_vel, Idx_err, I
 
     collision = 0;
     count = 0;
-
-    f1 = figure(1);
-    f1.Position = GraphSetting.graphposition1; %[left bottom width height]
-
     for i = 1 : size(data, 1) - 1
         if data(i, Idx_x) == data(i + 1, Idx_x) && data(i, Idx_y) == data(i + 1, Idx_y) && data(i, Idx_yaw) == data(i + 1, Idx_yaw) && data(i, Idx_vel) == data(i + 1, Idx_vel)
             if Method == "IPM" || Method == "SQP"
